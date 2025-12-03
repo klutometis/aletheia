@@ -1,0 +1,6 @@
+[submodule "PyETR"]
+	path = PyETR
+	url = https://github.com/Oxford-HAI-Lab/PyETR
+[submodule "etr_case_generator"]
+	path = etr_case_generator
+	url = https://github.com/Oxford-HAI-Lab/etr_case_generator
