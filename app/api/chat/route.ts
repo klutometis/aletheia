@@ -25,9 +25,11 @@ Your role is to:
 4. Help them develop examined, stable views
 
 The inquiry complex has these questions:
-${inquiryComplex.questions.map((q: any) => `- Q${q.id}: ${q.text}`).join('\n')}
+${inquiryComplex.questions.map((q: any) => `- ${q.id}: ${q.text}`).join('\n')}
 
 Already answered: ${answeredQuestions.length > 0 ? answeredQuestions.join(', ') : 'none'}
+
+IMPORTANT: When extracting answers, use the exact question ID from the list above (e.g., "q1", not "Q1" or "Qq1").
 
 Guidelines:
 - Start with foundational questions (lower numbers)

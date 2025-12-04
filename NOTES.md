@@ -2513,7 +2513,37 @@ Built out the conversational layer that sits alongside the graph:
 - Positions extracted and graph updated in real-time
 - Markdown formatting makes dialogue readable
 
-### TODOs: Interactive Graph Enhancements
+**Known issues discovered:**
+- Model sometimes loses track of which question context it's in (records answer for q1 while discussing q2)
+- Implicit state management via conversation history is fragile for complex dialogues
+
+### TODOs: Critical State Management Improvements
+
+**1. Function Calling + Explicit State Machine**
+- **Problem:** LLM implicitly manages which question is "current" - error-prone when conversation has follow-ups, tangents, clarifications
+- **Solution:** Add function tools:
+  - `record_answer(stance, confidence)` - can ONLY record for currently active question
+  - `move_to_question(questionId, reason)` - explicitly signal question transitions
+- **Benefit:** Clear state boundaries without losing conversationality
+- Frontend tracks `currentQuestionId` explicitly
+- Model must call tools to change state
+- Should handle natural language like "go back to the reps question"
+
+**2. Visual Current Question Indicator**
+- **Don't:** Big "CURRENT QUESTION: ..." banner (kills conversationality)
+- **Do:** Subtle highlighting approach:
+  - Highlight current question node in graph with different color/pulse animation
+  - Maybe tiny indicator in chat area (e.g., "💭 Exploring: Taste & Judgment")
+  - Graph highlighting gives context without being intrusive
+
+**3. Better Change Signaling**
+- Current inline "✓ Position recorded" works but could be enhanced:
+  - **Graph animation:** Node pulses blue when updated
+  - **Toast notification:** Subtle popup in corner
+  - **Combination:** Graph pulse + small inline note
+- Visual feedback without disrupting conversational flow
+
+### TODOs: Interactive Graph Enhancements (Lower Priority)
 
 **1. Dynamic Graph Updates (avoid full recreation)**
 - Currently destroys and recreates entire graph on every answer
@@ -2545,6 +2575,29 @@ Built out the conversational layer that sits alongside the graph:
 - Highlight most recently answered node
 - Show connections between related answered nodes
 - Pulse or glow effect to draw attention to state changes
+
+## 2025-12-03: Current Working State - Ready for Function Calling Refactor
+
+### What's Working Now ✅
+- Interactive Cytoscape graph visualization
+- Socratic dialogue with Gemini via streaming chat
+- Markdown rendering with proper formatting
+- Answer extraction from natural language
+- Graph nodes update (gray → blue) when answered
+- Progress tracking (coverage percentage)
+- localStorage persistence of user answers
+- 10 seed questions on "Competence in the Age of AI"
+
+### Known Issues 🐛
+- **State management fragility:** Model sometimes records answers for wrong question when conversation has follow-ups/tangents
+- **Implicit state:** No explicit tracking of "current question" - model infers from history
+- **Question ID confusion:** Model occasionally uses wrong question context
+
+### Next Steps 🎯
+1. **Refactor to function calling** (see TODOs above)
+2. **Add explicit state tracking** (currentQuestionId in frontend)
+3. **Improve visual feedback** (graph highlighting, animations)
+4. **Test conversationality** (can model handle "go back to reps?")
 
 ## 2025-12-02: HAI Lab's Existing ETR Infrastructure - PyETR and etr_case_generator
 

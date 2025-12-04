@@ -23,6 +23,29 @@ export default function Home() {
   const [userAnswers, setUserAnswers] = useState<Map<QuestionId, UserAnswer>>(new Map());
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  // Load answers from localStorage on mount
+  useEffect(() => {
+    const stored = localStorage.getItem('aletheia-answers');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        const answersMap = new Map(Object.entries(parsed));
+        setUserAnswers(answersMap);
+      } catch (error) {
+        console.error('Error loading answers from localStorage:', error);
+      }
+    }
+  }, []);
+
+  // Save answers to localStorage whenever they change
+  useEffect(() => {
+    if (userAnswers.size > 0) {
+      const answersObj = Object.fromEntries(userAnswers);
+      localStorage.setItem('aletheia-answers', JSON.stringify(answersObj));
+    }
+  }, [userAnswers]);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -31,6 +54,13 @@ export default function Home() {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Auto-focus input after messages change (and when loading ends)
+  useEffect(() => {
+    if (!isLoading && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [isLoading, messages]);
 
   const handleSend = async () => {
     if (!input.trim() || isLoading) return;
@@ -81,8 +111,17 @@ export default function Home() {
     }
   };
 
+  const [selectedNodeId, setSelectedNodeId] = useState<QuestionId | null>(null);
+  
   const answeredQuestions = useMemo(() => new Set(userAnswers.keys()), [userAnswers]);
   const coverage = (answeredQuestions.size / COMPETENCE_AI_COMPLEX.questions.length) * 100;
+  
+  const selectedQuestion = useMemo(() => 
+    selectedNodeId ? COMPETENCE_AI_COMPLEX.questions.find(q => q.id === selectedNodeId) : null,
+    [selectedNodeId]
+  );
+  
+  const selectedAnswer = selectedNodeId ? userAnswers.get(selectedNodeId) : null;
 
   return (
     <main className="h-screen bg-gray-50 flex flex-col">
@@ -148,6 +187,7 @@ export default function Home() {
           <div className="border-t border-gray-200 p-4">
             <div className="flex space-x-2">
               <input
+                ref={inputRef}
                 type="text"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
@@ -155,6 +195,7 @@ export default function Home() {
                 placeholder="Type your response..."
                 className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
                 disabled={isLoading}
+                autoFocus
               />
               <button
                 onClick={handleSend}
@@ -171,7 +212,22 @@ export default function Home() {
         <div className="w-96 bg-gray-50 p-4 flex flex-col min-h-0 overflow-y-auto">
           {/* Progress */}
           <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4 flex-shrink-0">
-            <h3 className="font-semibold text-gray-900 mb-2">Progress</h3>
+            <div className="flex justify-between items-start mb-2">
+              <h3 className="font-semibold text-gray-900">Progress</h3>
+              {userAnswers.size > 0 && (
+                <button
+                  onClick={() => {
+                    if (confirm('Clear all answers? This cannot be undone.')) {
+                      setUserAnswers(new Map());
+                      localStorage.removeItem('aletheia-answers');
+                    }
+                  }}
+                  className="text-xs text-red-600 hover:text-red-800"
+                >
+                  Clear All
+                </button>
+              )}
+            </div>
             <div className="space-y-2">
               <div>
                 <div className="text-2xl font-bold text-blue-600">{Math.round(coverage)}%</div>
@@ -187,6 +243,9 @@ export default function Home() {
               <InquiryGraph 
                 complex={COMPETENCE_AI_COMPLEX}
                 answeredQuestions={answeredQuestions}
+                userAnswers={userAnswers}
+                onNodeClick={setSelectedNodeId}
+                selectedNodeId={selectedNodeId}
               />
             </div>
             <div className="text-xs text-gray-600 mt-2 flex items-center space-x-4">
@@ -200,6 +259,59 @@ export default function Home() {
               </span>
             </div>
           </div>
+          
+          {/* Selected Node Details */}
+          {selectedQuestion && (
+            <div className="bg-white rounded-lg border border-gray-200 p-4 mt-4 flex-shrink-0">
+              <div className="flex justify-between items-start mb-2">
+                <h3 className="font-semibold text-gray-900">Node Details</h3>
+                <button 
+                  onClick={() => setSelectedNodeId(null)}
+                  className="text-gray-400 hover:text-gray-600"
+                >
+                  ✕
+                </button>
+              </div>
+              
+              <div className="space-y-3">
+                <div>
+                  <div className="text-xs text-gray-500 uppercase mb-1">Question</div>
+                  <div className="text-sm font-medium">{selectedQuestion.text}</div>
+                </div>
+                
+                {selectedAnswer ? (
+                  <>
+                    <div>
+                      <div className="text-xs text-gray-500 uppercase mb-1">Your Position</div>
+                      <div className="text-sm bg-blue-50 p-2 rounded border border-blue-200">
+                        {selectedAnswer.stance}
+                      </div>
+                    </div>
+                    
+                    <div className="flex space-x-4">
+                      <div>
+                        <div className="text-xs text-gray-500 uppercase mb-1">Confidence</div>
+                        <div className="text-sm font-semibold text-blue-600">
+                          {Math.round(selectedAnswer.confidence * 100)}%
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <div className="text-xs text-gray-500 uppercase mb-1">Recorded</div>
+                        <div className="text-sm text-gray-700">
+                          {new Date(selectedAnswer.timestamp).toLocaleTimeString()}
+                        </div>
+                      </div>
+                    </div>
+                  </>
+                ) : (
+                  <div className="text-sm text-gray-500 italic">
+                    Not yet answered - continue the conversation to explore this question.
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
         </div>
       </div>
     </main>
