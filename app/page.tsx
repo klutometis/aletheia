@@ -1,91 +1,207 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { InquiryGraph } from '@/components/InquiryGraph';
-import { SidePanel } from '@/components/SidePanel';
 import { COMPETENCE_AI_COMPLEX } from '@/data/competence-ai';
 import { QuestionId, UserAnswer } from '@/types/inquiry';
 
-export default function Home() {
-  const [selectedQuestionId, setSelectedQuestionId] = useState<QuestionId | null>(null);
-  const [userAnswers, setUserAnswers] = useState<Map<QuestionId, UserAnswer>>(new Map());
+interface Message {
+  role: 'user' | 'assistant';
+  content: string;
+  questionId?: QuestionId; // Track which question this relates to
+}
 
-  const handleAnswerSubmit = (questionId: QuestionId, answer: UserAnswer) => {
-    setUserAnswers(prev => new Map(prev).set(questionId, answer));
+export default function Home() {
+  const [messages, setMessages] = useState<Message[]>([
+    {
+      role: 'assistant',
+      content: "Let's explore what competence means in the age of AI. I'll guide us through key questions, starting with foundations.\n\nFirst: Can you develop taste and judgment without 'doing the reps' - without extensive hands-on practice?"
+    }
+  ]);
+  const [input, setInput] = useState('');
+  const [userAnswers, setUserAnswers] = useState<Map<QuestionId, UserAnswer>>(new Map());
+  const [isLoading, setIsLoading] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  const answeredQuestions = new Set(userAnswers.keys());
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
+
+  const handleSend = async () => {
+    if (!input.trim() || isLoading) return;
+
+    const userMessage = input.trim();
+    setInput('');
+    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setIsLoading(true);
+
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...messages, { role: 'user', content: userMessage }],
+          answeredQuestions: Array.from(userAnswers.keys()),
+          inquiryComplex: COMPETENCE_AI_COMPLEX
+        })
+      });
+
+      const data = await response.json();
+      
+      // Update answers if Gemini extracted a position
+      if (data.extractedAnswer) {
+        setUserAnswers(prev => new Map(prev).set(
+          data.extractedAnswer.questionId,
+          {
+            stance: data.extractedAnswer.stance,
+            confidence: data.extractedAnswer.confidence || 0.7,
+            timestamp: new Date().toISOString()
+          }
+        ));
+      }
+
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: data.message,
+        questionId: data.extractedAnswer?.questionId
+      }]);
+    } catch (error) {
+      console.error('Error:', error);
+      setMessages(prev => [...prev, {
+        role: 'assistant',
+        content: 'Sorry, I encountered an error. Please try again.'
+      }]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const answeredQuestions = useMemo(() => new Set(userAnswers.keys()), [userAnswers]);
   const coverage = (answeredQuestions.size / COMPETENCE_AI_COMPLEX.questions.length) * 100;
 
   return (
-    <main className="min-h-screen bg-gray-50">
+    <main className="h-screen bg-gray-50 flex flex-col">
       {/* Header */}
-      <div className="bg-white border-b border-gray-200 p-6">
-        <h1 className="text-4xl font-bold text-gray-900">Aletheia</h1>
-        <p className="text-lg text-gray-600 mt-2">Competence in the Age of AI</p>
-        <p className="text-sm text-gray-500 mt-1">
-          Explore the inquiry complex. Click any question to answer.
+      <div className="bg-white border-b border-gray-200 px-6 py-4">
+        <h1 className="text-3xl font-bold text-gray-900">Aletheia</h1>
+        <p className="text-sm text-gray-600 mt-1">
+          Competence in the Age of AI • {answeredQuestions.size}/{COMPETENCE_AI_COMPLEX.questions.length} questions explored
         </p>
       </div>
 
-      {/* Main Content */}
-      <div className="p-6">
-        {/* Equilibrium Dashboard */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6 mb-6">
-          <h2 className="text-xl font-semibold mb-4">Your Progress</h2>
-          <div className="grid grid-cols-4 gap-4">
-            <div>
-              <div className="text-3xl font-bold text-blue-600">
-                {Math.round(coverage)}%
+      {/* Main Content - Split View */}
+      <div className="flex-1 flex overflow-hidden min-h-0">
+        {/* Chat Area - Primary */}
+        <div className="flex-1 flex flex-col bg-white border-r border-gray-200 min-h-0">
+          {/* Messages */}
+          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
+            {messages.map((msg, idx) => (
+              <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[80%] rounded-lg px-4 py-3 ${
+                  msg.role === 'user' 
+                    ? 'bg-blue-600 text-white' 
+                    : 'bg-gray-100 text-gray-900'
+                }`}>
+                  <div className={`prose prose-sm max-w-none ${
+                    msg.role === 'user' 
+                      ? 'prose-invert' 
+                      : ''
+                  }`}>
+                    <ReactMarkdown 
+                      components={{
+                        p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
+                        strong: ({node, ...props}) => <strong className="font-semibold" {...props} />,
+                        em: ({node, ...props}) => <em className="italic" {...props} />,
+                      }}
+                    >
+                      {msg.content}
+                    </ReactMarkdown>
+                  </div>
+                  {msg.questionId && msg.role === 'assistant' && (
+                    <div className="text-xs mt-2 opacity-70">
+                      ✓ Position recorded for question {msg.questionId}
+                    </div>
+                  )}
+                </div>
               </div>
-              <div className="text-sm text-gray-600">Coverage</div>
-              <div className="text-xs text-gray-500">
-                {answeredQuestions.size}/{COMPETENCE_AI_COMPLEX.questions.length} answered
+            ))}
+            {isLoading && (
+              <div className="flex justify-start">
+                <div className="bg-gray-100 rounded-lg px-4 py-3">
+                  <div className="flex space-x-2">
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                    <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                  </div>
+                </div>
               </div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-gray-400">—</div>
-              <div className="text-sm text-gray-600">Stability</div>
-              <div className="text-xs text-gray-500">Re-test to measure</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-gray-400">—</div>
-              <div className="text-sm text-gray-600">Consistency</div>
-              <div className="text-xs text-gray-500">Coming soon</div>
-            </div>
-            <div>
-              <div className="text-3xl font-bold text-gray-400">—</div>
-              <div className="text-sm text-gray-600">Counterfactual</div>
-              <div className="text-xs text-gray-500">Coming soon</div>
+            )}
+            <div ref={messagesEndRef} />
+          </div>
+
+          {/* Input */}
+          <div className="border-t border-gray-200 p-4">
+            <div className="flex space-x-2">
+              <input
+                type="text"
+                value={input}
+                onChange={(e) => setInput(e.target.value)}
+                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                placeholder="Type your response..."
+                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                disabled={isLoading}
+              />
+              <button
+                onClick={handleSend}
+                disabled={isLoading || !input.trim()}
+                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+              >
+                Send
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Graph */}
-        <div className="bg-white rounded-lg border border-gray-200 p-6">
-          <h2 className="text-xl font-semibold mb-4">Inquiry Complex</h2>
-          <InquiryGraph 
-            complex={COMPETENCE_AI_COMPLEX}
-            onNodeClick={setSelectedQuestionId}
-            answeredQuestions={answeredQuestions}
-          />
-          <p className="text-sm text-gray-600 mt-4">
-            <span className="inline-block w-4 h-4 bg-gray-400 rounded mr-2"></span>
-            Unanswered
-            <span className="inline-block w-4 h-4 bg-blue-500 rounded mr-2 ml-4"></span>
-            Answered
-          </p>
+        {/* Graph Sidebar - Secondary */}
+        <div className="w-96 bg-gray-50 p-4 flex flex-col min-h-0 overflow-y-auto">
+          {/* Progress */}
+          <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4 flex-shrink-0">
+            <h3 className="font-semibold text-gray-900 mb-2">Progress</h3>
+            <div className="space-y-2">
+              <div>
+                <div className="text-2xl font-bold text-blue-600">{Math.round(coverage)}%</div>
+                <div className="text-xs text-gray-600">Coverage</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Graph */}
+          <div className="bg-white rounded-lg border border-gray-200 p-4 flex-1 flex flex-col min-h-0">
+            <h3 className="font-semibold text-gray-900 mb-2">Inquiry Map</h3>
+            <div className="flex-1 min-h-0">
+              <InquiryGraph 
+                complex={COMPETENCE_AI_COMPLEX}
+                answeredQuestions={answeredQuestions}
+              />
+            </div>
+            <div className="text-xs text-gray-600 mt-2 flex items-center space-x-4">
+              <span className="flex items-center">
+                <span className="inline-block w-3 h-3 bg-gray-400 rounded mr-1"></span>
+                Unanswered
+              </span>
+              <span className="flex items-center">
+                <span className="inline-block w-3 h-3 bg-blue-500 rounded mr-1"></span>
+                Answered
+              </span>
+            </div>
+          </div>
         </div>
       </div>
-
-      {/* Side Panel */}
-      <SidePanel
-        complex={COMPETENCE_AI_COMPLEX}
-        selectedQuestionId={selectedQuestionId}
-        userAnswers={userAnswers}
-        onAnswerSubmit={handleAnswerSubmit}
-        onClose={() => setSelectedQuestionId(null)}
-      />
     </main>
   );
 }

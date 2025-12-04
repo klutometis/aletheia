@@ -6,13 +6,11 @@ import { InquiryComplex, QuestionId } from '@/types/inquiry';
 
 interface InquiryGraphProps {
   complex: InquiryComplex;
-  onNodeClick?: (questionId: QuestionId) => void;
   answeredQuestions?: Set<QuestionId>;
 }
 
 export function InquiryGraph({ 
   complex, 
-  onNodeClick,
   answeredQuestions = new Set()
 }: InquiryGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null);
@@ -124,10 +122,14 @@ export function InquiryGraph({
 
     cyRef.current = cy;
 
-    // Click handler
+    // Node interaction disabled - chat-driven interface
     cy.on('tap', 'node', (evt) => {
-      const node = evt.target;
-      onNodeClick?.(node.id());
+      const nodeId = evt.target.id() as QuestionId;
+      const question = complex.questions.find(q => q.id === nodeId);
+      if (question) {
+        // Could show tooltip or question text
+        console.log('Node clicked:', question.text);
+      }
     });
 
     // Fit to view
@@ -136,7 +138,7 @@ export function InquiryGraph({
     return () => {
       cy.destroy();
     };
-  }, [complex, answeredQuestions, onNodeClick]);
+  }, [complex, answeredQuestions]);
 
   return (
     <div 

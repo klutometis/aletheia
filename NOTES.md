@@ -2481,6 +2481,71 @@ Built the foundational UI for Aletheia.app with:
 
 This establishes the foundation for all three modes of engagement (philosophical exploration, moral source articulation, decision support) described in the theoretical framework.
 
+## 2025-12-03: Chat Interface with Markdown Rendering and Answer Extraction
+
+### Milestone: Working Socratic Dialogue with Graph Updates
+
+Built out the conversational layer that sits alongside the graph:
+
+**Core functionality:**
+- Markdown rendering for AI responses (bold, italic, lists, etc.)
+- Real-time streaming chat interface
+- AI extracts user positions from natural dialogue
+- Automatic graph node updates when positions recorded
+- Progress tracking as conversation progresses
+
+**Technical implementation:**
+- ReactMarkdown with Tailwind Typography for proper formatting
+- System prompt instructs model to extract positions in JSON format
+- Parser detects `EXTRACTED_ANSWER` and updates graph state
+- Visual feedback showing which question was just answered
+
+**User experience:**
+- Natural conversational flow (not form-based)
+- AI asks catalytic questions in Socratic style
+- User responds naturally, AI interprets stance
+- Graph nodes turn blue as positions are articulated
+- "✓ Position recorded" confirmation after extraction
+
+**Current state:**
+- 10 seed questions on "Competence in the Age of AI"
+- Model successfully guides philosophical exploration
+- Positions extracted and graph updated in real-time
+- Markdown formatting makes dialogue readable
+
+### TODOs: Interactive Graph Enhancements
+
+**1. Dynamic Graph Updates (avoid full recreation)**
+- Currently destroys and recreates entire graph on every answer
+- Should update node data dynamically without losing layout
+- Smoother visual transitions when nodes change state
+
+**2. Node Click Interaction**
+- Enable clicking on graph nodes to view details
+- Show extracted answer, confidence level, timestamp
+- Display in tooltip or expanded side panel
+- Different behavior for answered vs. unanswered nodes:
+  - Blue (answered) nodes → show the stance Gemini extracted
+  - Gray (unanswered) nodes → show question text, "not yet answered"
+
+**3. Pass User Answers to Graph Component**
+- Currently graph only knows which IDs are answered
+- Should pass full `userAnswers` Map with stance/confidence
+- Enables rich tooltips and answer display
+- Allows visual encoding (node size by confidence?)
+
+**4. Answer Review/Edit Capability**
+- Click answered node → see what was extracted
+- Option to refine or re-answer if extraction missed nuance
+- Test for stability (equilibrium checking)
+- Show history of position changes over time
+
+**5. Visual Feedback Improvements**
+- Animate node color change when position recorded
+- Highlight most recently answered node
+- Show connections between related answered nodes
+- Pulse or glow effect to draw attention to state changes
+
 ## 2025-12-02: HAI Lab's Existing ETR Infrastructure - PyETR and etr_case_generator
 
 ### Context
