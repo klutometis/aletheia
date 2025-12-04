@@ -2599,6 +2599,92 @@ Built out the conversational layer that sits alongside the graph:
 3. **Improve visual feedback** (graph highlighting, animations)
 4. **Test conversationality** (can model handle "go back to reps?")
 
+## 2025-12-03: Breakthrough - Natural Socratic Transitions Working! 🎉
+
+### The Fix: Let the Model Control Pacing
+
+**Problem:** We were forcing transitions after EVERY answer by automatically calling `/api/select-question`, overriding the model's judgment about when to move on.
+
+**Solution:** Removed automatic select-question calls. Now the model:
+- Uses `record_answer` when it captures a position ✅
+- Uses `move_to_question` **when IT decides** exploration is complete ✅
+- Asks permission before transitioning: "Ready to move on?" ✅
+
+**Result:** Beautiful Socratic dialogue! 🤌
+
+### What Changed
+
+**Before (forced transitions):**
+1. User answers → model acknowledges → **forced transition** → repetitive intro to next question
+2. No follow-up probing, no deep exploration
+3. Double messages (acknowledgment + transition)
+
+**After (model-controlled transitions):**
+1. User answers → model does **genuine follow-ups** → explores deeply → asks permission → **smooth transition**
+2. Natural conversation flow with proper Socratic probing
+3. Single coherent messages
+4. User maintains agency ("Yeah, let's move on!")
+
+### Example of What We Got
+
+```
+Model: "So, for you, what is the fundamental difference 
+between surface fluency and deep understanding?"
+
+User: [Gives detailed breakdown about innate understanding, 
+personal authorship, intellectual and physical engagement]
+
+Model: "Yeah, that sounds great! [...synthesizes points...]
+Ready to explore other aspects? Yeah, let's move on to 
+other aspects!?"
+
+User: [Chooses when ready]
+```
+
+**Key observations:**
+- Model respects user's depth of thinking
+- Follow-up questions probe genuinely
+- Transitions feel natural, not forced
+- User has control over pacing
+
+### Technical Change
+
+app/page.tsx - Removed automatic `/api/select-question` call after recording answers:
+
+```typescript
+// Before: Forced transition after every answer
+if (action.type === 'record_answer') {
+  // ... record answer ...
+  // Then immediately call select-question (BAD!)
+}
+
+// After: Let model decide via move_to_question
+if (action.type === 'record_answer') {
+  // ... just record answer ...
+  // Model will call move_to_question when ready
+}
+```
+
+### Why This Validates the Framework
+
+This demonstrates exactly what Koralus emphasized:
+- **Philosophy vs. Rhetoric**: Model helps you reach equilibrium through genuine inquiry, not forced progression
+- **Autonomy preservation**: User controls when to move on, not algorithmic pacing
+- **Truth-seeking telos**: Conversation optimizes for understanding, not task completion
+
+The model's natural instinct (with proper function calling) aligns perfectly with erotetic theory - it wants to help you reach stable views before moving on, not rush through a checklist.
+
+### Current State: Production-Ready Dialogue
+
+✅ Natural Socratic follow-ups
+✅ User-controlled pacing  
+✅ Deep exploration before transitions
+✅ Single coherent messages
+✅ Model asks permission to move on
+✅ No premature rushing to next question
+
+This is the conversational foundation all three modes (exploration, articulation, decision support) can build on.
+
 ## 2025-12-02: HAI Lab's Existing ETR Infrastructure - PyETR and etr_case_generator
 
 ### Context
