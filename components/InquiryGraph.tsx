@@ -10,6 +10,7 @@ interface InquiryGraphProps {
   userAnswers?: Map<QuestionId, any>;
   onNodeClick?: (nodeId: QuestionId) => void;
   selectedNodeId?: QuestionId | null;
+  currentQuestionId?: QuestionId | null;
 }
 
 export function InquiryGraph({ 
@@ -17,7 +18,8 @@ export function InquiryGraph({
   answeredQuestions = new Set(),
   userAnswers = new Map(),
   onNodeClick,
-  selectedNodeId = null
+  selectedNodeId = null,
+  currentQuestionId = null
 }: InquiryGraphProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const cyRef = useRef<Core | null>(null);
@@ -54,7 +56,9 @@ export function InquiryGraph({
           id: q.id, 
           label: q.text,
           importance: q.importance,
-          answered: answeredQuestions.has(q.id)
+          answered: answeredQuestions.has(q.id),
+          current: q.id === currentQuestionId,
+          selected: selectedNodeId === q.id
         }
       })),
       
@@ -79,6 +83,8 @@ export function InquiryGraph({
           selector: 'node',
           style: {
             'background-color': (ele: any) => {
+              // Check current FIRST (use node data, not closure variable)
+              if (ele.data('current')) return '#f59e0b'; // Amber for current
               if (ele.data('selected')) return '#1d4ed8'; // Darker blue for selected
               if (ele.data('answered')) return '#3b82f6'; // Blue for answered
               return '#e5e7eb'; // Lighter gray for unanswered
@@ -92,11 +98,13 @@ export function InquiryGraph({
             'text-wrap': 'wrap',
             'text-max-width': '80px',
             'color': (ele: any) => {
+              if (ele.data('current')) return '#fff'; // White text for amber nodes
               if (ele.data('answered')) return '#fff'; // White text for blue nodes
               return '#000'; // Black text for light gray nodes
             },
             'text-background-color': (ele: any) => {
-              if (ele.data('answered')) return '#1e40af'; // Darker blue background
+              if (ele.data('current')) return '#d97706'; // Darker amber background for current
+              if (ele.data('answered')) return '#1e40af'; // Darker blue background for answered
               return '#fff'; // White background for unanswered
             },
             'text-background-opacity': 0.8,
@@ -173,26 +181,41 @@ export function InquiryGraph({
   useEffect(() => {
     if (!cyRef.current) return;
     
-    complex.questions.forEach(q => {
-      const node = cyRef.current!.$id(q.id);
-      if (node.length > 0) {
-        node.data('answered', answeredQuestions.has(q.id));
-        node.data('selected', selectedNodeId === q.id);
-        
-        const answer = userAnswers.get(q.id);
-        if (answer) {
-          node.data('confidence', answer.confidence);
+    cyRef.current.batch(() => {
+      complex.questions.forEach(q => {
+        const node = cyRef.current!.$id(q.id);
+        if (node.length > 0) {
+          node.data('answered', answeredQuestions.has(q.id));
+          node.data('selected', selectedNodeId === q.id);
+          node.data('current', q.id === currentQuestionId);
+          
+          const answer = userAnswers.get(q.id);
+          if (answer) {
+            node.data('confidence', answer.confidence);
+          }
         }
-      }
+      });
     });
     
-    cyRef.current.style().update();
-  }, [answeredQuestions, selectedNodeId, userAnswers, complex.questions]);
+    // Force Cytoscape to re-evaluate style functions by updating the stylesheet
+    cyRef.current.style()
+      .selector('node')
+      .style({
+        'background-color': (ele: any) => {
+          // Check current FIRST (use node data, not closure variable)
+          if (ele.data('current')) return '#f59e0b'; // Amber for current
+          if (ele.data('selected')) return '#1d4ed8'; // Darker blue for selected
+          if (ele.data('answered')) return '#3b82f6'; // Blue for answered
+          return '#e5e7eb'; // Lighter gray for unanswered
+        }
+      })
+      .update();
+  }, [answeredQuestions, selectedNodeId, userAnswers, complex.questions, currentQuestionId]);
 
   return (
     <div 
       ref={containerRef} 
-      className="w-full h-[600px] border border-gray-300 rounded-lg bg-white"
+      className="w-full h-full border border-gray-300 rounded-lg bg-white"
     />
   );
 }

@@ -13,30 +13,73 @@ interface Message {
 }
 
 export default function Home() {
-  const [messages, setMessages] = useState<Message[]>([
-    {
-      role: 'assistant',
-      content: "Let's explore what competence means in the age of AI. I'll guide us through key questions, starting with foundations.\n\nFirst: Can you develop taste and judgment without 'doing the reps' - without extensive hands-on practice?"
-    }
-  ]);
   const [input, setInput] = useState('');
   const [userAnswers, setUserAnswers] = useState<Map<QuestionId, UserAnswer>>(new Map());
+  const [currentQuestionId, setCurrentQuestionId] = useState<QuestionId>('q1');
+  const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  // Load answers from localStorage on mount
+  // Load answers from localStorage on mount and ask model to select starting question
   useEffect(() => {
-    const stored = localStorage.getItem('aletheia-answers');
-    if (stored) {
+    async function initializeSession() {
+      setIsLoading(true);
+      
+      const stored = localStorage.getItem('aletheia-answers');
+      let answersMap = new Map();
+      
+      if (stored) {
+        try {
+          const parsed = JSON.parse(stored);
+          answersMap = new Map(Object.entries(parsed));
+          setUserAnswers(answersMap);
+        } catch (error) {
+          console.error('Error loading answers from localStorage:', error);
+        }
+      }
+
+      const answeredIds = new Set(answersMap.keys());
+
+      // Ask model to select best starting question
       try {
-        const parsed = JSON.parse(stored);
-        const answersMap = new Map(Object.entries(parsed));
-        setUserAnswers(answersMap);
+        const response = await fetch('/api/select-question', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            inquiryComplex: COMPETENCE_AI_COMPLEX,
+            userAnswers: Object.fromEntries(answersMap)
+          })
+        });
+
+        const data = await response.json();
+        const startQuestionId = data.questionId || 'q1';
+        
+        setCurrentQuestionId(startQuestionId);
+
+        // Use model's natural transition message for all cases
+        setMessages([{
+          role: 'assistant',
+          content: data.transitionMessage
+        }]);
       } catch (error) {
-        console.error('Error loading answers from localStorage:', error);
+        console.error('Error selecting starting question:', error);
+        // Fallback to first unanswered
+        const firstUnanswered = COMPETENCE_AI_COMPLEX.questions.find(q => !answeredIds.has(q.id));
+        const startQuestionId = firstUnanswered?.id || 'q1';
+        const currentQuestion = COMPETENCE_AI_COMPLEX.questions.find(q => q.id === startQuestionId);
+        
+        setCurrentQuestionId(startQuestionId);
+        setMessages([{
+          role: 'assistant',
+          content: `Let's explore: ${currentQuestion?.text}`
+        }]);
+      } finally {
+        setIsLoading(false);
       }
     }
+
+    initializeSession();
   }, []);
 
   // Save answers to localStorage whenever they change
@@ -76,29 +119,38 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           messages: [...messages, { role: 'user', content: userMessage }],
+          currentQuestionId: currentQuestionId,
           answeredQuestions: Array.from(userAnswers.keys()),
+          userAnswers: Object.fromEntries(userAnswers),
           inquiryComplex: COMPETENCE_AI_COMPLEX
         })
       });
 
       const data = await response.json();
       
-      // Update answers if Gemini extracted a position
-      if (data.extractedAnswer) {
-        setUserAnswers(prev => new Map(prev).set(
-          data.extractedAnswer.questionId,
-          {
-            stance: data.extractedAnswer.stance,
-            confidence: data.extractedAnswer.confidence || 0.7,
-            timestamp: new Date().toISOString()
+      // Handle actions from function calls
+      if (data.actions && data.actions.length > 0) {
+        for (const action of data.actions) {
+          if (action.type === 'record_answer') {
+            const updatedAnswers = new Map(userAnswers).set(
+              action.questionId,
+              {
+                stance: action.stance,
+                confidence: action.confidence,
+                timestamp: new Date().toISOString()
+              }
+            );
+            setUserAnswers(updatedAnswers);
+          } else if (action.type === 'move_to_question') {
+            setCurrentQuestionId(action.questionId);
           }
-        ));
+        }
       }
 
+      // Always add the model's message
       setMessages(prev => [...prev, {
         role: 'assistant',
-        content: data.message,
-        questionId: data.extractedAnswer?.questionId
+        content: data.message
       }]);
     } catch (error) {
       console.error('Error:', error);
@@ -135,6 +187,19 @@ export default function Home() {
 
       {/* Main Content - Split View */}
       <div className="flex-1 flex overflow-hidden min-h-0">
+        {/* Loading overlay on initial load */}
+        {isLoading && messages.length === 0 && (
+          <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50">
+            <div className="text-center">
+              <div className="flex space-x-2 justify-center mb-4">
+                <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce"></div>
+                <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+              </div>
+              <p className="text-gray-600">Selecting best starting question...</p>
+            </div>
+          </div>
+        )}
         {/* Chat Area - Primary */}
         <div className="flex-1 flex flex-col bg-white border-r border-gray-200 min-h-0">
           {/* Messages */}
@@ -161,11 +226,6 @@ export default function Home() {
                       {msg.content}
                     </ReactMarkdown>
                   </div>
-                  {msg.questionId && msg.role === 'assistant' && (
-                    <div className="text-xs mt-2 opacity-70">
-                      ✓ Position recorded for question {msg.questionId}
-                    </div>
-                  )}
                 </div>
               </div>
             ))}
@@ -239,6 +299,16 @@ export default function Home() {
           {/* Graph */}
           <div className="bg-white rounded-lg border border-gray-200 p-4 flex-1 flex flex-col min-h-0">
             <h3 className="font-semibold text-gray-900 mb-2">Inquiry Map</h3>
+            
+            {/* Current question indicator */}
+            {currentQuestionId && (
+              <div className="text-xs text-gray-600 mb-2 flex items-center bg-amber-50 p-2 rounded border border-amber-200">
+                <span className="inline-block w-2 h-2 bg-amber-500 rounded-full mr-2 animate-pulse"></span>
+                <span className="font-medium">Currently exploring:</span>
+                <span className="ml-1">{COMPETENCE_AI_COMPLEX.questions.find(q => q.id === currentQuestionId)?.text.substring(0, 50)}...</span>
+              </div>
+            )}
+            
             <div className="flex-1 min-h-0">
               <InquiryGraph 
                 complex={COMPETENCE_AI_COMPLEX}
@@ -246,12 +316,17 @@ export default function Home() {
                 userAnswers={userAnswers}
                 onNodeClick={setSelectedNodeId}
                 selectedNodeId={selectedNodeId}
+                currentQuestionId={currentQuestionId}
               />
             </div>
             <div className="text-xs text-gray-600 mt-2 flex items-center space-x-4">
               <span className="flex items-center">
                 <span className="inline-block w-3 h-3 bg-gray-400 rounded mr-1"></span>
                 Unanswered
+              </span>
+              <span className="flex items-center">
+                <span className="inline-block w-3 h-3 bg-amber-500 rounded mr-1"></span>
+                Current
               </span>
               <span className="flex items-center">
                 <span className="inline-block w-3 h-3 bg-blue-500 rounded mr-1"></span>
