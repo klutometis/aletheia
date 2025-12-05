@@ -89,12 +89,12 @@ export function InquiryGraph({
               if (ele.data('answered')) return '#3b82f6'; // Blue for answered
               return '#e5e7eb'; // Lighter gray for unanswered
             },
-            'width': (ele: any) => 30 + ele.data('importance') * 20,
-            'height': (ele: any) => 30 + ele.data('importance') * 20,
+            'width': (ele: any) => 50 + ele.data('importance') * 30,
+            'height': (ele: any) => 50 + ele.data('importance') * 30,
             'label': 'data(label)',
             'text-valign': 'center',
             'text-halign': 'center',
-            'font-size': 12,
+            'font-size': 14,
             'text-wrap': 'wrap',
             'text-max-width': '80px',
             'color': (ele: any) => {
@@ -151,8 +151,10 @@ export function InquiryGraph({
         name: 'cose',
         animate: true,
         animationDuration: 500,
-        nodeSpacing: 10,
+        nodeSpacing: 50,
         padding: 50,
+        nodeRepulsion: 8000,
+        idealEdgeLength: 100,
       }
     });
 
@@ -165,6 +167,11 @@ export function InquiryGraph({
         onNodeClick(nodeId);
       }
     });
+
+    // Enable zoom and pan
+    cy.userZoomingEnabled(true);
+    cy.userPanningEnabled(true);
+    cy.boxSelectionEnabled(false);
 
     // Fit to view
     cy.fit();
