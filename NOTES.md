@@ -2685,6 +2685,439 @@ The model's natural instinct (with proper function calling) aligns perfectly wit
 
 This is the conversational foundation all three modes (exploration, articulation, decision support) can build on.
 
+## 2025-12-03: Articulation Feature Design - Transparent vs. Explicit UI
+
+### The Question: How Should Agent Articulation Work?
+
+After implementing natural Socratic dialogue, the next critical feature is **Mode 2: Moral Source Articulation** - helping users understand the deeper commitments that empower their views (Taylorian work).
+
+Key design question: Is articulation a transparent feature of chat, or does it need new UI?
+
+### Three Implementation Options
+
+**Option 1: Transparent in Chat (Recommended for MVP)**
+
+**Implementation:**
+- No new UI element, no new function/tool
+- Enhanced system prompt tells Gemini to periodically identify patterns
+- Uses Taylor's framework to interpret moral sources
+- Gemini decides when to articulate (like it decides `move_to_question`)
+
+**Example user experience:**
+```
+[After answering Q1-Q5]
+
+GEMINI: "I'm noticing a pattern in your responses. 
+You consistently prioritize autonomy over efficiency, 
+and you value struggle as intrinsically meaningful. 
+
+This reminds me of what Taylor calls 'expressivist' 
+moral sources - the idea that authenticity comes through 
+engagement with difficulty, not just achieving outcomes.
+
+Does that resonate with you?"
+
+YOU: "Yes, that's exactly it!"
+
+GEMINI: "Great! Let's keep exploring with that lens..."
+```
+
+**Pros:**
+- ✅ Natural conversational flow
+- ✅ No new code (just prompt engineering)
+- ✅ Gemini controls timing (consistent with design philosophy)
+- ✅ Fast to implement and test
+
+**Cons:**
+- ❌ Ephemeral (scrolls away in chat history)
+- ❌ Can't easily review articulations over time
+- ❌ Might get lost in long conversations
+
+**Option 2: Persistent "Your Values" Panel**
+
+**Implementation:**
+- New UI panel (collapsible sidebar or bottom section)
+- New function: `articulate_pattern(summary: string, confidence: number)`
+- Gemini calls when patterns emerge
+- Frontend displays in dedicated persistent space
+
+**Example UI:**
+```
+┌─────────────────────────────────┐
+│ Your Emerging Value Framework   │
+├─────────────────────────────────┤
+│ Based on 5 answers (60% conf.)  │
+│                                 │
+│ Core Pattern:                   │
+│ You prioritize autonomy over    │
+│ efficiency and value struggle   │
+│ as intrinsically meaningful     │
+│                                 │
+│ Moral Source (Taylor):          │
+│ Expressivist - authenticity     │
+│ through engagement              │
+│                                 │
+│ [Updated 30 seconds ago]        │
+└─────────────────────────────────┘
+```
+
+**Pros:**
+- ✅ Always visible (doesn't scroll away)
+- ✅ Shows confidence and coverage metrics
+- ✅ Updates as more questions answered
+- ✅ Clear "this is what the system understands about you"
+
+**Cons:**
+- ❌ Takes up screen real estate
+- ❌ More complex (new function, new UI component)
+- ❌ Might feel intrusive or "being analyzed"
+
+**Option 3: On-Demand Articulation Button**
+
+**Implementation:**
+- Button in UI: "Help me understand my values"
+- Triggers special prompt with all answers
+- Opens modal/panel with synthesis
+- User explicitly requests articulation
+
+**Example:**
+```
+[After answering several questions]
+
+[Button: "What do my answers reveal?"]
+
+[Click → Modal opens with full synthesis]
+```
+
+**Pros:**
+- ✅ User controls timing of insight
+- ✅ Doesn't interrupt natural dialogue flow
+- ✅ Can be detailed (explicit request)
+
+**Cons:**
+- ❌ User might never click it
+- ❌ Less "magic moment" (requires user action)
+- ❌ Separates articulation from dialogue
+
+### Recommended Approach: Start Transparent, Evolve If Needed
+
+**Phase 1 (Current Sprint): Option 1 - Transparent in Chat**
+- Enhance system prompt with articulation guidance
+- Let Gemini naturally synthesize patterns when ready
+- Test if articulations get lost or feel natural
+- No new UI code required
+
+**Phase 2 (If Needed): Add Persistent View**
+- If articulations scroll away and users want to review them
+- Add "Insights" tab showing history of articulations
+- But keep the natural dialogue flow as primary experience
+
+### Concrete Implementation for Phase 1
+
+**System prompt enhancement:**
+```typescript
+const systemPrompt = `You are a Socratic dialogue agent...
+
+ARTICULATION GUIDANCE:
+After the user has answered ~4-5 questions, try to identify 
+patterns in their responses. Use Taylor's framework of moral 
+sources (theistic, naturalist, expressivist, Romantic) to 
+interpret their commitments.
+
+When you see a pattern, say something like:
+"I'm noticing a pattern in your responses... [describe pattern]
+This reminds me of [Taylor's framework]. Does that resonate?"
+
+Be tentative ("seems like", "I'm noticing") not definitive.
+Always give them a chance to correct your interpretation.
+
+Don't force articulation - only when you genuinely see patterns.
+
+Taylor's Moral Sources Framework:
+- Theistic: Judaeo-Christian agapé, divine sources
+- Naturalist: Disengaged reason, dignity of rational agency
+- Romantic/Expressivist: Authenticity through inner nature, 
+  self-realization, attunement to feeling
+- Multiple goods in tension: Modern identity often draws on 
+  several traditions simultaneously
+`;
+```
+
+### Why This Mirrors the Transition Breakthrough
+
+The recent breakthrough with `move_to_question` showed that **letting Gemini control pacing** produces better dialogue than forced transitions. 
+
+**Articulation should work the same way:**
+- Gemini decides when it has enough data to see patterns
+- Naturally shares insights in conversation
+- User can accept, reject, or refine the articulation
+- No forced "analysis moment" that breaks flow
+
+The magic isn't in special UI - it's in **Gemini having the right prompt to know when and how to articulate patterns using Taylor's framework**.
+
+### Next Steps
+
+1. **Enhance system prompt** with Taylor's framework and articulation guidance
+2. **Test with real usage** - does Gemini naturally identify patterns?
+3. **Evaluate quality** - are articulations insightful or superficial?
+4. **Decide on persistence** - if articulations valuable but ephemeral, add UI
+
+This keeps implementation simple while testing the core hypothesis: can an LLM help people articulate their moral sources through natural dialogue?
+
+## 2025-12-05: Articulation Implementation Decisions - Design Refinements
+
+### Key Design Questions and Answers
+
+Through discussion of concrete implementation, clarified several critical design decisions for the articulation feature:
+
+**1. Pattern Detection Threshold: Dynamic, Not Fixed**
+
+**Wrong approach:**
+```typescript
+if (answeredCount >= 5) { articulate(); }
+```
+
+**Right approach:**
+```typescript
+if (detectsCoherentPattern(answers) && confidenceLevel > 0.7) {
+  articulate();
+}
+```
+
+**Rationale:** The "~4-5 questions" guidance should be exactly that - guidance for the LLM, not a hard rule. Articulation should happen when Gemini genuinely sees a pattern, which could be:
+- After 3 questions (if answers are highly consistent and revealing)
+- After 10 questions (if positions are subtle or contradictory)  
+- Never (if user is all over the map)
+
+System prompt should say: *"After the user has answered several questions (typically 4-5, but use your judgment)..."*
+
+**2. Articulation Mode: Woven Into Dialogue, Not Phase Shift**
+
+**Not this (mode switching):**
+```
+Exploration Phase → [Switch] → Articulation Phase → [Switch] → More Exploration
+```
+
+**But this (rhythmic punctuation):**
+```
+Q1 → Q2 → Q3 → [Gemini sees pattern] → "I'm noticing..." → 
+User responds → Q4 → Q5 → [Deeper articulation] → Continue exploring
+```
+
+**Key insight from `move_to_question` breakthrough:** Natural conversational flow works because one agent knows context and shifts smoothly between activities. Articulation should work the same way - natural punctuation in dialogue, not a separate mode.
+
+**Like:** Question → Reflect → Question → Reflect
+
+**3. Active vs. Passive Articulation: Proactively Observant**
+
+**Answer: Active but tentative (Socratic, not lecturing)**
+
+**Good (active but respectful):**
+```
+GEMINI: "I'm noticing a pattern in your last few responses - 
+you keep prioritizing autonomy over efficiency. Does that 
+feel right to you, or am I reading too much into it?"
+```
+
+**Bad (passive - waiting for request):**
+```
+USER: "What do you think my values are?"
+GEMINI: "Well, you seem to value autonomy..."
+```
+
+**Rationale:** Most people won't ask "what do I value?" - that's the whole problem Taylor identifies (modern inarticulation). The agent should proactively help with something they can't do for themselves. But "active" means **observant and curious**, not pushy.
+
+**4. Graph Completion: Articulate AND Re-examine**
+
+**Sequence when graph ~80% complete:**
+
+```
+Coverage 80% → Initial Comprehensive Articulation → 
+Test Stability → Re-examine unstable nodes → 
+Deeper Articulation → Periodic re-testing → ...
+```
+
+**Immediate (at completion):**
+- Comprehensive articulation: "Looking at all your answers, here's what I see..."
+- Identify camp/moral sources: "You seem to draw on expressivist sources..."
+- Surface tensions: "Q5 and Q9 seem to conflict - want to explore that?"
+
+**Ongoing (spaced repetition):**
+- Test stability: Re-ask key questions weeks later
+- Check if life events changed views
+- Probe counterfactuals: Same question, different framing
+
+**5. Spaced Repetition: Hybrid Approach**
+
+**Deterministic scheduling (the rules):**
+```typescript
+// Simple rules the LLM doesn't need to think about
+if (daysSinceAnswer > 30 && answer.importance > 0.7) {
+  scheduleRetest();
+}
+```
+
+**LLM decides what and how (the judgment):**
+```
+System: "Q3, Q7, Q9 are due for re-examination"
+
+Gemini: "Q7 is most central to their articulated view - 
+let's start there. Also, Q9 had low confidence originally."
+
+Gemini asks: "A month ago you said X about taste and 
+competence. I'm curious if you still think that, especially 
+now that you've been using Copilot more?"
+```
+
+**Why hybrid?**
+- Deterministic: Ensures nothing forgotten, scales reliably
+- LLM: Makes it feel natural, not robotic; prioritizes intelligently
+
+**6. Agent Architecture: Integrated, Not Modular**
+
+**Wrong (separate agents):**
+```typescript
+class ExplorationAgent { ... }
+class ArticulationAgent { ... }
+class ReExaminationAgent { ... }
+```
+
+**Right (one agent, multiple tools):**
+```typescript
+class SocraticAgent {
+  tools = [
+    'record_answer',
+    'move_to_question',
+    'articulate_pattern',      // NEW
+    'request_reexamination'    // NEW
+  ]
+}
+```
+
+**Rationale:** Current breakthrough shows natural conversational flow works because one agent has full context. Adding articulation should follow same pattern. Maintains continuity, simpler for user (one relationship), natural flow.
+
+**Note:** Articulation logic could be a separate backend service the agent calls, but frontend user interacts with single conversational agent.
+
+**7. Persistence: Store Articulations Immediately**
+
+**Decision: Store all articulations even if not yet displayed**
+
+```typescript
+if (action.type === 'articulate_pattern') {
+  const articulation = {
+    id: generateId(),
+    pattern: action.pattern,
+    confidence: action.confidence,
+    moralSources: action.moralSources,
+    basedOn: action.basedOn, // which question IDs
+    timestamp: new Date(),
+    userReaction: null // updated later if they respond
+  };
+  
+  setArticulations([...articulations, articulation]);
+  localStorage.setItem('aletheia-articulations', 
+    JSON.stringify([...articulations, articulation]));
+}
+```
+
+**Why store immediately:**
+1. **Information loss is wasteful** - LLM did cognitive work, structured data generated
+2. **No downside** - storage is cheap, user doesn't have to see it yet
+3. **Future optionality** - can add "Insights" tab, use for decision support, analyze patterns
+4. **Debugging value** - see if Gemini articulates reasonable patterns, when quality improves
+5. **Research data** - what patterns at different coverage levels, which moral sources identified
+
+**Display is separate decision** - can show articulations in chat (ephemeral feel) while storing them (permanent record). Best of both worlds.
+
+### Why Tool Call for Articulation Even if Just Chat Display?
+
+Making `articulate_pattern` a tool call has benefits beyond storage:
+
+**1. Observability/Analytics:**
+```typescript
+analytics.track('articulation_attempted', {
+  afterQuestions: 6,
+  confidence: 0.8,
+  userReacted: true
+});
+```
+
+**2. Structured Output:**
+```typescript
+// Forces LLM to be explicit
+{
+  pattern: "...",
+  confidence: 0.8,
+  basedOn: ["q1", "q3"],
+  moralSources: [...]
+}
+// vs. just free-form text
+```
+
+**3. Optional UI Treatment:**
+```typescript
+<ArticulationMessage 
+  pattern={...} 
+  confidence={0.8}
+  onFeedback={(reaction) => ...}
+/>
+// vs. plain markdown
+```
+
+**4. Future Decision Support:**
+```typescript
+// Can query stored articulations
+const articulations = getArticulations(userId);
+// "Based on your articulated values..."
+```
+
+### Implementation Summary
+
+**For articulation feature:**
+
+1. **Remove fixed thresholds** - let LLM judge when patterns emerge
+2. **Make articulation conversational** - woven into dialogue, not mode switch
+3. **Active but tentative** - proactively observe, always allow correction
+4. **Store immediately** - persist all articulations with metadata
+5. **Hybrid stability testing** - deterministic scheduling, LLM prioritization
+6. **Integrated agent** - same agent, expanded tools (articulate_pattern, request_reexamination)
+
+**System prompt additions:**
+```
+When you notice coherent patterns in user responses (use your judgment 
+about timing), share observations tentatively: "I'm noticing..." not "You are..."
+
+Use articulate_pattern tool to structure your observations with:
+- The pattern you see
+- Your confidence level (0-1)
+- Which moral sources from Taylor's framework (if applicable)
+- Which questions led to this interpretation
+
+Don't wait for explicit request - proactively articulate, but always 
+give the user chance to correct your interpretation.
+```
+
+This maintains the conversational breakthrough while adding sophisticated pattern recognition and value articulation capabilities.
+
+### TODO: Remove Jarring "Selecting best question" Loading Screen
+
+**Current UX issue:**
+- App starts with "Selecting best question to explore..." loading message
+- User sees blank/loading state before conversation begins
+- Feels jarring and delayed
+
+**Desired behavior:**
+- Show app interface immediately on load
+- Let first dialog question populate asynchronously in background
+- Conversation starts smoothly without intermediate loading state
+- Could show "Preparing your first question..." inline in chat if needed, but not as blocking full-page state
+
+**Implementation approach:**
+- Don't block on initial `/api/select-question` call
+- Render app UI immediately
+- Stream first question into chat when ready
+- User sees app, then conversation naturally begins
+
 ## 2025-12-02: HAI Lab's Existing ETR Infrastructure - PyETR and etr_case_generator
 
 ### Context

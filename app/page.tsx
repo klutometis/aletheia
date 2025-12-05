@@ -18,8 +18,16 @@ export default function Home() {
   const [currentQuestionId, setCurrentQuestionId] = useState<QuestionId>('q1');
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
+  const [articulation, setArticulation] = useState<string | null>(null);
+  const [isArticulating, setIsArticulating] = useState(false);
+  const [viewMode, setViewMode] = useState<'inquiry' | 'patterns'>('inquiry');
+  const [discussionMessages, setDiscussionMessages] = useState<Message[]>([]);
+  const [discussionInput, setDiscussionInput] = useState('');
+  const [isDiscussionLoading, setIsDiscussionLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const discussionEndRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+  const discussionInputRef = useRef<HTMLInputElement>(null);
 
   // Load answers from localStorage on mount and ask model to select starting question
   useEffect(() => {
@@ -98,6 +106,10 @@ export default function Home() {
     scrollToBottom();
   }, [messages]);
 
+  useEffect(() => {
+    discussionEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [discussionMessages]);
+
   // Auto-focus input after messages change (and when loading ends)
   useEffect(() => {
     if (!isLoading && inputRef.current) {
@@ -163,6 +175,81 @@ export default function Home() {
     }
   };
 
+  const handleArticulate = async () => {
+    setIsArticulating(true);
+    try {
+      const response = await fetch('/api/articulate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          userAnswers: Object.fromEntries(userAnswers),
+          inquiryComplex: COMPETENCE_AI_COMPLEX
+        })
+      });
+
+      const data = await response.json();
+      setArticulation(data.articulation);
+      setViewMode('patterns');
+      
+      // Add the model's opening prompt to start the discussion
+      if (data.openingPrompt) {
+        setDiscussionMessages([{
+          role: 'assistant',
+          content: data.openingPrompt
+        }]);
+      } else {
+        setDiscussionMessages([]);
+      }
+    } catch (error) {
+      console.error('Error generating articulation:', error);
+      setArticulation('Sorry, I encountered an error generating patterns. Please try again.');
+    } finally {
+      setIsArticulating(false);
+    }
+  };
+
+
+  const handleSendDiscussionMessage = async () => {
+    if (!discussionInput.trim() || isDiscussionLoading) return;
+
+    const userMessage = discussionInput.trim();
+    setDiscussionInput('');
+    setDiscussionMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    setIsDiscussionLoading(true);
+
+    try {
+      const response = await fetch('/api/articulate-chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          messages: [...discussionMessages, { role: 'user', content: userMessage }],
+          articulation,
+          userAnswers: Object.fromEntries(userAnswers),
+          inquiryComplex: COMPETENCE_AI_COMPLEX
+        })
+      });
+
+      const data = await response.json();
+      setDiscussionMessages(prev => [...prev, {
+        role: 'assistant',
+        content: data.message
+      }]);
+    } catch (error) {
+      console.error('Error in discussion:', error);
+      setDiscussionMessages(prev => [...prev, {
+        role: 'assistant',
+        content: 'Sorry, I encountered an error. Please try again.'
+      }]);
+    } finally {
+      setIsDiscussionLoading(false);
+    }
+  };
+
+  const handleBackToInquiry = () => {
+    setViewMode('inquiry');
+    setTimeout(() => inputRef.current?.focus(), 100);
+  };
+
   const [selectedNodeId, setSelectedNodeId] = useState<QuestionId | null>(null);
   
   const answeredQuestions = useMemo(() => new Set(userAnswers.keys()), [userAnswers]);
@@ -179,10 +266,12 @@ export default function Home() {
     <main className="h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <h1 className="text-3xl font-bold text-gray-900">Aletheia</h1>
-        <p className="text-sm text-gray-600 mt-1">
-          Competence in the Age of AI • {answeredQuestions.size}/{COMPETENCE_AI_COMPLEX.questions.length} questions explored
-        </p>
+        <div>
+          <h1 className="text-3xl font-bold text-gray-900">Aletheia</h1>
+          <p className="text-sm text-gray-600 mt-1">
+            Competence in the Age of AI • {answeredQuestions.size}/{COMPETENCE_AI_COMPLEX.questions.length} questions explored
+          </p>
+        </div>
       </div>
 
       {/* Main Content - Split View */}
@@ -200,10 +289,14 @@ export default function Home() {
             </div>
           </div>
         )}
-        {/* Chat Area - Primary */}
+        {/* Main Content Area - Primary */}
         <div className="flex-1 flex flex-col bg-white border-r border-gray-200 min-h-0">
-          {/* Messages */}
-          <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
+          
+          {viewMode === 'inquiry' ? (
+            /* Inquiry Mode - Chat */
+            <>
+              {/* Messages */}
+              <div className="flex-1 overflow-y-auto px-6 py-6 space-y-4">
             {messages.map((msg, idx) => (
               <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[80%] rounded-lg px-4 py-3 ${
@@ -240,32 +333,124 @@ export default function Home() {
                 </div>
               </div>
             )}
-            <div ref={messagesEndRef} />
-          </div>
+                <div ref={messagesEndRef} />
+              </div>
 
-          {/* Input */}
-          <div className="border-t border-gray-200 p-4">
-            <div className="flex space-x-2">
-              <input
-                ref={inputRef}
-                type="text"
-                value={input}
-                onChange={(e) => setInput(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Type your response..."
-                className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
-                disabled={isLoading}
-                autoFocus
-              />
-              <button
-                onClick={handleSend}
-                disabled={isLoading || !input.trim()}
-                className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
-              >
-                Send
-              </button>
-            </div>
-          </div>
+              {/* Input */}
+              <div className="border-t border-gray-200 p-4">
+                <div className="flex space-x-2">
+                  <input
+                    ref={inputRef}
+                    type="text"
+                    value={input}
+                    onChange={(e) => setInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                    placeholder="Type your response..."
+                    className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={isLoading}
+                    autoFocus
+                  />
+                  <button
+                    onClick={handleSend}
+                    disabled={isLoading || !input.trim()}
+                    className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  >
+                    Send
+                  </button>
+                </div>
+              </div>
+            </>
+          ) : (
+            /* Pattern Mode - Discussion */
+            <>
+              <div className="flex-1 overflow-y-auto px-8 py-8">
+                <div className="max-w-3xl mx-auto space-y-8">
+                  {/* Pattern Analysis */}
+                  <div>
+                    <h2 className="text-2xl font-bold text-purple-900 mb-4">Pattern Analysis</h2>
+                    <div className="prose prose-lg max-w-none prose-purple text-gray-800">
+                      <ReactMarkdown 
+                        components={{
+                          p: ({node, ...props}) => <p className="mb-4 leading-relaxed" {...props} />,
+                          strong: ({node, ...props}) => <strong className="font-semibold text-purple-900" {...props} />,
+                          em: ({node, ...props}) => <em className="italic" {...props} />,
+                        }}
+                      >
+                        {articulation || ''}
+                      </ReactMarkdown>
+                    </div>
+                  </div>
+
+                  {/* Discussion Messages */}
+                  {discussionMessages.length > 0 && (
+                    <div className="mt-8 space-y-4 mb-6">
+                      {discussionMessages.map((msg, idx) => (
+                        <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                          <div className={`max-w-[85%] rounded-lg px-4 py-3 ${
+                            msg.role === 'user' 
+                              ? 'bg-purple-600 text-white' 
+                              : 'bg-purple-50 text-gray-900 border border-purple-200'
+                          }`}>
+                            <div className={`prose prose-sm max-w-none ${
+                              msg.role === 'user' 
+                                ? 'prose-invert' 
+                                : 'prose-purple'
+                            }`}>
+                              <ReactMarkdown 
+                                components={{
+                                  p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
+                                  strong: ({node, ...props}) => <strong className="font-semibold" {...props} />,
+                                  em: ({node, ...props}) => <em className="italic" {...props} />,
+                                }}
+                              >
+                                {msg.content}
+                              </ReactMarkdown>
+                            </div>
+                          </div>
+                        </div>
+                      ))}
+                      {isDiscussionLoading && (
+                        <div className="flex justify-start">
+                          <div className="bg-purple-50 rounded-lg px-4 py-3 border border-purple-200">
+                            <div className="flex space-x-2">
+                              <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce"></div>
+                              <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                              <div className="w-2 h-2 bg-purple-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                            </div>
+                          </div>
+                        </div>
+                      )}
+                      <div ref={discussionEndRef} />
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Discussion Input */}
+              <div className="border-t border-purple-200 p-4 bg-purple-50">
+                <div className="max-w-3xl mx-auto flex space-x-2">
+                  <input
+                    ref={discussionInputRef}
+                    type="text"
+                    value={discussionInput}
+                    onChange={(e) => setDiscussionInput(e.target.value)}
+                    onKeyPress={(e) => e.key === 'Enter' && handleSendDiscussionMessage()}
+                    placeholder="Your thoughts..."
+                    className="flex-1 px-4 py-2 border border-purple-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white"
+                    disabled={isDiscussionLoading}
+                    autoFocus
+                  />
+                  <button
+                    onClick={handleSendDiscussionMessage}
+                    disabled={isDiscussionLoading || !discussionInput.trim()}
+                    className="px-6 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
+                  >
+                    Send
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
         </div>
 
         {/* Graph Sidebar - Secondary */}
@@ -280,6 +465,8 @@ export default function Home() {
                     if (confirm('Clear all answers? This cannot be undone.')) {
                       setUserAnswers(new Map());
                       localStorage.removeItem('aletheia-answers');
+                      setArticulation(null);
+                      setViewMode('inquiry');
                     }
                   }}
                   className="text-xs text-red-600 hover:text-red-800"
@@ -293,6 +480,36 @@ export default function Home() {
                 <div className="text-2xl font-bold text-blue-600">{Math.round(coverage)}%</div>
                 <div className="text-xs text-gray-600">Coverage</div>
               </div>
+              
+              {/* Toggle Button */}
+              {userAnswers.size >= 4 && (
+                <button
+                  onClick={() => {
+                    if (viewMode === 'inquiry') {
+                      if (articulation) {
+                        setViewMode('patterns');
+                      } else {
+                        handleArticulate();
+                      }
+                    } else {
+                      handleBackToInquiry();
+                    }
+                  }}
+                  disabled={isArticulating}
+                  className={`w-full mt-3 px-3 py-2 text-white text-sm rounded disabled:bg-gray-300 disabled:cursor-not-allowed ${
+                    viewMode === 'patterns' 
+                      ? 'bg-gray-600 hover:bg-gray-700' 
+                      : 'bg-purple-600 hover:bg-purple-700'
+                  }`}
+                >
+                  {isArticulating 
+                    ? 'Analyzing...' 
+                    : viewMode === 'patterns' 
+                      ? '← Back to inquiry' 
+                      : '✨ Review my patterns'
+                  }
+                </button>
+              )}
             </div>
           </div>
 
