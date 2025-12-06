@@ -1,8 +1,8 @@
-import { GoogleGenerativeAI, FunctionDeclaration, Tool } from '@google/generative-ai';
+import { GoogleGenerativeAI, FunctionDeclaration, Tool, SchemaType } from '@google/generative-ai';
 import { NextResponse } from 'next/server';
 import { InquiryComplex, QuestionId } from '@/types/inquiry';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
 
 interface Message {
   role: 'user' | 'assistant';
@@ -14,17 +14,15 @@ const recordAnswerFunction: FunctionDeclaration = {
   name: 'record_answer',
   description: 'Record the user\'s answer for the CURRENT question only. Call this when the user has provided a clear position on the question being discussed.',
   parameters: {
-    type: 'object',
+    type: SchemaType.OBJECT,
     properties: {
       stance: {
-        type: 'string',
+        type: SchemaType.STRING,
         description: 'The user\'s position/stance in 1-2 clear sentences'
       },
       confidence: {
-        type: 'number',
-        description: 'Confidence level from 0 to 1 (0.5 = uncertain, 0.7 = moderate, 0.9 = very confident)',
-        minimum: 0,
-        maximum: 1
+        type: SchemaType.NUMBER,
+        description: 'Confidence level from 0 to 1 (0.5 = uncertain, 0.7 = moderate, 0.9 = very confident)'
       }
     },
     required: ['stance', 'confidence']
@@ -35,14 +33,14 @@ const moveToQuestionFunction: FunctionDeclaration = {
   name: 'move_to_question',
   description: 'Move the conversation to a different question. Call this when: (1) user explicitly requests ("go back to...", "let\'s talk about..."), (2) naturally transitioning after exploring current question, or (3) exploring tensions between questions.',
   parameters: {
-    type: 'object',
+    type: SchemaType.OBJECT,
     properties: {
       questionId: {
-        type: 'string',
+        type: SchemaType.STRING,
         description: 'The question ID to move to (e.g., "q1", "q2")'
       },
       reason: {
-        type: 'string',
+        type: SchemaType.STRING,
         description: 'Why moving (e.g., "user requested", "natural transition", "exploring tension with q3")'
       }
     },
@@ -147,7 +145,7 @@ IMPORTANT: You can ONLY record answers for the current question (${currentQuesti
     // Gemini requires history to start with a user message, so skip the first assistant message
     const conversationMessages = messages.slice(0, -1);
     const history = conversationMessages
-      .filter((msg, idx) => !(idx === 0 && msg.role === 'assistant')) // Skip initial assistant greeting
+      .filter((msg: Message, idx: number) => !(idx === 0 && msg.role === 'assistant')) // Skip initial assistant greeting
       .map((msg: Message) => ({
         role: msg.role === 'user' ? 'user' : 'model',
         parts: [{ text: msg.content }]
@@ -164,25 +162,21 @@ IMPORTANT: You can ONLY record answers for the current question (${currentQuesti
 
     const userMessage = messages[messages.length - 1].content;
     
-    // Retry API calls with exponential backoff
+    // Retry API calls with exponential backoff (includes blank response detection)
     const result = await retryWithBackoff(async () => {
-      return await chat.sendMessage(`${systemPrompt}\n\nUser: ${userMessage}`);
+      const result = await chat.sendMessage(`${systemPrompt}\n\nUser: ${userMessage}`);
+      const responseText = result.response.text();
+      
+      // Treat blank responses as retryable errors
+      if (!responseText || responseText.trim() === '') {
+        throw new Error('Blank response from model');
+      }
+      
+      return result;
     }, 2); // 2 retries = 3 total attempts
     
     const response = result.response;
-    
-    // Detect blank responses
     const responseText = response.text();
-    if (!responseText || responseText.trim() === '') {
-      console.error('Blank response from model');
-      return NextResponse.json(
-        { 
-          error: 'The AI didn\'t respond. Please try again.',
-          retryable: true 
-        },
-        { status: 503 }
-      );
-    }
 
     // Check for function calls
     const functionCalls = response.functionCalls();
@@ -191,17 +185,19 @@ IMPORTANT: You can ONLY record answers for the current question (${currentQuesti
       // Handle function calls
       const actions = functionCalls.map(fc => {
         if (fc.name === 'record_answer') {
+          const args = fc.args as { stance: string; confidence: number };
           return {
             type: 'record_answer',
             questionId: currentQuestionId,
-            stance: fc.args.stance,
-            confidence: fc.args.confidence
+            stance: args.stance,
+            confidence: args.confidence
           };
         } else if (fc.name === 'move_to_question') {
+          const args = fc.args as { questionId: string; reason: string };
           return {
             type: 'move_to_question',
-            questionId: fc.args.questionId,
-            reason: fc.args.reason
+            questionId: args.questionId,
+            reason: args.reason
           };
         }
         return null;

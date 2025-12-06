@@ -4,7 +4,7 @@ import { useState, useRef, useEffect, useMemo } from 'react';
 import ReactMarkdown from 'react-markdown';
 import { InquiryGraph } from '@/components/InquiryGraph';
 import { COMPETENCE_AI_COMPLEX } from '@/data/competence-ai';
-import { QuestionId, UserAnswer } from '@/types/inquiry';
+import { QuestionId, UserAnswer, InquiryComplex } from '@/types/inquiry';
 
 interface Message {
   role: 'user' | 'assistant';
@@ -188,9 +188,11 @@ export default function Home() {
             const updatedAnswers = new Map(userAnswers).set(
               action.questionId,
               {
+                questionId: action.questionId,
                 stance: action.stance,
                 confidence: action.confidence,
-                timestamp: new Date().toISOString()
+                timestamp: new Date(),
+                considerations: []
               }
             );
             setUserAnswers(updatedAnswers);
@@ -400,7 +402,7 @@ export default function Home() {
                     autoFocus
                   />
                   <button
-                    onClick={handleSend}
+                    onClick={() => handleSend()}
                     disabled={isLoading || !input.trim()}
                     className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:bg-gray-300 disabled:cursor-not-allowed"
                   >

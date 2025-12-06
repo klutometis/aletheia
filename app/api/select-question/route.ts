@@ -1,22 +1,22 @@
-import { GoogleGenerativeAI } from '@google/generative-ai';
+import { GoogleGenerativeAI, SchemaType, Schema } from '@google/generative-ai';
 import { NextResponse } from 'next/server';
 import { InquiryComplex, QuestionId, UserAnswer } from '@/types/inquiry';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY || '');
 
-const responseSchema = {
-  type: 'object' as const,
+const responseSchema: Schema = {
+  type: SchemaType.OBJECT,
   properties: {
     questionId: {
-      type: 'string' as const,
+      type: SchemaType.STRING,
       description: 'The question ID to explore next (e.g., "q1", "q2")'
     },
     reasoning: {
-      type: 'string' as const,
+      type: SchemaType.STRING,
       description: 'Internal reasoning for why this question (for logging/debugging)'
     },
     transitionMessage: {
-      type: 'string' as const,
+      type: SchemaType.STRING,
       description: 'A warm, conversational message that naturally introduces the selected question. Should feel like a Socratic tutor continuing a dialogue, not announcing things robotically. Weave in your reasoning organically - don\'t use templates like "Why this question:" just explain naturally.'
     }
   },

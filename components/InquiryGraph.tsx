@@ -156,7 +156,6 @@ export function InquiryGraph({
         name: 'cose',
         animate: true,
         animationDuration: 500,
-        nodeSpacing: 50,
         padding: 50,
         nodeRepulsion: 8000,
         idealEdgeLength: 100,
