@@ -15,7 +15,7 @@ interface Message {
 export default function Home() {
   const [input, setInput] = useState('');
   const [userAnswers, setUserAnswers] = useState<Map<QuestionId, UserAnswer>>(new Map());
-  const [currentQuestionId, setCurrentQuestionId] = useState<QuestionId>('q1');
+  const [currentQuestionId, setCurrentQuestionId] = useState<QuestionId | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [articulation, setArticulation] = useState<string | null>(null);
@@ -32,8 +32,7 @@ export default function Home() {
   // Load answers from localStorage on mount and ask model to select starting question
   useEffect(() => {
     async function initializeSession() {
-      setIsLoading(true);
-      
+      // Load stored answers immediately (synchronous)
       const stored = localStorage.getItem('aletheia-answers');
       let answersMap = new Map();
       
@@ -49,7 +48,10 @@ export default function Home() {
 
       const answeredIds = new Set(answersMap.keys());
 
-      // Ask model to select best starting question
+      // Show loading state while fetching first question
+      setIsLoading(true);
+
+      // Ask model to select best starting question (non-blocking background call)
       try {
         const response = await fetch('/api/select-question', {
           method: 'POST',
@@ -65,11 +67,13 @@ export default function Home() {
         
         setCurrentQuestionId(startQuestionId);
 
-        // Use model's natural transition message for all cases
+        // Add model's natural transition message as first message
         setMessages([{
           role: 'assistant',
           content: data.transitionMessage
         }]);
+        
+        setIsLoading(false);
       } catch (error) {
         console.error('Error selecting starting question:', error);
         // Fallback to first unanswered
@@ -82,7 +86,7 @@ export default function Home() {
           role: 'assistant',
           content: `Let's explore: ${currentQuestion?.text}`
         }]);
-      } finally {
+        
         setIsLoading(false);
       }
     }
@@ -276,19 +280,6 @@ export default function Home() {
 
       {/* Main Content - Split View */}
       <div className="flex-1 flex overflow-hidden min-h-0">
-        {/* Loading overlay on initial load */}
-        {isLoading && messages.length === 0 && (
-          <div className="absolute inset-0 bg-white bg-opacity-90 flex items-center justify-center z-50">
-            <div className="text-center">
-              <div className="flex space-x-2 justify-center mb-4">
-                <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce"></div>
-                <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
-                <div className="w-3 h-3 bg-blue-600 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
-              </div>
-              <p className="text-gray-600">Selecting best starting question...</p>
-            </div>
-          </div>
-        )}
         {/* Main Content Area - Primary */}
         <div className="flex-1 flex flex-col bg-white border-r border-gray-200 min-h-0">
           
