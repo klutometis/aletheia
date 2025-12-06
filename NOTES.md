@@ -3118,6 +3118,33 @@ This maintains the conversational breakthrough while adding sophisticated patter
 - Stream first question into chat when ready
 - User sees app, then conversation naturally begins
 
+### TODO: Beta-Tester Observations on Erotetic Equilibrium
+
+**Key findings from early testing:**
+
+**1. Not everyone has pre-formed positions:**
+- Beta-testers didn't necessarily have a position on every node in the inquiry complex
+- Some questions prompted genuine discovery ("I hadn't thought about that before")
+- System should handle "I don't know yet" gracefully, not force artificial positions
+
+**2. Equilibrium takes time (especially with vague positions):**
+- Reaching erotetic equilibrium took longer than expected
+- Particularly when initial positions were vague or half-formed
+- "Erotetic equilibrium" here = Gemini is satisfied they've answered coherently
+- Need to balance: thorough exploration vs. user fatigue
+
+**Design implications:**
+- Allow "skip for now" / "I need to think about this" options
+- Don't penalize incomplete coverage in equilibrium calculation
+- Distinguish between "no position" vs. "examined and decided to remain neutral"
+- May need multiple passes: quick first pass, then deeper exploration on key nodes
+- Consider showing estimated time-to-equilibrium based on position clarity
+
+**Research questions:**
+- What's the minimum coverage for "useful" equilibrium?
+- How to detect when vagueness indicates genuine uncertainty vs. just needing more prompting?
+- Does forcing articulation of unformed views create worse demand characteristics?
+
 ## 2025-12-02: HAI Lab's Existing ETR Infrastructure - PyETR and etr_case_generator
 
 ### Context

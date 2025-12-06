@@ -10,10 +10,13 @@ interface Message {
   role: 'user' | 'assistant';
   content: string;
   questionId?: QuestionId; // Track which question this relates to
+  isError?: boolean;
+  retryable?: boolean;
 }
 
 export default function Home() {
   const [input, setInput] = useState('');
+  const [inquiryComplex, setInquiryComplex] = useState<InquiryComplex>(COMPETENCE_AI_COMPLEX);
   const [userAnswers, setUserAnswers] = useState<Map<QuestionId, UserAnswer>>(new Map());
   const [currentQuestionId, setCurrentQuestionId] = useState<QuestionId | null>(null);
   const [messages, setMessages] = useState<Message[]>([]);
@@ -29,9 +32,25 @@ export default function Home() {
   const inputRef = useRef<HTMLInputElement>(null);
   const discussionInputRef = useRef<HTMLInputElement>(null);
 
-  // Load answers from localStorage on mount and ask model to select starting question
+  // Load inquiry complex and answers from localStorage on mount
   useEffect(() => {
     async function initializeSession() {
+      // Load stored complex (with fallback to hardcoded)
+      const storedComplex = localStorage.getItem('aletheia-current-complex');
+      let complex = COMPETENCE_AI_COMPLEX; // default fallback
+      
+      if (storedComplex) {
+        try {
+          complex = JSON.parse(storedComplex);
+          setInquiryComplex(complex);
+        } catch (error) {
+          console.error('Error loading complex from localStorage:', error);
+        }
+      } else {
+        // Store the default complex for first-time users
+        localStorage.setItem('aletheia-current-complex', JSON.stringify(COMPETENCE_AI_COMPLEX));
+      }
+      
       // Load stored answers immediately (synchronous)
       const stored = localStorage.getItem('aletheia-answers');
       let answersMap = new Map();
@@ -57,7 +76,7 @@ export default function Home() {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
-            inquiryComplex: COMPETENCE_AI_COMPLEX,
+            inquiryComplex: complex,
             userAnswers: Object.fromEntries(answersMap)
           })
         });
@@ -77,9 +96,9 @@ export default function Home() {
       } catch (error) {
         console.error('Error selecting starting question:', error);
         // Fallback to first unanswered
-        const firstUnanswered = COMPETENCE_AI_COMPLEX.questions.find(q => !answeredIds.has(q.id));
+        const firstUnanswered = complex.questions.find(q => !answeredIds.has(q.id));
         const startQuestionId = firstUnanswered?.id || 'q1';
-        const currentQuestion = COMPETENCE_AI_COMPLEX.questions.find(q => q.id === startQuestionId);
+        const currentQuestion = complex.questions.find(q => q.id === startQuestionId);
         
         setCurrentQuestionId(startQuestionId);
         setMessages([{
@@ -121,12 +140,18 @@ export default function Home() {
     }
   }, [isLoading, messages]);
 
-  const handleSend = async () => {
-    if (!input.trim() || isLoading) return;
+  const handleSend = async (retryMessage?: string) => {
+    if (isLoading) return;
+    
+    const userMessage = retryMessage || input.trim();
+    if (!userMessage) return;
 
-    const userMessage = input.trim();
-    setInput('');
-    setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    // Only clear input and add user message if not retrying
+    if (!retryMessage) {
+      setInput('');
+      setMessages(prev => [...prev, { role: 'user', content: userMessage }]);
+    }
+    
     setIsLoading(true);
 
     try {
@@ -138,11 +163,23 @@ export default function Home() {
           currentQuestionId: currentQuestionId,
           answeredQuestions: Array.from(userAnswers.keys()),
           userAnswers: Object.fromEntries(userAnswers),
-          inquiryComplex: COMPETENCE_AI_COMPLEX
+          inquiryComplex: inquiryComplex
         })
       });
 
       const data = await response.json();
+      
+      // Handle API errors
+      if (!response.ok) {
+        setMessages(prev => [...prev, {
+          role: 'assistant',
+          content: data.error || 'Sorry, I encountered an error. Please try again.',
+          isError: true,
+          retryable: data.retryable || false
+        }]);
+        setIsLoading(false);
+        return;
+      }
       
       // Handle actions from function calls
       if (data.actions && data.actions.length > 0) {
@@ -187,7 +224,7 @@ export default function Home() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userAnswers: Object.fromEntries(userAnswers),
-          inquiryComplex: COMPETENCE_AI_COMPLEX
+          inquiryComplex: inquiryComplex
         })
       });
 
@@ -229,7 +266,7 @@ export default function Home() {
           messages: [...discussionMessages, { role: 'user', content: userMessage }],
           articulation,
           userAnswers: Object.fromEntries(userAnswers),
-          inquiryComplex: COMPETENCE_AI_COMPLEX
+          inquiryComplex: inquiryComplex
         })
       });
 
@@ -293,7 +330,9 @@ export default function Home() {
                 <div className={`max-w-[80%] rounded-lg px-4 py-3 ${
                   msg.role === 'user' 
                     ? 'bg-blue-600 text-white' 
-                    : 'bg-gray-100 text-gray-900'
+                    : msg.isError
+                      ? 'bg-red-50 text-red-900 border border-red-200'
+                      : 'bg-gray-100 text-gray-900'
                 }`}>
                   <div className={`prose prose-sm max-w-none ${
                     msg.role === 'user' 
@@ -310,6 +349,25 @@ export default function Home() {
                       {msg.content}
                     </ReactMarkdown>
                   </div>
+                  
+                  {/* Retry button for errors */}
+                  {msg.isError && msg.retryable && (
+                    <button
+                      onClick={() => {
+                        // Find the last user message before this error
+                        const lastUserMsg = messages.slice(0, idx).reverse().find(m => m.role === 'user');
+                        if (lastUserMsg) {
+                          // Remove error message and retry
+                          setMessages(prev => prev.slice(0, idx));
+                          handleSend(lastUserMsg.content);
+                        }
+                      }}
+                      className="mt-2 px-3 py-1 text-sm bg-red-600 text-white rounded hover:bg-red-700 flex items-center space-x-1"
+                    >
+                      <span>↻</span>
+                      <span>Retry</span>
+                    </button>
+                  )}
                 </div>
               </div>
             ))}
@@ -519,7 +577,7 @@ export default function Home() {
             
             <div className="flex-1 min-h-0">
               <InquiryGraph 
-                complex={COMPETENCE_AI_COMPLEX}
+                complex={inquiryComplex}
                 answeredQuestions={answeredQuestions}
                 userAnswers={userAnswers}
                 onNodeClick={setSelectedNodeId}

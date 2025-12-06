@@ -54,6 +54,36 @@ const tools: Tool[] = [{
   functionDeclarations: [recordAnswerFunction, moveToQuestionFunction]
 }];
 
+// Helper function to retry API calls with exponential backoff
+async function retryWithBackoff<T>(
+  fn: () => Promise<T>,
+  maxRetries: number = 2,
+  initialDelay: number = 1000
+): Promise<T> {
+  let lastError: any;
+  
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    try {
+      const result = await fn();
+      return result;
+    } catch (error) {
+      lastError = error;
+      
+      // Don't retry on last attempt
+      if (attempt === maxRetries) {
+        break;
+      }
+      
+      // Exponential backoff: 1s, 2s, 4s
+      const delay = initialDelay * Math.pow(2, attempt);
+      console.log(`Retry attempt ${attempt + 1}/${maxRetries} after ${delay}ms delay`);
+      await new Promise(resolve => setTimeout(resolve, delay));
+    }
+  }
+  
+  throw lastError;
+}
+
 export async function POST(req: Request) {
   try {
     const body = await req.json();
@@ -133,8 +163,26 @@ IMPORTANT: You can ONLY record answers for the current question (${currentQuesti
     });
 
     const userMessage = messages[messages.length - 1].content;
-    const result = await chat.sendMessage(`${systemPrompt}\n\nUser: ${userMessage}`);
+    
+    // Retry API calls with exponential backoff
+    const result = await retryWithBackoff(async () => {
+      return await chat.sendMessage(`${systemPrompt}\n\nUser: ${userMessage}`);
+    }, 2); // 2 retries = 3 total attempts
+    
     const response = result.response;
+    
+    // Detect blank responses
+    const responseText = response.text();
+    if (!responseText || responseText.trim() === '') {
+      console.error('Blank response from model');
+      return NextResponse.json(
+        { 
+          error: 'The AI didn\'t respond. Please try again.',
+          retryable: true 
+        },
+        { status: 503 }
+      );
+    }
 
     // Check for function calls
     const functionCalls = response.functionCalls();
@@ -182,13 +230,25 @@ IMPORTANT: You can ONLY record answers for the current question (${currentQuesti
 
     // No function calls, just regular response
     return NextResponse.json({
-      message: response.text(),
+      message: responseText,
       actions: []
     });
   } catch (error) {
     console.error('Error in chat API:', error);
+    
+    // Determine if error is retryable
+    const errorMessage = error instanceof Error ? error.message : String(error);
+    const isNetworkError = errorMessage.includes('fetch failed') || 
+                          errorMessage.includes('ECONNREFUSED') ||
+                          errorMessage.includes('timeout');
+    
     return NextResponse.json(
-      { error: 'Failed to process message' },
+      { 
+        error: isNetworkError 
+          ? 'Connection issue. Please try again.'
+          : 'Failed to process message. Please try again.',
+        retryable: true 
+      },
       { status: 500 }
     );
   }

@@ -48,8 +48,13 @@ export function InquiryGraph({
       return;
     }
 
-    // Build elements (first time only)
-    const elements = [
+    // Defer Cytoscape initialization to next event loop tick
+    // This ensures React's render cycle and DOM updates are complete
+    const timer = setTimeout(() => {
+      if (!containerRef.current) return;
+
+      // Build elements (first time only)
+      const elements = [
       // Nodes
       ...complex.questions.map(q => ({
         data: { 
@@ -173,10 +178,12 @@ export function InquiryGraph({
     cy.userPanningEnabled(true);
     cy.boxSelectionEnabled(false);
 
-    // Fit to view
-    cy.fit();
+      // Fit to view
+      cy.fit();
+    }, 0);
 
     return () => {
+      clearTimeout(timer);
       if (cyRef.current) {
         cyRef.current.destroy();
         cyRef.current = null;
