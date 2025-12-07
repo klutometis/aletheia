@@ -294,6 +294,7 @@ export default function Home() {
   };
 
   const [selectedNodeId, setSelectedNodeId] = useState<QuestionId | null>(null);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   
   const answeredQuestions = useMemo(() => new Set(userAnswers.keys()), [userAnswers]);
   const coverage = (answeredQuestions.size / COMPETENCE_AI_COMPLEX.questions.length) * 100;
@@ -309,11 +310,24 @@ export default function Home() {
     <main className="h-screen bg-gray-50 flex flex-col">
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Aletheia</h1>
-          <p className="text-sm text-gray-600 mt-1">
-            Competence in the Age of AI • {answeredQuestions.size}/{COMPETENCE_AI_COMPLEX.questions.length} questions explored
-          </p>
+        <div className="flex items-center justify-between">
+          <div>
+            <h1 className="text-3xl font-bold text-gray-900">Aletheia</h1>
+            <p className="text-sm text-gray-600 mt-1">
+              Competence in the Age of AI • {answeredQuestions.size}/{COMPETENCE_AI_COMPLEX.questions.length} questions explored
+            </p>
+          </div>
+          
+          {/* Mobile Hamburger Menu */}
+          <button
+            onClick={() => setIsMobileSidebarOpen(true)}
+            className="md:hidden p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-100 rounded-lg"
+            aria-label="Open menu"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+          </button>
         </div>
       </div>
 
@@ -504,10 +518,34 @@ export default function Home() {
           )}
         </div>
 
-        {/* Graph Sidebar - Secondary */}
-        <div className="w-96 bg-gray-50 p-4 flex flex-col min-h-0 overflow-y-auto">
+        {/* Mobile Sidebar Backdrop */}
+        {isMobileSidebarOpen && (
+          <div 
+            className="md:hidden fixed inset-0 bg-black bg-opacity-50 z-40"
+            onClick={() => setIsMobileSidebarOpen(false)}
+          />
+        )}
+
+        {/* Graph Sidebar - Secondary (slide-in on mobile, visible on tablet+) */}
+        <div className={`
+          fixed md:relative inset-y-0 right-0 z-50
+          w-80 md:w-96 bg-gray-50 p-4 flex flex-col min-h-0 overflow-y-auto
+          transform transition-transform duration-300 ease-in-out
+          ${isMobileSidebarOpen ? 'translate-x-0' : 'translate-x-full'}
+          md:translate-x-0
+        `}>
+          {/* Mobile Close Button */}
+          <button
+            onClick={() => setIsMobileSidebarOpen(false)}
+            className="md:hidden absolute top-4 right-4 p-2 text-gray-600 hover:text-gray-900 hover:bg-gray-200 rounded-lg z-10"
+            aria-label="Close menu"
+          >
+            <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
           {/* Progress */}
-          <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4 flex-shrink-0">
+          <div className="bg-white rounded-lg border border-gray-200 p-4 mb-4 flex-shrink-0 mt-12 md:mt-0">
             <div className="flex justify-between items-start mb-2">
               <h3 className="font-semibold text-gray-900">Progress</h3>
               {userAnswers.size > 0 && (
@@ -577,7 +615,7 @@ export default function Home() {
               </div>
             )}
             
-            <div className="flex-1 min-h-0">
+            <div className="flex-1 min-h-[400px] md:min-h-0">
               <InquiryGraph 
                 complex={inquiryComplex}
                 answeredQuestions={answeredQuestions}

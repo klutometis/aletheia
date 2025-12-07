@@ -228,7 +228,7 @@ export function InquiryGraph({
   return (
     <div 
       ref={containerRef} 
-      className="w-full h-full border border-gray-300 rounded-lg bg-white"
+      className="w-full h-full min-h-[400px] border border-gray-300 rounded-lg bg-white"
     />
   );
 }
