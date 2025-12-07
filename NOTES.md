@@ -549,7 +549,7 @@ This reframes inquiry complexes from "sets of questions" to **collaborative cart
 
 ### Concrete Prototype: Aletheia.app
 
-**Domain name:** aletheia.app (and .org) - Greek for truth/disclosure/unconcealment
+**Domain name:** aletheia.la - Greek for truth/disclosure/unconcealment
 
 **First inquiry complex:** "Competence in the Age of LLMs"
 
@@ -801,7 +801,7 @@ Agent Marketplace on aletheia.app:
 **BUT:** The infrastructure layer for autonomous agents
 
 ```
-aletheia.app provides:
+aletheia.la provides:
 ├── Inquiry complex registry (community-validated questions)
 ├── Personal answer storage (your positions, locally stored)
 ├── Agent marketplace (agents that use inquiry complexes)
@@ -918,15 +918,15 @@ Inquiry complex evolves beyond initial LLM framing
 
 ### The Actual Product Vision
 
-**NOT:** "Go to aletheia.app to think about competence"
+**NOT:** "Go to aletheia.la to think about competence"
 
-**BUT:** "Your AI agents consult aletheia.app inquiry complexes to help you reach equilibrium on ANY decision without nudging you"
+**BUT:** "Your AI agents consult aletheia.la inquiry complexes to help you reach equilibrium on ANY decision without nudging you"
 
 **The inquiry complex social layer is just the FOUNDATION for autonomous agents that don't manipulate you.**
 
 ### What We Actually Build
 
-**Phase 1: The infrastructure (aletheia.app)**
+**Phase 1: The infrastructure (aletheia.la)**
 - Inquiry complex builder & registry
 - Answer storage (local-first, privacy-preserving)
 - Equilibrium checker
@@ -2464,11 +2464,11 @@ The rock-paper-scissors failure reveals mismatch between:
 
 *Application submitted December 6, 2025*
 
-## 2025-12-03: Aletheia.app Prototype - Basic Interactive Graph Working
+## 2025-12-03: Aletheia.la Prototype - Basic Interactive Graph Working
 
 ### Milestone: Interactive Inquiry Complex Visualization
 
-Built the foundational UI for Aletheia.app with:
+Built the foundational UI for Aletheia.la with:
 
 **Core functionality:**
 - Interactive Cytoscape.js graph visualization of inquiry complex
@@ -3508,7 +3508,7 @@ See how they generate new Views from existing ones - this is the kernel of inter
 
 The foundations exist. The static test generation exists. The interactive deployment layer (your project) is the missing piece that Philipp is exploring but hasn't formalized. You'd be building it.
 
-## 2025-12-03: Concrete UI/UX Design for Aletheia.app
+## 2025-12-03: Concrete UI/UX Design for Aletheia.la
 
 ### The Core Design Vision
 
@@ -3759,7 +3759,7 @@ efficiency. Does that apply here?"
 
 ```
 ┌─────────────────────────────────────────────┐
-│ Aletheia.app                                │
+│ Aletheia.la                                 │
 │                                             │
 │ ┌─────────────────┐  ┌──────────────────┐  │
 │ │                 │  │  Side Panel:     │  │

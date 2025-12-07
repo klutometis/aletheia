@@ -72,7 +72,7 @@ Coming soon:
 
 ## Live Demo
 
-Visit [aletheia.app](https://aletheia.app) to explore competence in the age of AI.
+Visit [aletheia.la](https://aletheia.la) to explore competence in the age of AI.
 
 ---
 
