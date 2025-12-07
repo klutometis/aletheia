@@ -5,8 +5,25 @@ import fs from "fs/promises";
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 const CHUNK_SIZE = 30000; // characters per chunk (~7500 tokens)
-const INPUT_FILE = "taylor-ocr.txt";
-const OUTPUT_FILE = "taylor-summary.md";
+
+interface Config {
+  inputFile: string;
+  outputFile: string;
+  topic: string;
+}
+
+const CONFIGS: Record<string, Config> = {
+  taylor: {
+    inputFile: "taylor-ocr.txt",
+    outputFile: "doc/taylor-sources-of-self-summary.md",
+    topic: "Charles Taylor's 'Sources of the Self'"
+  },
+  koralus: {
+    inputFile: "doc/koralus-reason-and-inquiry.md",
+    outputFile: "doc/koralus-reason-and-inquiry-summary.md",
+    topic: "Philipp Koralus's 'Reason and Inquiry'"
+  }
+};
 
 async function chunkText(text: string): Promise<string[]> {
   const chunks: string[] = [];
@@ -37,7 +54,8 @@ async function summarizeChunk(
   chunk: string,
   chunkNum: number,
   totalChunks: number,
-  previousSummaries: string[]
+  previousSummaries: string[],
+  topic: string
 ): Promise<string> {
   let contextSection = "";
   if (previousSummaries.length > 0) {
@@ -46,7 +64,7 @@ async function summarizeChunk(
     contextSection = `\n\nContext from previous sections:\n${recentSummaries.map((s, i) => `Previous section ${previousSummaries.length - recentSummaries.length + i + 1}: ${s}`).join("\n\n")}\n`;
   }
   
-  const prompt = `This is part ${chunkNum} of ${totalChunks} from a larger document (likely about Frederick Winslow Taylor and scientific management based on OCR text).${contextSection}
+  const prompt = `This is part ${chunkNum} of ${totalChunks} from ${topic}.${contextSection}
 
 Please provide a concise summary of the key points, themes, and important details in this section:
 
@@ -60,16 +78,17 @@ Summary:`;
 
 async function createFinalSummary(
   model: GenerativeModel,
-  chunkSummaries: string[]
+  chunkSummaries: string[],
+  topic: string
 ): Promise<string> {
   const combined = chunkSummaries.join("\n\n---\n\n");
   
-  const prompt = `Below are summaries of different sections from a document about Frederick Winslow Taylor and scientific management. Please create a comprehensive final summary that:
+  const prompt = `Below are summaries of different sections from ${topic}. Please create a comprehensive final summary that:
 
 1. Identifies the main themes and arguments
 2. Highlights key concepts and principles
 3. Notes important examples or case studies
-4. Provides an overview of the document's structure
+4. Provides an overview of the work's structure and contribution
 
 Section summaries:
 
@@ -81,10 +100,14 @@ Final comprehensive summary:`;
   return result.response.text();
 }
 
-async function main(): Promise<void> {
+async function summarize(config: Config): Promise<void> {
+  console.log(`\n=== Summarizing ${config.topic} ===\n`);
+  console.log(`Input: ${config.inputFile}`);
+  console.log(`Output: ${config.outputFile}\n`);
+  
   try {
     console.log("Reading file...");
-    const text = await fs.readFile(INPUT_FILE, "utf-8");
+    const text = await fs.readFile(config.inputFile, "utf-8");
     console.log(`File size: ${text.length} characters`);
     
     console.log("Chunking text...");
@@ -94,7 +117,7 @@ async function main(): Promise<void> {
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
     
     const chunkSummaries: string[] = [];
-    let output = "# Taylor OCR Text - Summary\n\n";
+    let output = `# ${config.topic} - Summary\n\n`;
     output += `Generated: ${new Date().toISOString()}\n\n`;
     output += `## Individual Section Summaries\n\n`;
     
@@ -105,7 +128,8 @@ async function main(): Promise<void> {
         chunks[i],
         i + 1,
         chunks.length,
-        chunkSummaries  // Pass previously generated summaries as context
+        chunkSummaries,
+        config.topic
       );
       chunkSummaries.push(summary);
       
@@ -116,18 +140,47 @@ async function main(): Promise<void> {
     }
     
     console.log("Creating final summary...");
-    const finalSummary = await createFinalSummary(model, chunkSummaries);
+    const finalSummary = await createFinalSummary(model, chunkSummaries, config.topic);
     
-    output = `# Taylor OCR Text - Summary\n\n` +
+    output = `# ${config.topic} - Summary\n\n` +
              `Generated: ${new Date().toISOString()}\n\n` +
              `## Executive Summary\n\n${finalSummary}\n\n` +
              `---\n\n` + output;
     
-    await fs.writeFile(OUTPUT_FILE, output);
-    console.log(`\nDone! Summary written to ${OUTPUT_FILE}`);
+    await fs.writeFile(config.outputFile, output);
+    console.log(`\nDone! Summary written to ${config.outputFile}`);
     
   } catch (error) {
-    console.error("Error:", error);
+    console.error(`Error summarizing ${config.topic}:`, error);
+    throw error;
+  }
+}
+
+async function main(): Promise<void> {
+  const target = process.argv[2];
+  
+  if (!target || !CONFIGS[target]) {
+    console.error("Usage: tsx summarize-text.ts [taylor|koralus|all]");
+    console.error("\nAvailable targets:");
+    Object.keys(CONFIGS).forEach(key => {
+      console.error(`  ${key}: ${CONFIGS[key].topic}`);
+    });
+    console.error("  all: Summarize all texts");
+    process.exit(1);
+  }
+  
+  try {
+    if (target === "all") {
+      for (const key of Object.keys(CONFIGS)) {
+        await summarize(CONFIGS[key]);
+      }
+    } else {
+      await summarize(CONFIGS[target]);
+    }
+    
+    console.log("\n✅ All summaries complete!");
+  } catch (error) {
+    console.error("\n❌ Error:", error);
     process.exit(1);
   }
 }

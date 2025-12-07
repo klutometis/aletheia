@@ -1,0 +1,2 @@
+doc/project.md filter=git-crypt diff=git-crypt
+doc/project.pdf filter=git-crypt diff=git-crypt
