@@ -6,7 +6,7 @@ export interface Question {
   id: QuestionId;
   text: string;
   importance: number; // 0-1, for equilibrium calculation
-  camp?: 'traditionalist' | 'augmentationist' | 'post-expertise';
+  camp?: string | null; // Optional camp/position affiliation
 }
 
 export interface ReferenceAnswer {
@@ -36,6 +36,14 @@ export interface InquiryComplex {
   questions: Question[];
   edges: Edge[];
   referenceAnswers: Map<QuestionId, ReferenceAnswer[]>;
+  metadata?: {
+    source?: string;
+    generatedAt?: string;
+    camps?: Array<{
+      name: string;
+      description: string;
+    }>;
+  };
 }
 
 export interface UserView {

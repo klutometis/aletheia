@@ -28,7 +28,7 @@ export async function POST(req: Request) {
     const { inquiryComplex, userAnswers } = await req.json();
     
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash'
+      model: 'gemini-3-flash-preview'
     });
 
     // Build context about answered questions
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
       .map((q: any) => `- ${q.id} (importance: ${q.importance}): ${q.text}`)
       .join('\n');
 
-    const prompt = `You are a Socratic philosophy tutor helping someone explore "Competence in the Age of AI."
+    const prompt = `You are a Socratic philosophy tutor helping someone explore "${inquiryComplex.topic}."
 
 ANSWERED QUESTIONS (${Object.keys(userAnswers || {}).length}/${inquiryComplex.questions.length}):
 ${answeredSummary || '(none yet)'}

@@ -114,7 +114,7 @@ async function summarize(config: Config): Promise<void> {
     const chunks = await chunkText(text);
     console.log(`Created ${chunks.length} chunks`);
     
-    const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+    const model = genAI.getGenerativeModel({ model: "gemini-3-flash-preview" });
     
     const chunkSummaries: string[] = [];
     let output = `# ${config.topic} - Summary\n\n`;

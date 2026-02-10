@@ -297,11 +297,11 @@ export default function Home() {
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   
   const answeredQuestions = useMemo(() => new Set(userAnswers.keys()), [userAnswers]);
-  const coverage = (answeredQuestions.size / COMPETENCE_AI_COMPLEX.questions.length) * 100;
+  const coverage = (answeredQuestions.size / inquiryComplex.questions.length) * 100;
   
   const selectedQuestion = useMemo(() => 
-    selectedNodeId ? COMPETENCE_AI_COMPLEX.questions.find(q => q.id === selectedNodeId) : null,
-    [selectedNodeId]
+    selectedNodeId ? inquiryComplex.questions.find(q => q.id === selectedNodeId) : null,
+    [selectedNodeId, inquiryComplex]
   );
   
   const selectedAnswer = selectedNodeId ? userAnswers.get(selectedNodeId) : null;
@@ -311,10 +311,18 @@ export default function Home() {
       {/* Header */}
       <div className="bg-white border-b border-gray-200 px-6 py-4">
         <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">Aletheia</h1>
+          <div className="flex-1">
+            <div className="flex items-center space-x-3">
+              <h1 className="text-3xl font-bold text-gray-900">Aletheia</h1>
+              <a
+                href="/generate"
+                className="text-sm px-3 py-1 bg-purple-100 text-purple-700 hover:bg-purple-200 rounded-lg font-medium transition-colors"
+              >
+                + New Complex
+              </a>
+            </div>
             <p className="text-sm text-gray-600 mt-1">
-              Competence in the Age of AI • {answeredQuestions.size}/{COMPETENCE_AI_COMPLEX.questions.length} questions explored
+              {inquiryComplex.topic} • {answeredQuestions.size}/{inquiryComplex.questions.length} questions explored
             </p>
           </div>
           
@@ -611,7 +619,7 @@ export default function Home() {
               <div className="text-xs text-gray-600 mb-2 flex items-center bg-amber-50 p-2 rounded border border-amber-200">
                 <span className="inline-block w-2 h-2 bg-amber-500 rounded-full mr-2 animate-pulse"></span>
                 <span className="font-medium">Currently exploring:</span>
-                <span className="ml-1">{COMPETENCE_AI_COMPLEX.questions.find(q => q.id === currentQuestionId)?.text.substring(0, 50)}...</span>
+                <span className="ml-1">{inquiryComplex.questions.find(q => q.id === currentQuestionId)?.text.substring(0, 50)}...</span>
               </div>
             )}
             

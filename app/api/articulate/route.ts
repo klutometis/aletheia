@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const { userAnswers, inquiryComplex } = await req.json();
 
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash'
+      model: 'gemini-3-flash-preview'
     });
 
     // Build context from answered questions
@@ -19,7 +19,7 @@ export async function POST(req: Request) {
       })
       .join('\n\n');
 
-    const analysisPrompt = `You are analyzing someone's answers to philosophical questions about "Competence in the Age of AI."
+    const analysisPrompt = `You are analyzing someone's answers to philosophical questions about "${inquiryComplex.topic}."
 
 Here are their answers:
 

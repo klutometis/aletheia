@@ -96,7 +96,7 @@ export async function POST(req: Request) {
     const { messages, currentQuestionId, answeredQuestions, userAnswers, inquiryComplex } = body;
     
     const model = genAI.getGenerativeModel({ 
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3-flash-preview',
       tools: tools
     });
 
@@ -112,7 +112,7 @@ export async function POST(req: Request) {
       : 'none yet';
 
     // Build system prompt with explicit current question
-    const systemPrompt = `You are a Socratic philosophy tutor guiding someone through an inquiry complex about "Competence in the Age of AI."
+    const systemPrompt = `You are a Socratic philosophy tutor guiding someone through an inquiry complex about "${inquiryComplex.topic}."
 
 CURRENT QUESTION: ${currentQuestionId} - "${currentQuestion?.text}"
 
