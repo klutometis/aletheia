@@ -1,0 +1,3 @@
+Can we engage philosophically with Gemini?
+
+This is a collaboration with Profs. Philipp Koralus and Edward Harcourt, professors of Philosophy of Mind and Cognitive Science at the University of Oxford; we want to see whether it's productive to engage with Gemini in dialog with a truth-seeking telos; consistent with Taylor's Sources of the Self and Koralus's Erotetic Equilibrium. This started with a talk I gave at the Institute for Ethics in AI last month about positive ethics in AI. We can maintain confidentiality by using only the publicly available Gemini interface and API. Expected output is a paper describing the experience of working with Gemini on things like personal value-extraction, etc.

@@ -1,0 +1,3229 @@
+                                     The Erotetic Theory of Reasoning
+              Bridges Between Formal Semantics and the Psychology of Deductive Inference
+
+
+
+                                        Philipp Koralus∗ and Salvador Mascarenhas†,‡
+
+                                                          September 30, 2013
+
+
+
+1.     Preliminaries
+
+
+1.1.     Introduction
+
+The capacity to reason and draw inferences is central to all advanced human endeavors. Pushed to its limits, this
+
+capacity makes possible quantum physics and formal logic, as well as systematic theories of this very capacity. Equally
+
+remarkably, we are subject to systematic failures of reasoning in all domains, ranging from reasoning about what is
+
+and what might be the case to reasoning about probabilities, often in ways that are strikingly predictable (Tversky and
+
+Kahneman, 1983; Evans, 2002; Byrne, 2005; Johnson-Laird, 2008, among many others).
+
+       We introduce in this paper a new theory of reasoning, the erotetic theory of reasoning, based on the idea that the
+
+relationship between questions and answers is central to both our successes and failures of reasoning. The core of our
+
+proposal is the erotetic principle:
+
+(1)       The erotetic principle
+
+          Part I — Our natural capacity for reasoning proceeds by treating successive premises as questions and maxi-
+
+          mally strong answers to them.
+
+          Part II — Systematically asking a certain type of question as we interpret each new premise allows us to reason
+
+          in a classically valid way.
+
+What the erotetic principle comes to will be developed in formal detail in the rest of this paper. The erotetic theory of
+
+reasoning based on this principle combines two classes of ideas from the philosophy of language and linguistics. The
+
+first one is the idea that we interpret premises as strong answers to questions, represented in the form of mental models
+
+that we bring to the task of interpretation (Koralus, 2012). The second class of ideas concerns enriched notions of
+     ∗ Oxford University, pkoralus@alumni.princeton.edu, http://www.koralus.net
+     † New York University, smasc@nyu.edu, http://files.nyu.edu/sdm330/public/
+     ‡ We would like to thank Hannes Leitgeb, Kit Fine, Philippe Schlenker, Anna Szabolcsi, Chris Barker, Felipe Romero, Dylan Bumford, Alistair
+
+Isaac, Franz Berto, and Philip Johnson-Laird for helpful comments and discussions.
+
+
+                                                                        1
+linguistic content, as worked out in the frameworks of inquisitive semantics (Groenendijk, 2008; Mascarenhas, 2009)
+
+and truth-maker semantics (van Fraassen, 1969; Fine, 2012).
+
+       The intuition behind Part I of the erotetic principle is that the process of interpreting premises largely reduces to the
+
+search for answers to questions posed by other premises, regardless of whether those premises superficially look like
+
+questions. This approach will be grounded by a fresh look at the linguistic meaning of premise statements. Informally
+
+for now, a reasoner will take a disjunctive premise like “John and Bill are in the garden, or else Mary is” to pose the
+
+question of which of the disjuncts is the case. If she then accepts as a second premise that “John is in the garden,”
+
+she will interpret it to be as strong an answer as possible to the question in context. As luck would have it, “John
+
+is in the garden” is part of the first possible answer to the question at hand, and not the second, so the reasoner will
+
+conclude that the question in context has been answered: “John and Bill are in the garden,” deriving a well-known
+
+illusory inference (Walsh and Johnson-Laird, 2004). The inference is fallacious in that we are not entitled to make
+
+it given the information provided by the premise statements, on a linguistically plausible account of the meaning of
+
+those premise statements, an issue to which we shall return. The foregoing example is just one of many intricate data
+
+points on reasoning that need to be captured.
+
+       As noted, we are not only interested in systematically capturing divergences in naı̈ve reasoning from what we are
+
+entitled to conclude from given premises; we also want to account for the fact that our reasoning endowment makes
+
+correct reasoning possible, as evidenced by the simple fact that it is possible to train oneself to reason in a manner
+
+that respects classical validity. This is where Part II of the erotetic principle comes in: although our natural capacity
+
+for reasoning is not specifically aiming at classical validity, there exists a systematic strategy of using questions, made
+
+available by our natural capacities, which would guarantee that we only make inferences we are in fact entitled to
+
+make. Toward the end of the paper, we prove that this reasoning strategy exists. In a certain specific sense we will
+
+develop below, questions make us rational. By the erotetic principle, our desire for answers makes our reasoning
+
+fallible, but our ability to ask the right questions puts us back on track.
+
+
+1.2.     The scope of this paper
+
+In this paper, we focus on reasoning with premises involving propositional connectives, such as expressed by the
+
+English words ‘or’, ‘and’, ‘not’, and certain interpretations of ‘if’. Within the domain of reasoning we have picked
+
+out, we address both the problem of failure and the problem of success. In other words, we seek to explain within a
+
+single system both how naı̈ve reasoning diverges from what we are entitled to conclude and how it is possible for us
+
+to come to reason correctly.
+
+       For our purposes, solving the problem of success means that we have to show that there exists a reasoning strategy
+
+using our naı̈ve reasoning capacities that is classically sound, and, under performance idealizations, classically com-
+
+plete. We want to explain part of the puzzle of how science and philosophy are possible for humans. Since science
+
+
+                                                                2
+and philosophy rely on classical standards of correctness, this is the standard we need to show is achievable.
+
+       Empirically, our aim is to account for what we consider to be a particularly interesting set of data on propositional
+
+reasoning. The erotetic theory of reasoning we develop below captures a significant catalog of empirically documented
+
+patterns of naı̈ve reasoning that diverge from the norms of what we are entitled to conclude, listed in Table 1 (on
+
+page 4). In addition to data from existing experimental literature, we present a novel illusory inference that, to our
+
+knowledge, no extant theory of reasoning captures.1
+
+
+1.3.     Points of contact with other approaches
+
+Before presenting the erotetic theory more fully, we briefly describe how it relates to some of the most influential
+
+existing approaches. The erotetic theory includes insights from what Oaksford and Chater (2007) have described as
+
+the “leading” formal psychological theories of reasoning, mental model theory (Johnson-Laird, 1983; Johnson-Laird
+
+and Byrne, 1991) and mental logic (Rips, 1994), as well as insights from the rational analysis approaches that are
+
+gaining increasing currency (Oaksford and Chater, 2007; Tenenbaum et al., 2006).
+
+       We take mental model theory, as developed by Johnson-Laird and collaborators, as a key inspiration, since it sheds
+
+light on a particularly interesting range of propositional reasoning patterns that we wish to understand. As far as we
+
+can see, no extant alternative account does a better job at covering these data points and others similar to it (Oberauer,
+
+2006; Schroyens et al., 2001), regardless of various shortcomings that have been pointed out (Hodges, 1993; Stenning
+
+and van Lambalgen, 2008a). Moreover, we wish to keep mental models, made suitably precise, as a representational
+
+framework for our theory. Thus, classical mental model theory provides the relevant standard we wish to improve
+
+upon for the particular reasoning problems on which we focus in this paper.
+
+       We take onboard the idea that we draw conclusions from premises by conjoining the mental model generated by
+
+the first premise with the mental models generated by subsequent premises, unless something prompts the reasoner
+
+to adopt a special strategy. A conclusion is taken to follow from the premises if it is represented in the resulting
+
+integrated mental model. In contrast to classical mental model theory, we will rely on a novel linguistically motivated
+
+account of how logical constructions in English are interpreted, following inquisitive semantics (Groenendijk, 2008;
+
+Mascarenhas, 2009) and truth-maker semantics (van Fraassen, 1969; Fine, 2012). A further difference from mental
+
+models is that on the erotetic theory, the process of integrating mental models supplied by premises has a very specific
+
+aim: posing and answering questions. Moreover, the erotetic theory, unlike classical mental model theory, is developed
+
+as a formal system, which means that predictions can be calculated mechanically, as they can, for example, in mental
+
+logic approaches (Rips, 1994).
+
+       We also have important points of agreement with those defending rational analysis approaches to reasoning. A
+   1 This advantage seems to be largely due to the fact that the erotetic theory is more formally systematic than other theories of propositional
+
+reasoning that also involve mental models. This vindicates criticisms of mental model theory on the grounds that it lacks formal rigor, as made by
+Hodges (1993).
+
+
+
+                                                                        3
+     Connective   Result                                                            Reference                          Examples in text     Supplementary examples
+
+     Not          Few list all alternatives compatible with negated conjunction     Khemlani et al. (2012)            exx. 15 & 16, p. 26
+     Not          Most can list what corresponds to negated disjunction             Khemlani et al. (2012)                                        ex. 24, p. 1
+     Not          Easy to list a case that falsifies conditional                    Oaksford and Stenning (1992)                                  ex. 25, p. 1
+     —            “Explosion” highly counterintuitive [(P and not P)→Q]             Harman (1986)                        ex. 20, p. 31
+     Or           Disjunctive syllogism is harder than disjunctive modus ponens     Rips (1994)                                                   ex. 26, p. 1
+     Or           Disjunctive syllogism easier if categorical premise comes first   Garcı́a-Madruga et al. (2001)     ex. 12 & 13, p. 24
+     Or           Illusory inferences from disjunction and categorical premise      Walsh and Johnson-Laird (2004)        ex. 9, p. 23
+     Or           Control problems with disjunction and categorical premise         Walsh and Johnson-Laird (2004)                                ex. 27, p. 2
+     Or           Strategic supposition makes intractable problems easier           Johnson-Laird (2008)              exx. 19 & 10, p. 31
+     Or           Disjunction introduction [P→(P or Q)] counterintuitive            Braine et al. (1984)                 ex. 18, p. 28
+4
+
+
+
+
+     Or/If        Fallacies with conditionals and disjunction                       Johnson-Laird (2008)                                          ex. 28, p. 2
+     Or/If        Illusory inferences with conditional embedded in disjunction      Johnson-Laird and Savary (1999)                               ex. 29, p. 3
+     Or/If        Control problems with conditionals embedded in disjunction        Johnson-Laird and Savary (1999)                               ex. 30, p. 3
+     If           Modus ponens is extremely easy                                    Braine and Rumain (1983)             ex. 21, p. 33
+     If           Modus ponens easier than modus tollens                            Evans et al. (1993)                  ex. 21, p. 33
+     If           Affirming consequent more rapid than denying antecedent           Barrouillet et al. (2000)                                     ex. 32, p. 5
+     If           Order effects on modus tollens                                    Girotto et al. (1997)                                         ex. 33, p. 5
+     If           Illusions of consistency with sets of biconditional statements    Johnson-Laird et al. (2004)                                   ex. 34, p. 5
+     If           Control problems for biconditional consistency judgments          Johnson-Laird et al. (2004)                                   ex. 35, p. 6
+     If           Illusory inference from disjunction to conditional                This paper                           ex. 22, p. 35
+
+    Table 1: Some core data on naı̈ve reasoning captured by the erotetic theory (Examples under “Supplementary examples” can be found at http://www.koralus.
+    net/ETRFurtherExamples.pdf )
+point in their favor, as remarked by Oaksford and Chater (2007), is that, to the extent that they capture the data,
+
+they have an explanatory advantage over theories like classical mental model theory. An explanation in terms of
+
+Bayesian updating of probability distributions is an explanation in terms of the cognitive system’s computational aim
+
+in the most fundamental sense. In other words, it is an explanation in terms of what reasoning is, rather than an
+
+explanation in terms of how it happens to be implemented. By contrast, algorithmic implementation accounts, like
+
+standard mental model theory, can appear less explanatorily satisfying and are under threat of appearing like “Rube
+
+Goldberg” machines where we can see what the machine is doing but do not understand why things are done this way
+
+(ibid.). On our view, the kind of propositional reasoning we are interested in does not in itself justify a fundamentally
+
+probabilistic approach, but we share the view that it is better to provide an explanation in terms of the computational
+
+aim of the system.2 The aim we propose for our naı̈ve reasoning capacity is answering questions.
+
+     Finally, like Stenning and van Lambalgen (2008a,b), we take the view that a theory of reasoning has to pay careful
+
+attention to how language is interpreted. We believe that this is best done by letting the interpretation component of
+
+the theory be informed by formal semantics as studied in linguistics and philosophy. The erotetic theory is uniquely
+
+well-fitted to provide formal foundations for mutually beneficial interactions between related branches of linguistic
+
+semantics, philosophy, and psychology. Johnson-Laird (Johnson-Laird and Stevenson, 1970; Johnson-Laird, 1970)
+
+pioneered the idea that successive utterances of sentences are interpreted by updating a mental representation of dis-
+
+course, which was later independently proposed in a dynamic semantics turn in linguistics and philosophy (Karttunen,
+
+1976; Heim, 1982; Kamp, 1981). These developments proceeded in parallel and with little to no interaction. The
+
+erotetic theory provides a preliminary but solid bridge to this gap, given the explicitly dynamic nature of the procedure
+
+that interprets new premises in the context of previous premises.
+
+     We are convinced that time is ripe to explore a formal bridge to unify different research programs in semantics,
+
+philosophy, and the psychology of reasoning. Even though the erotetic theory is a novel proposal, it incorporates
+
+insights from many different approaches and, so we hope, will correspondingly find appeal among researchers from a
+
+variety of them.
+
+
+2.   The erotetic principle
+
+We hold that default reasoning from a sequence of premises proceeds by updating a model of discourse with mental
+
+models representing the premises. Reasoners will take whatever holds in the resulting mental model to follow from
+
+those premises. In section 3 we introduce semi-formally the central components of the theory, to be fully formalized
+
+in section 4. For the present section, we concentrate on the principles whereby successive premises are combined, and
+   2 The apparent tension between the approach in this paper and that of probabilists like Oaksford and Chater (2007) is less acute than it might
+
+seem. First, Oaksford and Chater (2007) concede that logical reasoning is required alongside probabilistic reasoning. In particular, for the kinds
+of propositional reasoning problems we concentrate on in this paper, the full power of Bayesian theory seems both unwarranted and inadequate.
+Second, we are entirely open to the possibility that Bayesian tools are necessary to account for certain aspects of human reasoning. As far as we
+can see, the two classes of theories can in principle (and perhaps must) be integrated.
+
+
+
+                                                                        5
+explain intuitively what makes the account of reasoning in this paper an erotetic account. Thus, the following informal
+
+definitions of mental models will suffice for our present purposes.
+
+
+Mental models are the mental representations of premises. Setting aside possible contributions of background
+
+knowledge, the mental model representation of a premise is the minimal state of affairs compatible with that premise.
+
+Mental models are minimal in the sense that only the information explicitly given in the premise or specifically given
+
+by special background knowledge is represented in the mental model. Mental models are underspecified with respect
+
+to any information not given in this way (Johnson-Laird, 1983).
+
+      Mental models for premises are determined by an interpretation function from a natural language into mental
+
+models. This function is in principle sensitive to the linguistic expressions used. In particular, a connective like
+
+disjunction (English ‘or’, among others) will give rise to a mental model with two alternatives, one for each disjunct,
+
+modeling the fact that there are two minimal states of affairs compatible with a disjunctive sentence. By contrast, the
+
+mental model for a conjunction has only one alternative.
+
+(2)      Informal examples of mental model interpretations
+
+         a.   John smokes.                                                                                {John smokes}
+
+         b.   John or Mary smokes.                                                          {John smokes, Mary smokes}
+
+         c.   John and Mary smoke.                                                        {John smokes & Mary smokes}
+
+
+Mental model discourses represent the workspace of reasoning. Mental model discourses are updated successively
+
+with the mental model interpretation of each premise, and they are the input and output categories for every operation
+
+of reasoning. Mental model discourses furthermore keep track of certain background and contextual information.
+
+
+Default reasoning     is the default procedure that reasoners engage in when faced with a set of premises for which they
+
+want to derive (or check) conclusions. Any theory of reasoning that has more than one reasoning operation, as ours
+
+does, must define a default reasoning procedure. Ours is as follows: reasoners update their mental model discourse
+
+with each premise in the order in which it is given, following the erotetic principle at each update step. This is a more
+
+general and precise version of the proposal that we interpret statements relative to a question, represented in the form
+
+of a mental model, that a hearer or reasoner seeks to answer (Koralus, 2012). Reasoners may then optionally perform
+
+very elementary operations on the resulting mental model, such as (an analog of) conjunction elimination. Whatever
+
+holds in the resulting mental model will be held by the reasoners to follow from the premises.
+
+
+The erotetic principle       is a distillation of the central and novel hypotheses of our account of reasoning. It is our
+
+proposed answer to the questions of (1) what the functional aim of human reasoning is and (2) how it is possible for
+
+trained human beings with unlimited time to, as it were, “emulate” sound classical reasoning, in view of the observed
+
+
+                                                             6
+discrepancies between naı̈ve reasoning and classical logic. The erotetic principle has two parts: Part I holds that our
+
+natural capacity for reasoning proceeds by treating successive premises as questions and maximally strong answers to
+
+them. Part II holds that systematically asking a certain type of question as we interpret each new premise allows us to
+
+reason in a classically valid way.
+
+       In the remainder of this section we unpack the two parts of the erotetic principle in an informal and hopefully
+
+intuitive fashion. In sections 3 and 4 we show precisely how the two parts of the erotetic principle are implemented in
+
+our proposed formal system.
+
+
+2.1.     Part I — Premises as questions and maximally strong answers
+
+To illustrate the first part of the erotetic principle, consider so-called illusory inferences from disjunction (Johnson-
+
+Laird and Savary, 1999; Walsh and Johnson-Laird, 2004), exemplified in (3). These inferences were accepted by
+
+around 80% of subjects in a study by Walsh and Johnson-Laird (2004).3
+
+(3)       P1 : Either Jane is kneeling by the fire and she is looking at the window or else Mark is standing at the window
+
+          and he is peering into the garden.
+
+          P2 : Jane is kneeling by the fire.
+
+          C: Jane is looking at the window.
+
+However, (3) is a fallacy. Suppose Jane is kneeling by the fire but not looking at the window, while Mark is standing
+
+at the window and peering into the garden. This situation makes both premises true while falsifying the conclusion.
+
+       How is (3) accounted for with the erotetic principle? First, we observe that, according to some theories of linguistic
+
+content, disjunctive sentences such as P1 of (3) are interpreted in a way very similar to the way questions are inter-
+
+preted. We present some of the independent motivation for this move in section 3.3, for now, the following heuristic
+
+will suffice.
+
+(4)       Inquisitive postulate, freely adapted from Groenendijk (2008) and Mascarenhas (2009):
+
+          The interpretation of a sentence of the shape ϕ or ψ contains the question whether ϕ or ψ.
+
+By the erotetic principle, and in a way consonant with the inquisitive postulate in (4), the first premise of (3) is
+
+interpreted as a question. Informally: “are we in a Jane-kneeling-by-the-fire-and-looking-at-the-window situation, or
+
+in a Mark-standing-at-the-window-and-peering-into-the-garden situation?” Consequently, the reasoner that has just
+
+processed P1 is now attempting to answer a question.
+    3 The original sentences used by Walsh and Johnson-Laird (2004), as seen in (3), were very long and syntactically awkward. But there are good
+
+reasons to believe that Walsh and Johnson-Laird were on to a perfectly ecologically valid phenomenon. Notice that the problem can be recast with
+universal quantifiers doing the job of conjunction, preserving the attractive character of the fallacious inference while easing the processing load
+(Mascarenhas, 2013):
+(i)      P1 : Every boy or every girl will come to the party.
+         P2 : John will come to the party.
+         C: Bill will come to the party.
+Just like its propositional counterpart (3), (i) above is fallacious, as it might well have happened that every girl came to the party while John was the
+only boy that did. However, the reader is likely to agree that (i) is a very attractive inference pattern.
+
+
+
+                                                                           7
+       The erotetic principle takes it that having an unanswered question in attention is an uncomfortable state of affairs.
+
+First, questions induce conversational and social pressure to find answers to them. Second, questions force reasoners
+
+to keep track of two or more distinct possibilities, all of which are possible candidates for states of affairs of the actual
+
+world. On the erotetic theory of reasoning, reasoners attending to questions will try as hard as possible to dissolve the
+
+question by finding a sufficiently adequate answer to it.
+
+       Now, comes premise P2 . This premise is purely declarative, for notice that it does not contain a disjunction.
+
+Following the erotetic principle, the reasoner attempts to interpret it as an answer to the question she is attending to.
+
+She then observes that P2 is related to the first possible answer to the question in attention, but not to the second
+
+possible answer. Together with the desire to resolve questions, this fact prompts the reasoner to overestimate the
+
+adequateness of the potential answer P2 , considering it to be a complete answer to the question. As a result, the
+
+reasoner has now discarded the second possible answer to P1 (involving Mark), and considers it now established that
+
+the first answer was the true answer: Jane is kneeling by the fire and she is looking at the window. From here, the
+
+fallacious conclusion follows by a simple step of conjunction elimination.
+
+
+2.2.     Part II — Certain questions make us (classically) rational
+
+In face of the fallacies that we are subject to in naı̈ve reasoning, it is important not to lose sight of the fact that the
+
+inferential capacities of our species are quite remarkable. Factors that are irrelevant to what we are entitled to conclude
+
+from the information we have make a difference to what conclusions are naı̈vely endorsed, but our reasoning abilities
+
+are not irretrievably lost to these factors. When pressed, even naı̈ve reasoners appear to be sensitive in principle to
+
+considerations of whether our conclusions would be guaranteed by the information we have. Fallacious inferences are
+
+not always robust in the face of questioning.
+
+       Modern science and philosophy are possible and from this we can conclude that correct reasoning can be learned.
+
+Now, philosophers and scientists may rely on formalisms or invented reasoning strategies in order to go about their
+
+work. It is unlikely that all of those strategies rely on exactly the same principles and mechanisms found in naı̈ve
+
+reasoning. This may encourage some to think that it suffices to have a model of naı̈ve reasoning that is essentially fal-
+
+lacious and that captures the sort of data that we have discussed so far but that has nothing to say about the possibility
+
+of correct reasoning. However, this attitude is problematic. Our natural reasoning capacities should not leave us irre-
+
+trievably in the dark about correct inference. If there is no way to use our natural capacities in a way that provides for
+
+correct reasoning, it is a puzzle how any reasoning technologies could be invented by us in order to ensure correctness.
+
+       From the perspective of modern science and philosophy, correct reasoning for the propositional case means clas-
+
+sically correct reasoning. This emphatically does not mean that premises expressed in natural language would have
+
+to be interpreted in the way suggested by an introductory logic textbook. What this means is that given that we have
+
+settled on a certain representational content, however we arrived at it, by means of language or otherwise, classical
+
+
+                                                              8
+logic tells us what must be true of the world given that this representational content is true of the world. Any scientific
+
+publication, even if it happens to be a philosophy paper describing a nonclassical logic, relies on a classical notion of
+
+what is entailed by the content we accept.
+
+       According to the erotetic principle, the functional aim of naı̈ve reasoning is not in the first instance to produce
+
+classically correct reasoning. However, it is possible to use the resources of naı̈ve reasoning in a way that is guaranteed
+
+to produce classically correct reasoning. The key is that we have to systematically raise the right questions as we
+
+reason.
+
+       Return to the fallacious inference in (3) above. How would systematically raising the right questions block this fal-
+
+lacious inference? What gets us into trouble is that we are asking, “Are we in a Jane-kneeling-by-fire-and-looking-at-
+
+window situation or are we in a Mark-standing-by-window-and-peering-into-garden situation?” effectively dismissing
+
+that there are other alternatives compatible with our first premise. When we then encounter the premise “Jane is kneel-
+
+ing by the fire” and treat it as a maximally strong answer to our question, we are left with the fallacious conclusion that
+
+Jane is looking at the window. Now, what can we do to realize that this inference cannot be made from the information
+
+provided by the premises? Quite simply, before we try to answer the question raised by our first premise, we raise
+
+further questions about the propositional atoms mentioned in the premise. For example, we ask “Is Jane kneeling by
+
+the fire?” As we formally envisage in our system the effect of taking this question on board, it will force us to consider
+
+a case in which Jane is kneeling by the fire, Mark is standing by the window and peering into the garden, but Jane is not
+
+looking at the window. By raising these further questions, fallacious inferences can be blocked. As we prove formally,
+
+this holds in the general case. Assuming that we inquire on all propositional atoms mentioned in our premises right
+
+before updating a discourse with those premises, the erotetic theory of propositional reasoning is classically sound.
+
+
+3.     A bird’s-eye view of the theory
+
+In this section, we informally introduce each component of the formal system of the erotetic theory of reasoning,
+
+together with its motivation within the system and in light of the desiderata given by the erotetic principle.
+
+
+3.1.     Components of the formal system
+
+A theory of mental representations We need an explicit theory of what mental representations (mental models)
+
+look like. Here, there are two desiderata that must be satisfied.
+
+       First, in order to implement the erotetic principle, mental models must represent disjunctions (and ultimately other
+
+natural language constructions, such as indefinites) as question-like meanings. Happily, the linguistics literature of-
+
+fers an account of linguistic content that does precisely what we need. We will import the basic insight of inquisitive
+
+semantics (Groenendijk, 2008; Mascarenhas, 2009), where the interpretations of sentences are taken to both convey in-
+
+formation and raise issues, as well as of exact verification semantics (Fine, 2012), a non-classical semantic framework
+
+
+                                                              9
+that shares the requisite properties with inquisitive semantics. This will be discussed in detail in section 3.3.
+
+      Second, we need mental models to be fine-grained enough to distinguish between different contradictory represen-
+
+tations. That is, we need mental models to distinguish the representation of p ∧ ¬p from that of q ∧ ¬q. This will allow
+
+us to capture and explain the fact that reasoners do not find disjunctive syllogism to be a fully straightforward infer-
+
+ence (Evans et al., 1993), while they are nonetheless capable of drawing other conclusions from the same premises.
+
+Disjunctive syllogism is schematized in (5).
+
+(5)      P1 : p ∨ q
+
+         P2 : ¬p
+
+         C: q
+
+How do we block (5)? When the information in P2 is added to P1 , we distribute P2 into the disjunction, getting a
+
+mental model representation of (p ∧ ¬p) ∨ (q ∧ ¬p). Intuitively, we will want anything that follows from both disjuncts
+
+to follow from the disjunction. Assume first that ex falso is blocked, for with ex falso, q would follow immediately.
+
+In the next section we will explain how ex falso is in fact hard to get. If the contradiction in the first disjunct p ∧ ¬p
+
+is prevented from deriving q, the inference is blocked. Why not simply block ex falso, without committing (as we
+
+will do) to a view of content that distinguishes between contradictions? The reason is that, while we do not want
+
+(p∧¬p)∨(q∧¬p) to derive (at least not immediately) q, one should be able to derive some things from it. In particular,
+
+¬p should be derivable, since it is contained in both disjuncts. As far as we can see, assuming that contradictions are
+
+not all alike is the only way to allow for simple inferences out of premises containing contradictions, while being
+
+consistent with making ex falso a difficult inference pattern to accept. A further empirical reason to distinguish
+
+different contradictions representationally is that naı̈ve reasoners most likely do not realize automatically when they
+
+are entertaining contradictions (Morris and Hasson, 2010).
+
+
+Mental model discourses The erotetic theory is dynamic: we take it that premises are interpreted in the order
+
+that they were given, and that in principle that order can make a difference.4 This much has been established in the
+
+reasoning literature. For example, the disjunctive syllogism in (5) becomes significantly more acceptable to naı̈ve
+
+reasoners if the order of the premises is switched (Garcı́a-Madruga et al., 2001). Like any other dynamic theory, we
+
+will need some notion of a state (or context) to update with the premises. For us, this role will be played by what we
+
+call mental model discourses.
+
+
+Updating via the erotetic principle The next ingredient is an update rule that implements Part I of the erotetic prin-
+
+ciple, treating certain premises as questions and others as maximally strong answers to questions in context whenever
+
+possible. Besides treating information as questions and answers our update rule also has to allow for cases in which
+   4 As an anonymous reviewer points out, it is important to remark that, while our system is dynamic in that the order in which premises are
+
+updated into discourses matters, the mental model interpretations themselves will in fact be static meanings.
+
+
+
+                                                                    10
+we simply accumulate information, as when we are given successive categorical statements.
+
+
+Simple deduction rule      Reasoning is not just a matter of update. Once reasoners hear and process each premise,
+
+they must then be able to perform simple transformations on the resulting mental model, to check what follows. We
+
+assume that there is a rule of disjunct simplification, validating the inference (p ∧ q) ∨ r  p ∨ r. This rule for disjunct
+
+simplification includes conjunction elimination as a special case, as the reader can see.
+
+
+Eliminating contradictions      We take it that reasoners do not immediately see anything wrong with contradictions.
+
+However, there must be a process allowing them to look at the representations they are entertaining and check whether
+
+they are consistent or not. This comes at a cost and is not part of default reasoning (to be defined shortly), but it must
+
+be a possibility if we want to account for the successes of our reasoning faculty. We will therefore define an operation
+
+that filters the mental model in discourse, going over each alternative and eliminating all those that are contradictory.
+
+
+Expanding possibilities      The mental models of the erotetic theory represent only what is minimally required to
+
+model a statement, and are therefore typically underspecified. We need an operation that expands the mental model
+
+under consideration through successive applications into one that represents every possibility with respect to some
+
+propositional atom. As discussed in section 2.2, this will be a crucial ingredient of the strategy allowing for classically
+
+sound reasoning. Accordingly, it implements Part II of the erotetic principle.
+
+
+Default reasoning strategy Finally, we need to make a simple postulate describing how reasoning problems are
+
+approached by default. We propose the following strategy. When given a reasoning problem with premises P0 , . . . , Pn
+
+and conclusion C, reasoners update a blank mental model discourse with each premise, in the order the premises were
+
+given. They may then apply the simple deductive rule, targeting the conclusion C. If the resulting mental model in
+
+discourse is identical to C, then the inference is deemed valid. Otherwise, it is deemed invalid.
+
+
+3.2.   The sources of reasoning failures
+
+The erotetic theory of reasoning pinpoints several sources of divergences from classically correct reasoning. To get a
+
+full grasp of how these sources conspire to produce these divergences, it will be necessary to work through the formal
+
+details we present in sections 4 and 5. However, it is worth considering a brief overview of the types of divergences
+
+from classical reasoning predicted by the erotetic theory and of some of the examples we will later work through.
+
+
+Limits on numbers of alternatives Like other theorists, we subscribe to the view that, as more alternatives need
+
+to be represented simultaneously for a reasoning problem, it becomes less likely that reasoners arrive at an answer
+
+(fallacious or otherwise), where five to seven alternatives is the limit (Johnson-Laird, 1983). We will see that because
+
+
+                                                            11
+of this constraint, strategic suppositions made in reasoning that reduce the need to represent multiple alternatives at a
+
+time can make extremely difficult-seeming problems tractable (ex. 19).
+
+
+Failure to apply a creative reasoning strategy All other things being equal, given two similar inferences from
+
+similar premises, if one inference requires more creative applications of optional update rules beyond default updating,
+
+reasoners will be less likely to make the inference (fallacious or otherwise). For every optional step, there is an
+
+additional chance that reasoners fail to make it. For example, the erotetic theory predicts that modus tollens is harder
+
+than modus ponens (Evans et al., 1993) for this reason, as we will see in ex. 21, since the former requires an optional
+
+operation that filters out contradictory alternatives.5
+
+
+Default but fallacious reasoning via update                 Default reasoning via updating a mental model with successive premises
+
+is enough to yield fallacious inferences for various premise pairs. For example, this yields the category of fallacious in-
+
+ferences referred to as “illusory inferences” in Johnson-Laird and Savary (1999) and Walsh and Johnson-Laird (2004),
+
+as seen in ex. 9 and ex. 29. Default reasoning can also make contradictory statements seem consistent (Johnson-Laird
+
+et al., 2004), as in ex. 34.
+
+
+Order effects brought about by Part I of the erotetic principle The update procedure that treats a new premise
+
+as an answer to a previous premise immediately eliminates alternatives in the new premise that conflict with what has
+
+been established as background in the discourse. As a result, certain inferences are easier if a categorical premise
+
+comes first. This captures that there are order effects for modus tollens but not for modus ponens (Girotto et al., 1997),
+
+as seen in ex. 33.
+
+
+Need to creatively raise questions Certain inferences are valid but do not seem intuitive. For example, “explosion”
+
+inferences (e.g. “It is raining and it is not raining, therefore I am the Pope.”) and disjunction introduction inferences
+
+(e.g. “It is hot outside, therefore it is hot outside or I am the President.”) are highly counterintuitive (Harman, 1986;
+
+Braine et al., 1984). The erotetic theory predicts that these inferences should seem counterintuitive, because reasoning
+
+to those inferences would require gratuitously raising a question. The aim of naı̈ve reasoning is to answer questions as
+
+quickly as possible, but explosion and disjunction introduction would require one to diverge from the this aim, as can
+
+be seen in ex. 20, and ex. 18.
+
+
+Naı̈ve reasoning isn’t all bad Beyond the special strategies that ensure correct reasoning that flow from Part II of
+
+the erotetic principle, the erotetic theory of reasoning also captures the fact that many classes of valid inferences are
+    5 Comparing the relative difficulty of reasoning problems along the dimensions of number and type of optional update rules required in solving
+
+them most likely only makes sense for similar inferences from similar premises. We suspect that different problems prime various possible moves
+one could make in reasoning to various degrees, so there may not be a useful absolute measure of how likely it is that a reasoner will fail to make a
+certain optional type of step in an arbitrary reasoning problem, that is, a measure that would apply across all types of reasoning problems.
+
+
+
+                                                                        12
+grasped even through naı̈ve reasoning. For example, modus ponens is predicted to be extremely easy (ex. 21) and so
+
+is conditional transitivity (e.g. “If P then Q and if Q then R, therefore if P then R.”), as seen in ex. 36.
+
+       Overall, the erotetic theory captures all data listed in Table 1, and various others. We later present a novel il-
+
+lusory inference not yet reported in the literature. To the best of our understanding, no current alternative theory
+
+systematically captures all cases in Table 1 including this novel case to discussed below.
+
+
+3.3.     Interpreting premises as sets of exact verifiers
+
+Despite being influenced by mental model theory, our approach differs from it in important respects, especially con-
+
+cerning interpretation. In many of these respects, we are closer in spirit to alternative approaches that have increasingly
+
+gained attention. Firstly, the erotetic theory shares with Bayesian approaches to reasoning (Oaksford and Chater, 2007;
+
+Tenenbaum et al., 2006) and with more recent non-monotonic approaches a rejection of the program of reducing hu-
+
+man failures of reasoning to failures of reasoning about classical interpretations. Secondly, we share with the work of
+
+Stenning and van Lambalgen (2008a,b) an interest in the workings of the interpretive processes themselves (what these
+
+authors refer to as reasoning to an interpretation). As we explain in this section, we assume a non-classical semantics
+
+for natural language, the semantics of exact verification (van Fraassen, 1969; Fine, 2012, among others), together with
+
+an inquisitive semantics (Groenendijk, 2008; Mascarenhas, 2009) perspective on questions and declaratives.
+
+
+Exact verifiers We propose interpretations that track the exact verifiers of statements.6 The concept of verification
+
+(Fox, 1987; Armstrong, 2004; Fine, 2012) is concerned with assessing what it is in the world that makes a statement
+
+true. In the special case of exact verification, in which our account is couched, the question is what exactly in the world
+
+makes a statement true: the meaning of a statement is modeled as the set of those things that would exactly make it
+
+true. This is quite distinct from meanings in classical logic and classical possible-world semantics, which characterize
+
+in which fully specified possible worlds a sentence is true. In classical semantics, we consider objects (possible worlds,
+
+truth-table rows) fully specified for every propositional atom mentioned in a sentence and ask whether the sentence
+
+is true or false at those points of evaluation. An exact verification semantics takes objects only as large as must be to
+
+make a particular sentence true.
+
+       Consider a disjunction like ‘P or Q’. The classical truth-table analysis of connectives considers three situations
+
+where this sentence is true: both P and Q are true, P is true and Q is false, P is false and Q is true. Notice that the
+
+second and third situations include conditions irrelevant to making the disjunction true: if P is the case, that is all
+
+you need to make the disjunction true. In an exact verification semantics, a situation where P is true and nothing is
+
+said about other facts is one that exactly verifies the disjunction ‘P or Q’. One where P is true and Q is false, while
+
+compatible with the truth of the disjunction, does not exactly verify it.
+   6 More precisely, we use minimal exact verifiers. Minimality amounts to the assumption that there is always one minimal truth-maker that verifies
+
+a sentence. This assumption is warranted for the propositional case (see also footnote 7).
+
+
+                                                                        13
+      The truth-makers of exact verification semantics can be seen as situations, though other constructs (such as sets
+
+of possible worlds) achieve the same results in many important cases.7 The crucial notion however is that of the
+
+verification relation and what it says about how sentences with connectives are exactly verified. In this paper, we
+
+abstract away from model-theoretic considerations about verification semantics, and focus instead on the interpretation
+
+of sentences of (pseudo-)English into mental models.
+
+      Naturally, to give interpretations for connectives, we need to say what their exact verifiers are. Our analysis of
+
+all connectives except for the conditional is isomorphic to verification-semantic analyses defended by other authors
+
+on entirely independent grounds (e.g. Fine, 2012). We define the syntactic space of well-formed formulas within our
+
+formalization of mental models in section 4.1, but limitations of space prevent us from giving an explicit model theory
+
+for exact verification semantics.8
+
+      We do have a set of semantical heuristics that we want to encourage the reader to keep in mind, when thinking
+
+of how sentences are interpreted in our account, given in (6) below. Two remarks are in order. First, we omit the
+
+conditional connective, as our account of it diverges significantly from exact verification semantics. It will be discussed
+
+in detail in section 5. Second, the reader will notice that in (6) we assume that only atoms are ever conjoined or negated.
+
+It will be clear why we make this move in section 4.1.
+
+(6)      a.     A propositional atomic statement like P is exactly verified by the situation where P is true is nothing else
+
+                is said about any other propositions.
+
+         b.     A negative statement like not P is exactly verified by the situation where P is false and nothing else is said
+
+                about any other propositions.
+
+         c.     A conjunctive statement like P and Q is exactly verified by the situation where P is true and Q is true, and
+
+                nothing else is said about any other propositions.
+
+         d.     A disjunctive statement like ϕ or ψ is exactly verified by the set of situations that exactly verify ϕ or
+
+                exactly verify ψ.
+   7 This is true notably for the case of exact verification semantics for a propositional language. Because we can assume the existence of minimal
+
+verifiers, taking the truth-maker for a sentence P to be the situation that exactly verifies P or simply the set of all possible worlds that make P
+(classically) true are both viable routes. We note that the quantified case is more complex, opening various possible avenues to extend the present
+system, which we leave for future work. The difficulties in the quantified case are introduced by the fact that, while first order formulas are finite
+objects, the models that make them true may well be infinite. For sentences whose exact verifiers are situations with some infinite cardinality, it is
+easy to see that no one situation will be a minimal exact verifier. The literature offers two kinds of solutions to this issue. In the inquisitive semantics
+literature, Ciardelli (2009) proposes a formal constraint on models that guarantees the existence of minimal exact verifiers for the quantified case
+— at the cost of some expressive power necessary to model a certain class of mathematical statements. The tenability of Ciardelli’s proposal
+for the purposes of building a theory of reasoning is thus predicated on the importance we ascribe to providing exactly accurate mental model
+representations of mathematical statements. While the philosopher will immediately discard Ciardelli’s system, we suspect that the psychologist
+(and to some extent the linguist) might not be too concerned with assigning mental model representations that are completely faithful models
+of mathematical statements (thereby including infinitely-large alternatives in their mental models). Fine (2012) proposes a philosophically and
+mathematically sound solution: dropping the minimality requirement. The cost incurred by this move is one of simplicity of alternatives. The
+minimality assumption has the welcome advantage of allowing us to point to one situation per alternative, rather than dividing each alternative into
+some larger set of situations. Choosing between these alternatives (or others that there may be) will involve doing the same work for the quantified
+case as we do here for the propositional case, and therefore we must leave it to future research.
+    8 We refer the reader to Fine (2012) and to the very close inquisitive semantics system of Groenendijk and Roelofsen (2010), two papers that
+
+present different but almost exactly equivalent model theories.
+
+
+
+
+                                                                            14
+Linguistic motivations — exact verification and inquisitive semantics Exact verification semantics has recently
+
+been proposed by Fine (2012) as a way to address issues in the semantics of counterfactuals and the semantics of
+
+permission. For example, the permissions given by sentences (7a) and (7b) below are quite distinct. Concretely, while
+
+(7b) gives you permission to take a biscuit and some ice-cream, (7a) does not.
+
+(7)      a.   You may have a biscuit.
+
+         b.   You may have a biscuit or a biscuit and some ice-cream.
+
+However, in classical logic absorption is valid: (ϕ ∨ (ϕ ∧ ψ)) ↔ ϕ. Under natural assumptions about the syntax of (7a)
+
+and (7b), it follows that in classical logic there is no way to distinguish the complements of the permission modal may
+
+in the two sentences. But (7a) and (7b) do not give equivalent permissions.
+
+      Exact verification provides a solution: rather than taking the meanings of the complements of might to be classical
+
+meanings, let them be sets of exact verifiers. In general, the exact verifiers for ϕ are distinct from the exact verifiers
+
+for ϕ ∨ (ϕ ∧ ψ). The exact verifiers for ϕ are all situations that exactly verify ϕ. The exact verifiers for ϕ ∨ (ϕ ∧ ψ)
+
+are all situations that verify ϕ as well as all situations that verify ϕ ∧ ψ. Clearly, the latter set contains situations that
+
+are absent from the former set. Thus, in exact verification semantics, absorption is not valid, and the complements of
+
+might in (7a) and (7b) are distinguishable, as desired. This, of course, does not immediately solve all issues pertaining
+
+to permission modals. The crucial claim is that there are strong reasons to suspect that we need a notion of semantic
+
+content allowing for much more fine-grained distinctions than classical semantics gives us. A promising hypothesis is
+
+that that notion of content is exact verification semantics.
+
+      Exact verification semantics shares interesting properties with independently proposed refinements of linguistic
+
+content from the field of linguistic semantics. The exact verification logic given by Fine (2012), in the propositional
+
+case, is isomorphic to the propositional inquisitive semantics given by Groenendijk and Roelofsen (2010). Inquisitive
+
+semantics, first proposed by Groenendijk (2008) and Mascarenhas (2009) and developed by Groenendijk and Roelof-
+
+sen (2009) and later work with collaborators, argues that some syntactically declarative sentences of natural languages
+
+are semantically very much like questions. The staple example is disjunction.
+
+(8)      John or Mary will come to the party.
+
+In inquisitive semantics, (8) provides both information (that it can’t be the case that neither John nor Mary show up)
+
+and an issue (which one of John or Mary will come to the party). Our account of reasoning imports this insight, since
+
+it holds that sentences with disjunction pose questions that reasoners do their best to address as soon as possible.
+
+      Moreover, both exact verification semantics and inquisitive semantics are related to the alternative semantics (also
+
+known as Hamblin semantics) of Kratzer and Shimoyama (2002, and a wealth of later work). Concretely, these
+
+three independently proposed frameworks all agree that the semantics of or cannot be the traditional Boolean join.
+
+Unfortunately, we cannot do justice in this paper to the linguistic and philosophical appeal of these non-classical
+
+approaches to linguistic content. However, once one grants their tenability as accounts of linguistic content, the
+
+
+                                                               15
+proposals we make in this paper gain welcome independent motivation.
+
+
+4.     The core fragment
+
+In this section we give a rigorous implementation of the core fragment of the erotetic theory informally presented
+
+above. This core fragment contains all of the ingredients discussed in the preceding section except for the mechanism
+
+for supposition and an account of conditional premises, which we address in section 5.
+
+
+4.1.     Defining mental models
+
+Mental models are structured mental representations that can be generated through the workings of perception, thought,
+
+and memory (Johnson-Laird, 1983). Mental models are also used to account for reasoning with visually presented in-
+
+formation (Bauer and Johnson-Laird, 1993), not just for reasoning with verbal premises. Mental models have as much
+
+structure as there are distinctions we take into account in representing something (Johnson-Laird, 1983; Johnson-Laird
+
+and Byrne, 1991). In this section, we make explicit the basic formal ingredients that, to the best of our understanding,
+
+must be assumed by any mental model theory of propositional reasoning.9 We offer formal definitions of these basic
+
+ingredients, upon which we will build the rest of our proposal in the sections to come. First, we need to define mental
+
+model components that stand for propositional atoms and their negations.
+
+Definition 1 (Mental model nuclei). A set N of mental model nuclei is a non-empty set containing the smallest
+
+representational units of the system for propositional reasoning, standing for atomic propositions:
+
+
+                                                                 N = {p, q, . . .}                                                                 a
+
+
+       Next, for propositional reasoning, we will need negations of mental model nuclei.
+
+Definition 2 (Mental model nuclei closed under negation). Given a set N of mental model nuclei as per Definition
+
+1, we define the set N + as the closure of N under ¬.
+
+
+                                          N + = {p, ¬p, ¬¬p, ¬¬¬p, . . . , q, ¬q, ¬¬q, ¬¬¬q, . . .}                                                a
+
+
+       The next step is to define combinations of mental model nuclei that inherit all of the representational commitments
+
+of the nuclei that compose them. Intuitively and informally, these can be thought of as “conjunctions” of mental model
+
+nuclei. We dub them mental model molecules, and form them from mental model nuclei with the operation ‘t’.
+    9 We adopt a slight departure in terminology from standard discussions of mental models. The mental model interpretation of a propositional
+
+atom or a conjunction, has been called a “mental model,” while the interpretation of a disjunction, with two or more alternatives has been called “a
+set of mental models” (Johnson-Laird, 2008). We suggest that it is easier to provide uniform definitions if we think of all premises in propositional
+reasoning as supplying “mental models” to the system and updating “mental models.” Rather than speaking of mental models and sets of mental
+models, we will speak of mental models with only one element standing for one state of affairs and mental models with multiple elements standing
+for multiple alternative states of affairs.
+
+
+                                                                        16
+Definition 3 (Mental model molecules). Every mental model nucleus in N + is also a mental model molecule. If α
+
+and β are mental model molecules, then α t β is a mental model molecule.                                                 a
+
+   We can then think of a mental model as a set of mental model molecules of this sort. Following the discussion in
+
+section 3.3, we say that the alternatives in a mental model are all of the mental model molecules contained in it. If
+
+there is more than one alternative in the set, the mental model is “inquisitive”, representing a question. If there is only
+
+one combination in the set, the mental model represents a categorical statement. We give explicit definitions shortly.
+
+   In order to define operations for reasoning with mental models, we need to be able to talk about what nuclei are
+
+shared between mental model molecules that make up different representations of alternatives, and we need to be able
+
+to ask whether a molecule is part of a representation of an alternative.
+
+   We will write ‘α u β’ to stand for the mental model molecule that two molecules α and β have in common. For
+
+example:
+
+    Example 1.     (i) (p t q) u (p t r) = p     (ii) (p t q t r) u (p t q t s) = p t q
+
+
+   We can now also formalize the situation where a mental model molecule is included in another. We use the symbol
+
+‘v’ for the relation “included in or possibly equal to.”
+
+    Example 2.     (i) p v p t q      (ii) p t q v p t q
+
+
+   To sum up, we propose the following algebraic structure.
+
+Definition 4 (Mental model molecular structures). A structure M = hM, t, u, 0i is a mental model molecular struc-
+
+ture iff all of the following conditions hold: (1) N + ⊆ M. (2) hM, t, ui is a lattice, that is, the operations t and u
+
+obey the laws of commutativity, associativity, and absorption. (3) For any α in M, α t 0 = α, that is, 0 is the identity
+
+element for the join operation. The null nucleus 0 makes no representational commitments at all and can be thought
+
+of as corresponding to truth in classical logic. This structure gives rise to a partial order hM, vi, where v is defined in
+
+the usual way α v β iff α t β = β or α u β = α.                                                                          a
+
+   Notice that this structure implements the idea that mental models can distinguish between different contradictory
+
+states of affairs. In M as defined above, p t ¬p and q t ¬q are distinct objects.
+
+   We do not require that all elements of M be mental model nuclei standing for atomic propositions; the set of those
+
+nuclei is merely included in M. Thus, the system can in principle be expanded beyond propositional reasoning while
+
+keeping these basic structural properties. Because of this openness of the system, it will be convenient to refer to the
+
+set of atoms of the molecular structure. Intuitively, this is the set of all those elements of the molecular structure that
+
+are not the t-combinations of simpler elements. Notice that negative mental model nuclei count as atoms: they are
+
+not gotten by applying the operation t to simpler elements.
+
+
+                                                                   17
+Definition 5 (Atoms). Given a mental model molecular structure M = hM, t, u, 0i,
+
+
+                                Atoms(M) = {α ∈ M : (¬∃β ∈ M) β , α & β , 0 & β v α}                                   a
+
+
+       We can now define mental models in terms of this general notion of a mental model molecular structure.
+
+Definition 6 (Mental models). Given a mental model molecular structure hM, t, u, 0i, the set M of mental models is
+
+the smallest set containing every subset of M and the absurd mental model, notated ∅, corresponding to the contra-
+
+diction (falsum) in classical logic. Further, we will call all Γ ∈ M such that |Γ| ≤ 1 categorical mental models, and all
+
+other mental models inquisitive mental models.                                                                         a
+
+
+4.2.     Mental model discourses
+
+Background knowledge can influence reasoning. As far as we can see, the simplest way to account for this in our
+
+system is to say that background knowledge itself is ultimately represented in the form of mental models. In our
+
+system, background knowledge will consist of a set of mental models with two properties: (1) the reasoner considers
+
+the facts represented in this set to be sufficiently well established, and (2) the mental models in this set are easily
+
+accessible to the reasoner, meaning she is especially aware of their content. This means that background knowledge
+
+will represent both relevant facts part of a reasoner’s knowledge prior to the current reasoning task and especially
+
+salient facts established within the current reasoning task. Background knowledge has its natural locus within mental
+
+model discourses, the workspaces of reasoning that will be successively updated with information from premises.
+
+       In addition, we should also keep track of what mental models are taken to be about. Presumably, the same mental
+
+models could be used to represent the universe according to Brian’s beliefs, according to Brian’s beliefs plus a suppo-
+
+sition, or according to Mary’s dream. Drawing conclusions not only involves transforming mental models but knowing
+
+what we take them to stand for. We model this by adding an index parameter to mental model discourses, containing
+
+information about what the mental model discourse represents. This index will also be responsible for flagging mental
+
+model discourses that carry uncanceled suppositions, analogous to assumptions to be canceled by implication intro-
+
+duction in natural deduction systems. The index will in fact be idle for most of the formal system except for discourses
+
+with suppositions so, in order to reduce clutter in our formulas, we omit the index from the discussion in section 4
+
+and reintroduce it in section 5, where we discuss the supposition mechanism and conditional sentences. Formally, this
+
+means that the definitions of operations on mental model discourses that follow are in fact abbreviations for operations
+
+that take as input and output mental model discourses with indexes in the rightmost position. Every operation that we
+
+abbreviate in this way should be seen as standing for a definition just like it, except that the index parameter from the
+
+input discourse occurs as the index in the output discourse as well.
+
+
+
+                                                           18
+Definition 7 (Mental model discourses). A mental model discourse is strictly a triple D = hΓ, B, ii, where Γ is a
+
+mental model, B (for background) is a set of established mental models, and i is an index flagging what the discourse
+
+is about. For the rest of this section, we omit the idle index and abbreviate all mental model discourses as pairs hΓ, Bi.a
+
+
+4.3.     Mental model conjunction
+
+Mental model conjunction combines the information and the questions in two mental models. Given two models Γ and
+
+∆, mental model conjunction looks at each pair that can be formed from one element of Γ together with one element
+
+from ∆, combines the two elements via ‘t’, and collects all of the results. This procedure returns the empty set if
+
+either one of Γ or ∆ is empty.
+
+Definition 8 (Mental model conjunction). For Γ and ∆ mental models:
+
+                                                        
+                                                        
+                                                        
+                                                          {γ t δ : γ ∈ Γ & δ ∈ ∆}            if Γ , ∅ and ∆ , ∅
+                                                        
+                                                        
+                                                        
+                                                        
+                                                        
+                                                  Γ×∆ = 
+                                                        
+                                                                                                                         a
+                                                        
+                                                        
+                                                        
+                                                        
+                                                        
+                                                         ∅                                  otherwise
+                                                        
+                                                        
+                                                        
+
+
+
+       Example 3.       (i) {a, b} × {c, d} = {a t c, a t d, b t c, b t d}            (ii) {a} × {b} = {a t b}.
+
+
+       Mental model conjunction is the most elementary way in which premises can be combined, but it does nothing to
+
+implement the erotetic principle. This will be the job of mental model update.
+
+
+4.4.     Update for the erotetic theory of reasoning
+
+The update procedure in the erotetic theory has two components. One implements the erotetic principle, attempting
+
+to interpret the new premise as an answer to the question in discourse — we call it Q-update. The second component,
+
+C-update, embeds whatever new information and questions are provided by the premise under consideration into the
+
+discourse, checking to see if there are additions to be made to the set of background information.
+
+Definition 9 (Q-update). The Q-update of a mental model discourse hΓ, Bi with a mental model ∆ is defined as
+
+follows.10
+                                                                                         l 
+                                                            hΓ, Bi[∆]Q = hΓ − {γ ∈ Γ :     ∆ u γ = 0}, Bi                a
+
+
+Q-update leaves only those alternatives in the question posed by Γ that include a mental model molecule that is shared
+
+by all alternatives in ∆. In other words, Q-update leaves only those alternatives in the question posed by Γ that involve
+
+some conjunct c such that c could be obtained from each alternative in ∆ by the equivalent of a conjunction-reduction
+  10 It is understood that       {δ1 , . . . , δn } = δ1 u . . . u δn .
+                             d
+
+
+
+
+                                                                                 19
+inference. This is how we implement the idea that Q-updating means taking the new information ∆ as the strongest
+
+possible answer to the question at hand. Here, taking the new information as the “strongest possible” answer means
+
+that we do not require all conjuncts in the remaining alternatives to match something explicitly represented in the
+
+answer. In the best case for this way of answering our question, only one of the alternatives in our question shares a
+
+conjunct with all alternatives in a putative answer. In this case, we take it that our question has been narrowed down
+
+to that one alternative, and hence answered. If a putative answer has nothing in common with our question but we
+
+nevertheless treat it as an answer, we end up with no remaining alternatives, and Q-update returns the empty set.11
+
+
+     Example 4.        h{a t b, c t d, e t f}, Bi[{a}]Q = h{a t b}, Bi
+
+
+
+     Example 5.        h{a t b, c t d}, Bi[{e t f, g}]Q = h∅, Bi         The new premise cannot be interpreted as an answer to the
+
+     question in discourse, since it is completely orthogonal to the discourse. Q-update returns the absurd mental model.
+
+
+    C-update does two things. First, it builds a new mental model by mental-model-conjoining Γ with that subset
+
+of ∆ whose elements do not contradict any element of the established background B. This implements the idea that
+
+reasoners are especially mindful, and find it easy, not to contradict information in the background. The reader should
+
+bear in mind that this ease in identifying contradictions is a characteristic of the established background: it does not
+
+extend to the mental model in discourse, that is Γ. This will be important to derive some of the effects of different
+
+orderings of premises. Second, C-update updates the background B by adding to it individual mental models for any
+
+mental model atom that ∆ establishes.
+
+Definition 10 (C-update). Let a mental model discourse D = hΓ, B, ii and a mental model ∆ be given. The C-update
+
+of D with ∆ is defined as follows.
+
+                                                         hΓ, Bi[∆]C = hΓ0 , B∗ (Γ0 , ∆)i
+
+
+Where Γ0 = Γ × {δ ∈ ∆ : (¬∃β ∈ B) (∀b ∈ {δ} × β) Contr(b)}. The function B∗ (Γ) is defined as follows (recall that M is
+
+the molecular structure underlying D, as per Definition 4).12
+   11 The attentive reader may wonder why we did not choose a nearby alternative definition of Q-update that would leave all of those γ in Γ that have
+
+something in common with at least one alternative in ∆ (this would simply amount to replacing with in the formal definition of Q-update).
+                                                                                                    d       F
+This nearby version of Q-update would yield a version of Update (see Definition 11 below) that ultimately makes the reasoner even more credulous
+in treating material in successive premises as answers to questions posed by previous premises. As it happens, together without our account of
+conditionals in section 5.2 this would predict that from ‘if P then Q’ and ‘if Q then R’, we would be strongly tempted to fallaciously infer ‘P and Q
+and R’. We take it that there is no temptation of this sort.
+   12 This definition of ∗, the background-updating function, adds to the background not only facts established by the new mental model ∆, but also
+
+any categorical facts in the result of updating the discourse with the new model ∆. The intuition is that categorical facts receive special attention,
+not only when they are heard but also when they are derived.
+
+
+
+
+                                                                          20
+                       
+                       
+                       
+                       
+                         B ∪ {{p} : p ∈ Atoms(M) & (∃a ∈ α) p v a}                if α is categorical
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+           B∗ (α, β) = 
+                       
+                       
+                       
+                       
+                        B ∪ {{p} : p ∈ Atoms(M) & (∃b ∈ β) p v b}                if α is inquisitive and β is categorical
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                       
+                        B
+                       
+                       
+                                                                                 otherwise
+
+   Contr is a function from mental model molecules into truth values, returning true whenever its argument is a
+
+contradiction and false otherwise. Formally:
+
+                                                     
+                                                     
+                                                     
+                                                                       if (∃a v α) ¬a v α
+                                                     
+                                                       true
+                                                     
+                                                     
+                                                     
+                                                     
+                                          Contr(α) = 
+                                                     
+                                                     
+                                                     
+                                                     
+                                                     
+                                                     
+                                                      false           otherwise
+                                                     
+                                                     
+                                                     
+
+
+We make further use of the functions Contr and B∗ (Γ) in the definitions that follow.                                        a
+
+
+    Example 6.     Taking a tabula rasa mental model discourse, h{0}, ∅i, with no background information and a non-
+
+    committal mental model as a starting point for a C-update:
+
+
+                                                h{0}, ∅i[{a t b}]C = h{a t b}, {{a}, {b}}i
+
+
+    Notice how the discourse is updated with a t b, while the background set is updated with two categorical mental
+
+    models {a} and {b}. These two mental models now count as established facts, and from this point onward reasoners
+
+    will be especially good at detecting when new premises contradict them.
+
+
+
+    Example 7.    Suppose we have a background B = {{¬a}} establishing that what is represented by a is not the case:
+
+
+                       h{d t e, g}, {{¬a}}i[{a t b, f}]C = h{d t e, g} × {f}, {{¬a}}i = h{d t e t f, g t f}, {{¬a}}i
+
+
+    Notice that the first alternative of the new premise, {a t b}, was discarded. It contradicted a model previously
+
+    established in the background, namely {¬a}.
+
+
+
+    Example 8.    h{a t b, c}, ∅i[{d}]C = h{a t b, c} × {d}, {{d}}i = h{a t b t d, c t d}, {{d}}i
+
+
+   We can now define the general update procedure in terms of Q-update and C-update. The procedure begins
+
+with a Q-update. If Q-update returns a discourse with a non-empty mental model, that means the new premise was
+
+successfully interpreted as an answer to the question in discourse. The update procedure then performs a C-update
+
+with the same new premise, for the new premise might also provide new information beyond answering the question.
+
+
+                                                                   21
+On the other hand, if the initial Q-update returns a discourse with an empty mental model, this means that the new
+
+premise cannot be interpreted as an answer to the question. In this case, the update procedure just performs a C-update
+
+with the new premise, adding whatever new information it provides to the discourse.
+
+Definition 11 (Mental model discourse update). The result of updating a mental model discourse hΓ, Bi with a men-
+
+tal model ∆ is defined as follows.
+
+                                          
+                                          
+                                          
+                                                                     if hΓ, Bi[∆]Q = h∅, B0 i
+                                          
+                                            hΓ, Bi[∆]C
+                                          
+                                          
+                                          
+                                          
+                              hΓ, Bi[∆] = 
+                                       Up
+                                          
+                                                                                                                         a
+                                          
+                                          
+                                          
+                                          
+                                          
+                                           hΓ, Bi[∆]Q [∆]C          otherwise
+                                          
+                                          
+                                          
+
+
+With mental model discourse update, we define the default procedure for reasoning from successive premises.
+
+Definition 12 (Default reasoning by update). By default, reasoners take it that what holds in the mental model that
+
+results from successively updating their mental model discourse with given premises can be inferred from those
+
+premises.                                                                                                                a
+
+
+   To put the notion of default reasoning to use, we need to define a basic fragment of interpretation.
+
+Definition 13 (Basic fragment of interpretation into mental models). We define k·kD , a function from sentences S
+
+of a language and a mental model discourse D into mental models as follows.
+
+
+                                                     kpkD = {p}, for atoms p
+
+                                                kϕ or ψkD = kϕkD ∪ kψkD
+
+                                              kϕ and ψkD = kϕkD × kψkD
+
+                                                 knot ϕkD = Neg(kϕkD )                                                   a
+
+
+   Notice that the interpretation function is parametrized to a mental model discourse, so as to allow for interpretation
+
+itself to access elements of the context where it is interpreted. While the discourse parameter is idle in the four clauses
+
+of Definition 13, it will be crucial in the interpretation of the conditional, to be addressed in section 5.
+
+   The interpretation clause for not in Definition 13 uses a function that takes a mental model and returns its negation.
+
+Recall from our definition of mental models that negation proper (¬) applies only to mental model nuclei. A definition
+
+of external negation that is to apply to a mental model should therefore return a mental model that is recognizably
+
+the negation of the original model, but that uses negation proper only at level of atoms. We accomplish this with the
+
+
+
+
+                                                             22
+following function.13,14
+
+Definition 14 (External negation). Neg is a function from mental models to mental models. For Γ a mental model,
+
+notice that Γ = {α0 , . . . , αn } and that for each αi ∈ Γ we have that αi = {ai0 , . . . , aimi }, for mi + 1 the number of mental
+                                                                             F
+
+model nuclei in αi . Now,
+
+
+                              Neg(Γ) = Neg({α0 , . . . , αn }) = {¬a00 , . . . , ¬a0m0 } × · · · × {¬an0 , . . . , ¬anmn } .                             a
+
+
+    We now have enough machinery to consider how the erotetic theory of reasoning captures disjunctive illusory
+
+inferences and disjunctive syllogism.
+
+
+     Example 9.        (Illusory inference from disjunction) Walsh and Johnson-Laird (2004)
+
+         P1 Either Jane is kneeling by the fire and she is looking at the TV or else Mark is standing at the window and he
+
+              is peering into the garden.                                                                                              {k t l, s t p}
+
+         P2 Jane is kneeling by the fire.                                                                                                        {k }
+
+          C Jane is looking at the TV.                                                                                                            { l}
+
+     Assuming we begin with a non-committal tabula rasa discourse h{0}, ∅i, the default reasoning procedure predicts
+
+     the following sequence of updates:
+
+
+                                                     h{0}, ∅i[{k t l, s t p}]Up = h{k t l, s t p}, ∅i
+
+                                                                       [{k}]Up = h{k t l}, {{k}}i
+
+
+     The second update is the interesting one. Q-update succeeds at interpreting the model {k} as an answer to the
+
+     question posed by the first premise: we are in a k t l situation. Thus, the fallacious conclusion {l} is “included” in the
+
+     mental model that results from updating a mental model discourse with the premises. To obtain the mental model
+
+     {l} as a separate conclusion, we need to define a further operation.
+   13 This procedure is complex, but it is more natural than it may seem. The reader may find it helpful to consider the following analogy between
+
+mental models and the formulas of a standard propositional language. Mental model molecules can be seen as conjunctions of propositional atoms
+and their negations, while mental models themselves, since they represent alternatives, can be seen as disjunctions of such conjunctions. In other
+words, mental models can be mapped straightforwardly into propositional formulas in disjunctive normal form. Negating a mental model is just
+as complex a procedure as negating a propositional formula in disjunctive normal form and then converting that negated formula into a disjunctive
+normal form of its own. This involves not just successive applications of DeMorgan’s laws, to push negation into the level of atoms, but also running
+a normal form algorithm on this negated formula; that is, applying distributivity the number of times necessary to produce a disjunctive normal
+form. While this is only an analogy, it is a perspicuous way of construing the operation defined above: we take each molecule in the original mental
+model, reverse the polarity of each nucleus that occurs in it, collect each of these nuclei in a mental model (a disjunction) and conjoin all of the
+mental models thus formed. Because of the way mental model conjunction (×) is defined, the result is guaranteed to be in (the mental model analog
+of) disjunctive normal form.
+   14 While people find it easy to list the possibilities compatible with a negated disjunction, they fail at listing all possibilities compatible with the
+
+negation of a conjunction (Khemlani et al., 2012). This is captured by Definition 14, for the negation of a simple disjunction returns a mental model
+with only one alternative, while the negation of a simple conjunction returns a mental model with as many alternatives as there were conjuncts.
+(9)      a.    It is not the case that A or B or C.                                                       Neg({a, b, c}) = {¬a} × {¬b} × {¬c} = {a t b t c}
+         b.    It is not the case that A and B and C.                                                                       Neg({a t b t c}) = {¬a, ¬b, ¬c}
+
+
+
+
+                                                                           23
+4.5.     Simplifying and concluding from alternatives: molecular reduction
+
+Any theory of reasoning with mental models needs to specify operations that allow us to extract something that is
+
+established in a mental model and represent it as its own mental model. Similarly, we should be able to reduce
+
+individual alternatives so we can conclude simpler disjunctions from more complex ones. Both moves are made
+
+possible in the erotetic theory by molecular reduction.
+
+Definition 15 (Molecular reduction). For α a mental model molecule,
+
+                                  
+                                  
+                                  
+                                    hΓ0 , B0 i = h(Γ − {γ ∈ Γ : α v γ}) ∪ {α}, B∗ (Γ0 , Γ0 )i if (∃γ ∈ Γ) α v γ
+                                  
+                                  
+                                  
+                                  
+                                  
+                   hΓ, B, ii[α] = 
+                               MR
+                                  
+                                                                                                                                  a
+                                  
+                                  
+                                  
+                                  
+                                  
+                                   undefined                                                 otherwise
+                                  
+                                  
+                                  
+
+
+In words, MR removes from Γ every alternative that contains the molecule α that is the target of the reduction, and
+
+then adds to Γ that molecule α. MR is undefined if its argument occurs nowhere in the mental model in discourse.
+
+
+       Example 10.     We can now complete the last step of Example 9 with an application of MR, providing the conclusion
+
+       mental model {l}.
+
+                                                  h{k t l}, {{k}}i[l]MR = h{l}, {{k}, {l}}i
+
+
+
+       Example 11.         Beside ‘pulling out a conjunct’ from a categorical mental model, MR also allows us to ‘reduce’
+
+       alternatives.
+
+                                                h{a t b, a t c, d}, ∅i[a]MR = h{a, d}, ∅i
+
+
+
+       Disjunctive syllogism, though valid, is in fact endorsed less often than the fallacy in Example 9 (Garcı́a-Madruga
+
+et al., 2001). We will shortly explain how the erotetic theory accounts for this difficulty. First, it is worth considering
+
+that disjunctive syllogism is subject to an ordering effect: if the categorical premise is already established when the
+
+disjunctive premise is encountered, disjunctive syllogism becomes easier (Garcı́a-Madruga et al., 2001).
+
+
+       Example 12.     (Disjunctive syllogism with categorical premise before disjunctive premise)
+
+          P1 John won’t come to the party.                                                                                {¬j}
+
+          P2 John will come to the party, or else Mary will.                                                             {j, m}
+
+           C Mary will come to the party.                                                                                 {m}
+
+       Because the first premise is categorical, it is added to the background set upon the first update. The reasoner is
+
+       now especially attentive to anything that might contradict this established fact in any of the following premises. This
+
+
+
+
+                                                                    24
+       can be seen in the second update: the j alternative to model {j, m} contradicts the background, so it is discarded.
+
+
+                                                    h{0}, ∅i[{¬j}]Up = h{¬j}, {{¬j}}i
+
+                                                          [{j, m}]Up = h{¬j t m}, {{¬j}}i
+
+                                                              [m]MR = h{m}, {{¬j}, {m}}i
+
+
+
+
+       While disjunctive syllogism with a backgrounded categorical premise is predicted to be just as easy as the illusory
+
+inference from disjunction, it becomes harder in the canonical premise order, as seen in the next example.
+
+       Example 13.        (Canonical disjunctive syllogism)
+
+          P1 John will come to the party, or else Mary will.                                                                  {j, m}
+
+          P2 John won’t come to the party.                                                                                      {¬j}
+
+       Conc. Mary will come to the party.                                                                                       {m}
+
+
+                                                h{0}, ∅i[{j, m}]Up = h{j, m}, ∅i
+
+                                                         [{¬j}]Up = h{j t ¬j, m t ¬j}, {{¬j}}i
+
+
+       Notice that updating with the premises alone does not yield a categorical conclusion, since we are left with two
+
+       alternatives. Moreover, applying molecular reduction to m will not help, as we will still have two alternatives in the
+
+       resulting model.
+
+           Unlike in the case of disjunctive syllogism with a backgrounded categorical premise as in example 9, the update
+
+       procedure does not by itself eliminate the contradictory alternative. This is because the reasoner had already
+
+       processed the disjunctive premise when she heard the categorical one. Eliminating the contradictory alternative
+
+       here is a separate step that requires an additional ‘filter’ operation [ ]F , to be defined below. Using the filter operation
+
+       and molecular reduction from before, we get disjunctive syllogism in the canonical case:
+
+
+                                              h{j t ¬j, m t ¬j}, {{¬j}}i[ ]F = h{m t ¬j}, {{¬j}}i
+
+                                                                   [m]MR = h{m}, {{¬j}, {m}}i
+
+
+
+
+4.6.     Removing contradictions and double negations: the filter operation
+
+The lesson from disjunctive syllogism is the following. If our successes of reasoning are as much a part of the
+
+explananda as our failures, as we argued in section 2.2, then the erotetic theory needs a way to eliminate contradictory
+
+alternatives from mental models. Although naı̈ve reasoners most likely do not realize automatically when they are
+
+entertaining contradictions (Morris and Hasson, 2010), we take it that a reasoner can go over the mental model in
+
+
+                                                                     25
+discourse and filter out each contradictory molecule, incurring a processing cost. We call this the Filter operation,
+
+and in addition it eliminates double negations from particular atoms such as ¬¬p. Much like realizing that you have
+
+been considering a contradiction is by no means a trivial step, realizing that ¬¬p represents the same proposition as p
+
+requires an application of Filter.
+
+Definition 16 (Filter).
+
+                                                       hΓ, Bi[ ]F = hΓ0 , B∗ (Γ0 , Γ0 )i
+
+
+where Γ0 = {dne(γ) : γ ∈ Γ & ¬Test(γ)}, and B∗ (Γ0 , Γ0 ) is as in Definition 10. The function dne (for double negation
+
+elimination) is inductively defined as follows.
+
+                                                
+                                                
+                                                
+                                                           if a = ¬¬b for some b ∈ Atoms(M)
+                                                
+                                                  b
+                                                
+                                                
+                                                
+                                                
+                                       dne(a) = 
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                
+                                                 a        otherwise
+                                                
+                                                
+                                                
+                                                  G
+                                       dne(α) =        {dne(a) : a ∈ Atoms(M) & a v α}                                                a
+
+
+       Notice that a single application of the dne function does not ensure that we only find nuclei like p and ¬p in a
+
+molecule. Indeed, to eliminate 2n negations from an atom in a molecule, n applications of dne will be required. This
+
+is an intentional feature of the Filter operation: we take it that the more iterations of negation there are in an atom
+
+the more costly it is to find its simplest classically equivalent expression. Since application of optional reasoning
+
+operations such as Filter is costly, the greater difficulty of such cases is modelled by the fact that Filter may have to be
+
+applied multiple times.
+
+
+       Example 14.      h{a t ¬¬¬a}, ∅i[ ]F [ ]F = h{a t ¬a}, {{a}, {¬a}}i[ ]F = h∅, {{a}, {¬a}}i
+
+
+
+4.7.     Fleshing out alternatives: the inquire operation
+
+In the erotetic theory, mental models can contain molecules that subsume more than one possibility. For example,
+
+people find it difficult to list all the possibilities compatible with the negation of a conjunction (Khemlani et al., 2012).
+
+       Example 15.      (Negation of conjunction)
+
+           P It is not the case that A and B and C.                                                                 Neg{a t b t c}
+
+       In cases like this, evaluating the negation of a conjunction yields as many alternatives as there are atomic proposi-
+
+       tions in the conjunction:                                                                    Neg({a t b t c}) = {¬a, ¬b, ¬c}
+
+
+       In this case, ¬a, ¬b, and ¬c each subsume multiple classical alternatives (i.e., fully specified, à la possible worlds):
+
+¬a subsumes ¬a t b t c, ¬a t ¬b t c, and so forth. We define an operation that does the job of expanding mental model
+
+
+                                                                     26
+molecules tracking exact truth makers by explicitly considering possibilities that those mental model molecules were
+
+tacit about. Our proposed operation in fact does nothing but allow us to ask a certain type of questions.15 Inquiring in
+
+our sense upon each of the atoms will yield a more complete set of explicit alternatives. This will ultimately provide
+
+the foundation for part 2 of the erotetic principle — asking certain questions makes us classically rational.
+
+    Inquiring on p can be thought of as asking, “what possible alternatives are there with respect to p and its negation?”
+
+We implement this as a C-update with {p, ¬p} followed by an application of filter. The inquire operation may be applied
+
+freely, though a choice to apply it constitutes a creative reasoning step, as discussed in section 3.2, and is therefore
+
+costly.
+
+Definition 17 (Inquire). For any mental model ∆,
+
+
+                                                 hΓ, Bi[∆]Inq = hΓ, Bi[∆ ∪ Neg(∆)]C [ ]F                                                          a
+
+
+    Successive applications of inquire on singleton mental models for all nuclei in a mental model will yield the full set
+
+of “classical” alternatives in which a premise is true, that is alternatives corresponding to each true entry on a classical
+
+truth table. Return to the example of the negation of a conjunction.
+
+
+     Example 16.        (Negation of a conjunction expanded to fully explicit alternatives). To get the full range of alternatives
+
+     compatible with the negation of the conjunction, we have to inquire on each conjunct. Taking the result from Example
+
+     15 as a starting point:
+
+
+              h{¬a, ¬b, ¬c}, ∅i[{a}]Inq = h{¬a, ¬b t a, ¬b t ¬a, ¬c t a, ¬c t ¬a}, ∅i
+
+                                [{b}]Inq = h{¬a t b, ¬a t ¬b, ¬b t a, ¬c t a t b, ¬c t ¬a t b, ¬c t a t ¬b, ¬c t ¬a t ¬b}, ∅i
+
+                                [{c}]Inq = h{¬a t b t c, ¬a t b t ¬c, ¬a t ¬b t c, ¬a t ¬b t ¬c,
+
+                                              ¬b t a t c, ¬b t a t ¬c, ¬c t a t b}, ∅i
+
+
+
+
+    Khemlani et al. (2012) found that none of their participants were consistently able to produce all the alternatives
+
+compatible with the negation of conjunctions. On the present account, this is no surprise: Reasoners have to creatively
+
+apply inquire and deal with an exploding number of alternatives.
+
+    If we apply inquiry systematically, reasoning, as described by the erotetic theory, will respect classical validity.
+
+With the inquire operation, there is a well-defined mechanism on the erotetic theory that makes questions about what
+
+is not already explicitly considered lead to better reasoning.16 We prove the following in section 6.
+  15 For those with an interest in classical mental model theory: here our erotetic framework allows us to do away entirely with the problematic
+
+notion of mental model footnotes as used by Johnson-Laird and collaborators
+  16 There is some empirical data supporting the notion that inquiring on what is not already explicitly represented can lead to improved reasoning.
+
+
+
+
+                                                                        27
+(10)        Soundness for classical logic in the erotetic theory — Assuming that we inquire on all propositional atoms
+
+            mentioned in the premises right before updating a discourse with those premises, conclusions produced by
+
+            the erotetic theory of propositional reasoning are classically valid.
+
+
+       Example 17.      Systematic inquiry blocks the disjunctive illusory inference discussed in Example 9. The surest way
+
+       to block fallacies is to inquire on every atom mentioned in a premise before updating with that premise. For simplicity,
+
+       we assume here that the reasoner did this only before updating with the second premise, for that will suffice to block
+
+       this fallacy.
+
+          P1 Either Jane is kneeling by the fire and she is looking at the TV or else Mark is standing at the window and he
+
+              is peering into the garden.                                                                                        {k t l, s t p}
+
+          P2 Jane is kneeling by the fire.                                                                                                 {k }
+
+           C Jane is looking at the TV.                                                                                                     { l}
+
+
+                                          h{0}, ∅i[{k t l, s t p}]Up = h{k t l, s t p}, ∅i
+
+                                                            [{k}]Inq = h{k t l, s t p t k, s t p t ¬k}, ∅i
+
+                                                            [{k}]Up = h{k t l, s t p t k}, {{k}}i
+
+
+       Notice that there is now no way to apply Molecular Reduction and get the fallacious conclusion {l}. Indeed, rea-
+
+       soners should find that no obvious conclusion follows to the extent that they realize that the tempting but fallacious
+
+       conclusion does not follow.
+
+
+    Consider another example of inquire as a promoter of classical reasoning in the case of disjunction introduction.
+
+This pattern is very counterintuitive. One study found that only 52% of participants judged the conclusion to follow
+
+from the premise in such cases. Those who did say that the conclusion follows reported that this inference was very
+
+difficult for them to make (Braine et al., 1984). In this system, arriving at disjunction introduction is possible, but the
+
+required reasoning strategy is far from obvious. It is immediately clear that disjunction introduction is not obvious,
+
+since default reasoning via update cannot yield the conclusion. A non-default chosen reasoning strategy is required to
+
+reach the conclusion. As far as we can see, the easiest way to obtain There is an ace or a queen from There is an ace
+
+involves a strategic use of inquire followed by two applications of molecular reduction.
+
+
+       Example 18.
+
+          P1 There is an ace.                                                                                                              {a}
+
+           C There is an ace or a queen.                                                                                                {a, q}
+
+Baron noted that while asking subjects why a conclusion is correct does not yield improved accuracy, asking subjects why it might be incorrect
+does reduce errors (Baron, 1993, citing Anderson, 1982, Arkes et al., 1988, Hoch, 1985, Koriat et al., 1980). This sits well with the view presented
+here. Once could interpret the question, “why might C be incorrect?” as prompting inquiry on propositional atoms one has not made fully explicit
+yet, while asking about correctness might just tend to prompt a redo of reasoning steps already made.
+
+
+
+                                                                        28
+                                             h{0}, ∅i[{a}]Up = h{a}, {{a}}i
+
+                                                    [{q}]Inq = h{a t q, a t ¬q}, {{a}}i
+
+                                                     [q]MR = h{q, a t ¬q}, {{a}}i
+
+                                                     [a]MR = h{q, a}, {{a}}i
+
+
+
+
+       The erotetic theory explains the counterintuitive nature of disjunction introduction as follows: reasoning is char-
+
+acteristically aiming at answering questions posed by premises. Disjunction introduction requires departing from this
+
+characteristic aim of reasoning by raising an orthogonal question ‘from out of nowhere’. If the characteristic aim of
+
+the system is to answer questions, we would expect resistance to raising further questions not forced by premises.
+
+
+5.     Beyond the core fragment: Supposition and the conditional
+
+Evaluating what follows from multiple complex statements can seem intractable. As Johnson-Laird (2008) observes,
+
+it is very hard to see what, if anything, follows from the premises below.
+
+     P1 The broadcast is on network TV or it is on the radio, or both.                                           {n, r, n t r}
+
+     P2 The broadcast is not on the radio or it is on cable TV, or both.                                      {¬r, c, c t ¬r}
+
+       Johnson-Laird (2008) has pointed out that if we begin this sort of reasoning problem with a strategically chosen
+
+supposition (that the broadcast is not on network TV, in the case at hand), the difficulty is markedly reduced. We
+
+provide a treatment of supposition within the erotetic theory that allows us to capture this. To our knowledge, this is
+
+the first systematic account of supposition within the mental model paradigm. As it turns out, the requisite operations
+
+for supposition supply a novel account of the interpretation from ‘if p then q’ into mental models.
+
+
+5.1.     Supposing
+
+Just as we can have a mental model discourse that represents what we take the world to be like, we can build a
+
+mental model discourse that represents what the universe is like given certain suppositions. Recall from Definition 7
+
+we encode this information with an index. We have so far been omitting this index, because it was entirely idle and
+
+our operations were completely conservative with respect to it. We now reintroduce the index parameter and expand
+
+it to include structure that keeps track of suppositions and what the suppositions are about. The basic operation of
+
+making a supposition S with respect to some mental model discourse hΓ, B, ii changes the index of the mental model
+
+discourse to a triple hB, i, S i, including the background of the original mental model discourse, the index of the original
+
+mental model discourse, and the supposition mental model S . The extra structure is necessary because the index of
+
+the suppositional mental model discourse needs to keep track of what is established independently of the supposition,
+
+
+
+                                                                29
+thus requiring us to keep track of the original B and i. Ultimately, we want to make sure that whatever we conclude
+
+about the world after going through the exercise of making suppositions is not sneaking in something merely supposed
+
+as established fact. Supposition of S creates a mental model discourse hΓ, B, hB, i, S ii and then updates it with S . By
+
+updating with S we can see what follows from the supposition and the mental model already in discourse.
+
+    What we have in mind in defining a supposition operation are suppositions that, for all we know, might be true. The
+
+use for reasoning with such suppositions, as we argue with Johnson-Laird, emerges from cognitive capacity limitations.
+
+This kind of suppositional reasoning is quite different from and much simpler than counterfactual reasoning with
+
+suppositions that have been established to be false. Counterfactual suppositional reasoning would require additional
+
+procedures to decide what conflicting facts to drop for the sake of reasoning. The kind of suppositional reasoning we
+
+are interested in is much simpler. Thus, we define our supposition operation in a way that makes it undefined if what
+
+is to be supposed is already established as false in B, in recognition of the fact that a much more cognitively involved
+
+mechanism, beyond the scope of our paper, has to be triggered for counterfactual suppositions.
+
+Definition 18 (Suppose).
+
+                                         
+                                         
+                                         
+                                           hΓ, B, hB, i, S ii[S ]Up          if (¬∃β ∈ B) (∀b ∈ S × β) Contr(b)
+                                         
+                                         
+                                         
+                                         
+                                         
+                        hΓ, B, ii[S ] = 
+                                     Sup
+                                         
+                                                                                                                                                  a
+                                         
+                                         
+                                         
+                                         
+                                         
+                                          undefined                         otherwise
+                                         
+                                         
+                                         
+
+
+    Once we have made a supposition, we can rely on the usual mental model update procedures to see what follows
+
+on the assumption of the supposition. To make this useful for reasoning, we also need an operation that allows us
+
+to discard the supposition and draw non-suppositional conclusions based on what we learned by considering what
+
+follows on the supposition. Intuitively, the envisaged operation should allow us to conclude that either we are in a
+
+situation in which the result of pursuing our supposition holds, or we are in a situation in which the supposition is
+
+false. The operation that allows us to draw this conclusion removes the special supposition index and returns us to
+
+a mental model discourse with the original index and background (where the latter will be augmented by whatever
+
+has been definitely established by the whole exercise). We shall call this operation “depose,” since it can be seen as
+
+undoing the effects of supposing.17
+
+Definition 19 (Depose). Let hΓ, B0 , hB, i, S ii be a mental model with suppositions. We define
+
+
+                                hΓ, B0 , hB, i, S ii[ ]Dep = hΓ ∪ Neg(S ), B∗ (Γ ∪ Neg(S ), Γ ∪ Neg(S )), ii                                      a
+  17 To make sense of the intuitive notion that we can make a supposition in reasoning and then make a further supposition, we can let suppositional
+
+discourses have the shape hΓ, B0 , hB, i, Σii, where Σ is a set of mental models, rather than just one mental model. Definition 18 would be adapted
+accordingly in the obvious fashion, and one would define a supplementary operation “suppose further”: hΓ, B0 , hB, i, Σii[∆]SF = hΓ, B0 , hB, i, Σ ∪
+{∆}ii[∆]Up . The depose operation (Definition 19) would also have to adapted to handle multiple suppositions, thus: hΓ, B0 , hB, i, Σii[ ]Dep =
+hΓ0 , B00 , ii = hΓ ∪ Neg(S 0 ) ∪ · · · ∪ Neg(S n ), B∗ (Γ0 , Γ0 ), ii, for Σ = {S 0 , . . . , S n }.
+
+
+
+                                                                        30
+   The idea here is that deposing the supposition characteristically yields two alternatives. In one alternative, we have
+
+the result of our suppositional exercise. In the other alternative, the supposition is false. As far as we can see, this is
+
+the simplest way to meet the minimal conceptual requirement for supposition within the core fragment defined earlier.
+
+We can now consider how a strategically employed supposition may simplify a reasoning problem.
+
+
+    Example 19.      (Difficult reasoning problem simplified through use of supposition). Instead of simply updating a
+
+    mental model discourse with the premises in the example at the beginning of section 6, we can make a supposition
+
+    and update with the premises in light of it. Using this strategy, we never need to consider a large number of
+
+    alternatives at a time. First, we suppose {¬n}, then we update with the premises and finally depose.
+
+
+                                 h{0}, ∅, ii[{¬n}]Sup = h{¬n}, {{¬n}}, h∅, i, {¬n}ii
+
+                                     [{n, r, n t r}]Up = h{¬n t r}, {{¬n}, {r}}, h∅, i, {¬n}ii
+
+                                  [{¬r, c, c t ¬r}]Up = h{¬n t r t c}, {{¬n}, {r}, {c}}, h∅, i, {¬n}ii
+
+                                               [ ]Dep = h{¬n t r t c} ∪ Neg({¬n}), ∅, ii
+
+                                                      = h{¬n t r t c, ¬¬n}, ∅, ii
+
+                                                 [ ]F = h{¬n t r t c, n}, ∅, ii
+
+
+
+
+   With supposition, the erotetic theory of reasoning is now powerful enough to provide classical completeness (see
+
+section on metatheory). One crucial inference pattern in classical logic is ex falso, or the principle of explosion: from
+
+a contradiction, any proposition follows. This inference is far from obvious to naı̈ve reasoners, as pointed out by
+
+Harman (1986), and as recognized by anyone who has ever taught an introductory logic course. Though completeness
+
+guarantees that explosion holds for our system, it is an instance of a reasoning pattern that is far from obvious and
+
+requires ingenuity on the part of the reasoner. On the erotetic theory, the aim of reasoning is to answer questions, not
+
+raise them without prompt. To get explosion, we would have to diverge from this default aim and make our mental
+
+model more “inquisitive” without prompt, in this case via a supposition operation.
+
+
+    Example 20.      From P and not P any Q follows. Updating with a contradiction directly will not immediately result
+
+    in the absurd model, but an application of Filter to the result of updating with a contradiction will. Updating with
+
+    internally consistent but contradictory premises (say, {p} and {¬p}) however will directly produce the absurd model,
+
+    given that C-update always checks to see if a new premise is consistent with the set B.
+
+        From the absurd mental model, we can get any arbitrary model Γ via supposition on Neg(Γ). We illustrate this
+
+
+
+
+                                                                 31
+       for q below.
+
+
+                                                  h∅, ∅, ii[{¬q}]Sup = h∅, ∅, h∅, i, {¬q}ii
+
+                                                               [ ]Dep = h∅ ∪ Neg({¬q}), {{¬¬q}}, ii
+
+                                                                      = h{¬¬q}, {{¬¬q}}, ii
+
+                                                                  [ ]F = h{q}, {{¬¬q, q}}, ii
+
+
+
+
+5.2.     A semantics for the indicative conditional in the erotetic theory
+
+We postulated operations to explain how supposition can simplify reasoning. We can now use the same operations to
+
+construct an analysis of the indicative conditional that captures the intuition that the process of supposition is crucial
+
+to its meaning (Braine and O’Brien, 1991). Our analysis is similar to a dynamic analysis of the indicative conditional
+
+recently proposed on linguistic grounds by Starr (forthcoming; see also Mackie, 1973, for some similarities). This
+
+convergence between an account of the conditional motivated on linguistic grounds and the present account motivated
+
+by patterns in reasoning is surely to be welcomed. There are important differences between the accounts with empirical
+
+consequences, but a full discussion of these issues is beyond the scope of this paper (Koralus in preparation).
+
+Definition 20 (Conditional as supposition).
+
+
+                                     kif ϕ, ψkD = Γ, such that D[kϕkD ]Sup [kψkD ]Up [ ]Dep = hΓ, B, ii                                                  a
+
+
+       The idea behind this analysis of the conditional is that ‘if p then q’ encodes the following instruction to the
+
+interpreter: “Update your mental model discourse with the the mental model you get from supposing p, updating with
+
+q, and undoing the supposition.” This analysis yields {p t q, ¬p} for ‘if p then q’. This result can be expanded to
+
+{p t q, ¬p t q, ¬p t ¬q} via inquiring on q. This corresponds to the full set of alternatives in a classical truth table.18
+
+       We can now consider how the erotetic theory of reasoning captures patterns of conditional reasoning.
+
+
+   18 For those steeped in the mental model literature, in standard mental model theory, it is held that we are able to get from the default interpretation
+
+of the conditional to an intermediate interpretation including the alternative ¬pt¬q but not the alternative ¬ptq (Barrouillet et al., 2000; Barrouillet
+and Lecas, 1998; but see O’Brien and Manfrinati, 2010). We can capture this in the present framework with a supplementary notion of inquire
+that can be defined without introducing any further anomalies. For any mental model {p}, hΓ, B, ii[{p}]AInq = hΓ, B, ii[{p} ∪ {0}]C [ ]F The intuition
+here is that asymmetric inquire can be applied at will just like the notion of inquire we defined above. {0} is the non-committal mental model that
+corresponds to verum in classical logic. Verum is always true, so we may always tautologously add P or verum, for any P. This device allows us
+to define the step-by-step expansion of mental model alternatives of the conditional envisaged by Johnson-Laid: kIf p then qk = {p t q, ¬p} Step 1:
+Asymmetric Inquire on {¬q}. [{¬q}]AInq = {p t q, ¬p, ¬p t ¬q} Step 2: Inquire on q. [{q}]Inq = {p t q, ¬p t ¬q, ¬p t q}. If one shares the intuition
+that asking ‘what about P?’ is not quite the same thing as asking ‘what about not P?’ then asymmetric inquire is independently motivated.
+
+
+
+
+                                                                           32
+    Example 21.     (Modus ponens is easier than modus tollens). Adults find MP extremely easy (Braine and Rumain,
+
+    1983). Modus tollens is harder than modus ponens (Evans et al., 1993; Barrouillet et al., 2000). On the erotetic
+
+    theory, modus tollens in the canonical order of premises requires an application of contradiction filter.
+
+    MP
+
+      P1 If the card is long then the number is even.                                                           {l t e, ¬l}
+
+      P2 The card is long.                                                                                              { l}
+
+    Conc. The number is even.                                                                                          {e}
+
+
+                                            h{0}, ∅, ii[{l t e, ¬l}]Up = h{l t e, ¬l}, ∅, ii
+
+                                                              [{e}]Up = h{l t e}, {{l}, {e}}, ii
+
+                                                                [e]MR = h{e}, {{l}, {e}}, ii
+
+
+
+
+    MT
+
+      P1 If the card is long then the number is even.                                                           {l t e, ¬l}
+
+      P2 The number is not even.                                                                                     {¬e}
+
+    Conc. The card is not long.                                                                                       {¬l}
+
+
+                                     h{0}, ∅, ii[{l t e, ¬l}]Up = h{l t e, ¬l}, ∅, ii
+
+                                                    [{¬e}]Up = h{l t e t ¬e, ¬l t ¬e}, {{¬e}}, ii
+
+                                                           [ ]F = h{¬l t ¬e}, {{¬e}, {¬l}}, ii
+
+                                                       [¬l]MR = h{¬l}, {{¬e}, {¬l}}, ii
+
+
+
+
+   In a way entirely parallel to the case of disjunctive syllogism, the present account also captures that modus tollens
+
+becomes easier if the negative premise is encountered before the conditional (Girotto et al., 1997). The issue of what
+
+we look to for potential falsifiers of a conditional comes up in the famous Wason card selection task (Wason, 1968)
+
+that much of the literature on reasoning with conditionals focuses on. Considerably more space would be needed to
+
+bring this task within the domain of the erotetic theory, since it involves quantification (a much harder fragment to
+
+cover with the degree of precision we aspire to here), as well as a more complex task for the participants than the
+
+“what, if anything, follows?” questions we are primarily addressing. Reference suppressed argues that a conservative
+
+extension of the theory presented in this paper yields the right predictions for both the classical Wason task and for
+
+variants that involve what seem like deontic rules (Griggs and Cox, 1982), but we have no room to consider this here.
+
+
+
+
+                                                                    33
+   In defining the supposition operation, we noted that we were ruling out suppositions that are already established
+
+to be false since this would involve a different and more sophisticated kind of reasoning. Since we have used this
+
+definition of supposition to define a semantics for “if”, we immediately get a linguistic upshot. It has been noted in
+
+the linguistics and psychology literature that the use of an indicative conditional is highly infelicitous if the antecedent
+
+is established to be false (Stalnaker, 1975; von Fintel, 1999; Gillies, 2009; Starr, forthcoming).
+
+(11)     Bob never danced. #If Bob danced, Leland danced.
+
+As on Starr’s analysis, the present account of conditionals makes the update procedure determined by the conditional
+
+undefined in this case, accounting for the infelicity.
+
+   From a psychological perspective, the fact that the conditional is undefined if the antecedent has been established
+
+to be false accounts for an interesting empirical observation. There is an asymmetry between the tasks of listing
+
+alternatives compatible with a conditional and the task of evaluating whether a conditional is true at various given
+
+scenarios. The difference has to do with how false antecedents are treated (Barrouillet et al., 2008). People have no
+
+trouble listing cases in which the antecedent is false if they are given a conditional and are asked to list alternatives
+
+that conform to the conditional (Barrouillet and Lecas, 1998). However, if subjects are given scenarios and then asked
+
+if a conditional is true in those scenarios, they will omit false-antecedent cases (Evans et al., 1993).
+
+   Philosophers as well as psychologists have pointed out that it is important to capture the fact that so-called “material
+
+antecedent” inferences are not intuitive to people (Starr, forthcoming; Oaksford and Chater, 2007), in other words
+
+examples like the following seem wrong:
+
+(12)     Bob danced. Therefore, if Bob danced then Hilary Clinton will become President.
+
+Our proposal blocks these inferences. A conditional conclusion is not interpretable if the antecedent is taken by
+
+the hearer to be false; the update procedure is undefined in this case. Probabilistic approaches like Oaksford and
+
+Chater (2007) would also block this inference, but, in virtue of having a probability-based semantics for “if . . . then”,
+
+they also block various other inferences, which Starr (forthcoming) has argued should not be blocked for relevant
+
+interpretations of “if . . . then”. The issues are delicate and most likely there are multiple possible interpretations for
+
+various “if . . . then” sentences that would yield different inference patterns. For example, there plausibly are “habitual”
+
+interpretations that may be captured by something like Stenning and van Lambalgen’s nonmonotonic logic proposal
+
+(Stenning and van Lambalgen, 2008a), like the following:
+
+(13)     If the match is struck, it lights.
+
+From this, we would not conclude that if the match is struck and it is wet, it will light. On the present account, this
+
+would have to be concluded. However, it is not obvious that the interpretation of “if . . . then” at issue in this example
+
+is the same that is at issue in the examples we have been primarily concerned with. One might argue that here,
+
+we are giving the conditional a “habitual” interpretation that is absent in the other cases. The potential for multiple
+
+interpretations here means that there is room for multiple complementary theories. That said, there are two seemingly
+
+
+                                                            34
+unique benefits for the present proposal on reasoning with conditionals that we will now turn to.
+
+   One advantage of our proposal comes from empirical data on novel illusory inference from a disjunctive premise
+
+to a conditional conclusion that previous accounts do not seem to capture.
+
+       Example 22.
+
+         P1 John and Mary will come to the party, or Bill and Sue will.                                            {j t m, b t s}
+
+       Conc. If John comes to the party, then Mary will come as well.                                                 {j t m, ¬j}
+
+       We propose that reasoners would take it that they can conclude the conditional if by supposing the antecedent and
+
+       updating with the premise, they can arrive at the conditional. It is not surprising that evaluating whether a conditional
+
+       conclusion follows would prime reasoners to use supposition, since the operations involved in making suppositions
+
+       are integral to the linguistic meaning of the indicative conditional on our analysis (NB: the same reasoning strategy
+
+       also yields non-fallacious conditional transitivity inferences, see supplementary example 36.).
+
+
+
+
+                                       h{0}, ∅, ii[{j t m, b t s}]Up = h{j t m, b t s}, ∅, ii
+
+                                                           [{j}]Sup = h{j t m}, {{j}, {m}}, h∅, i, {{j}}ii
+
+                                                            [m]MR = h{m}, {{j}, {m}}, h∅, i, {{j}}ii
+
+                                                             [ ]Dep = h{j t m, ¬j}, ∅, ii
+
+
+           In an experiment similar to that of Johnson-Laird and Savary (1999) using an online survey conducted, we asked
+
+       participants yes/no questions about whether various inferences followed from sets of statements. We found that all of
+
+       our 20 participants endorsed the illusory inference from the disjunctive premise to the conditional conclusion. Overall
+
+       performance on control problems was significantly better. The subset of 13 participants with perfect performance
+
+       on all control problems still uniformly endorsed the fallacious inference. All illusory and control problems in the
+
+       experiment as well as proportions of responses can be found in supplementary example ex:illusory-new.
+
+
+   A further advantage of our proposal is that it captures a linguistic connection between questions and conditionals.
+
+Perhaps unsurprisingly, given the importance questions play in our theory, the present analysis is the only one beside
+
+Starr (forthcoming) — the latter a purely semantic analysis without its own motivation in empirical reasoning data —
+
+that can account for the observation that if -clauses can both introduce a conditional and serve as the content clause of
+
+a question (Harman, 1979; Haiman, 1978). Consider:
+
+(14)       If Jack danced, the music must have been good.
+
+(15)       John asked if Jack danced.
+
+The question entertained in the second example corresponds to the set of alternatives {d, ¬d}, following the standard
+
+Hamblin (1958) account of the semantics of questions discussed earlier. So what is the contribution of the if -clause?
+
+
+                                                                      35
+We can simply take it that in cases like (15), where there is no then-clause, the relevant argument in the conditional-
+
+as-supposition analysis is the null nucleus {0}.
+
+
+
+                                      kif ϕkD = Γ, such that D[kϕkD ]Sup [{0}]Up [ ]Dep
+
+
+Now, updating with the null nucleus does not change anything, so we can leave it out. Alternatively, we could attribute
+
+the entire update operation sandwiched between the suppose and depose procedures to the linguistic contribution of
+
+the then-clause, which would just make the update operation “disappear” if there is no then-clause. Both avenues yield
+
+the following result:
+
+Definition 21 (If).
+
+                               kif ϕkD = Γ, such that D[kϕkD ]Sup [ ]Dep = {kϕkD , Neg(kϕkD )}                              a
+
+
+Thus:
+
+                                                kif Jack dancedkD = {d, ¬d}
+
+
+Remarkably, it falls out of our account of the conditional that if without a then-clause contributes a question.
+
+       Moving on, with the core fragment and the supposition operator, we now have enough machinery to prove that the
+
+erotetic theory of reasoning allows for a reasoning strategy that is classically sound and complete.
+
+
+6.     Getting classical reasoning on the erotetic theory
+
+
+6.1.     Preliminaries
+
+The central results of this section are soundness and completeness of a special case of the erotetic theory of reasoning
+
+for classical propositional semantics. Specifically, we show that the particular class of erotetic reasoning strategies
+
+that use Inquire on every propositional atom mentioned in discourse is sound and complete for classical propositional
+
+semantics. To accomplish this, we must first give a precise definition of derivations within the (unqualified) erotetic
+
+theory of reasoning. In what follows, we abbreviate Erotetic Theory of Reasoning as ETR. Also in the interest of
+
+readability, we omit outer square brackets when talking about operations on mental model discourses, absent an input
+
+mental model discourse. That is, instead of [∆]Up , we write ∆Up , to refer to Update with the argument ∆.
+
+Definition 22 (Derivations in ETR). A derivation D is a non-empty sequence of operations on mental models, such
+
+that h{0}, ∅, iiD = hΓ, B, ii, for i not a suppositional index. We call Γ the conclusion of D, and the smallest set containing
+
+every ∆ such that ∆Up occurs somewhere in D the set of hypotheses of D.                                                     a
+
+
+Armed with this notion of derivation, we can now define derivability in the usual way.
+
+
+                                                             36
+Definition 23 (Derivability in ETR). For Γ a mental model and Σ a set of mental models, we say that Γ is derivable
+
+from Σ, in symbols Σ ETR Γ, iff there is a derivation D with all of its hypotheses in Σ and with conclusion Γ. When
+
+no confusion arises, we omit the subscript ‘ETR’ and write simply Σ ` Γ.                                                    a
+
+For example, it is true that {{p t q, ¬p}, {p}} ` {q}. Proof: let D = h{p t q, ¬p}Up , {p}Up , qMR i. Notice that it is also
+
+true that {{p t q, ¬p}, {q}} ` {p}, for consider D = h{p t q, ¬p}Up , {q}Up , pMR i. Definition 23 thus tracks derivability in
+
+the system in the most general way, not simply classical derivability. We need to define a more constrained notion
+
+of derivability which considers only that subset of the ETR derivations in Definition 22 that is sound for classical
+
+propositional semantics. We do this in the next section.
+
+    Before moving on to soundness, we define and discuss an indispensable translation from the language of mental
+
+models to the language of propositional formulas. Because the two languages are different, soundness and complete-
+
+ness for classical logic must be stated via a translation.
+
+Definition 24 (Translation from mental models to propositional formulas). Let a molecular structure M be given.
+
+We first define @, a function from mental molecules to propositional formulas as follows, for a ∈ Atoms(M) and α, β
+
+molecules of arbitrary complexity.
+
+
+                                                                0@ = >
+
+                                                                a@ = a
+
+                                                         (α t β)@ = α@ ∧ β@
+
+
+The translation ∗ from mental models based on M into propositional formulas is defined thus:
+
+
+                                                                  ∅∗ = ⊥
+
+                                                               {α}∗ = α@
+
+                                                           (Γ ∪ ∆)∗ = Γ∗ ∨ ∆∗
+
+
+For convenience when stating the relevant theorems, we generalize ∗ to apply to sets of mental models. For Σ =
+
+  i≤n {Γi }, let Σ = i≤n {Γi }.
+S                 ∗ S      ∗                                                                                 a
+
+
+    Example 23.      {p, q, r}∗ = p ∨ q ∨ r,   {p t ¬q, r t s}∗ = (p ∧ ¬q) ∨ (r ∧ s),   {{p, q}, {r}}∗ = {p ∨ q, r}
+
+
+    The precise results we show here make crucial use of this translation. Specifically, we will show that, whenever
+
+there is a certain well defined kind of ETR derivation of some mental model Γ from set of premises Σ, then the
+
+translation Γ∗ will classically follow from the translation of the premises Σ∗ (soundness).
+
+
+                                                                    37
+       Conversely, we will also show that, whenever the translation Γ∗ of some mental model Γ classically follows from
+
+Σ∗ , then there is an ETR derivation (again, within a particular well defined class) of Γ from Σ. For the special case
+
+in which we have an empty set of premises (i.e. Σ = ∅), this means that a certain well-defined set of ETR theorems
+
+coincides with the set of classical tautologies. This result almost constitutes classical completeness, but one last step is
+
+required: every propositional formula ϕ has a classically equivalent formula ϕ∨ such that there is some mental model
+
+Γ with Γ∗ = ϕ∨ . This is true because every formula in the class of formulas in disjunctive normal form is the translation
+
+of some mental model.19 Given the disjunctive normal form theorem for classical propositional logic, every formula
+
+is equivalent to a formula in disjunctive normal form. Therefore, while apparently less expressive, the language of
+
+mental models contains all we need to cover classical reasoning completely.
+
+       We now give detailed proof-sketches of soundness and completeness.
+
+
+6.2.     Soundness
+
+As explained above, we need to characterize the class of ETR derivations that guarantee classical validity. The required
+
+definition of classical ETR derivations is the following.20
+
+Definition 25 (Classical derivations in ETR). A non-empty sequence of operations on mental models DC is a clas-
+
+sical ETR derivation just in case (1) it is a derivation in the sense of Definition 22 and (2) every occurrence of ∆Up
+
+and ∆Sup in DC is immediately preceded by a sequence of pInq , for each atom p that occurs somewhere in ∆. We will
+
+write Σ CETR Γ iff there is a classical derivation DC with conclusion Γ and all its hypotheses in Σ.                                                      a
+
+
+       What characterizes classical ETR derivations is the careful application of Inquire to each propositional atom oc-
+
+curing in a model ∆ right before the update (or supposition-update) with ∆. It is useful to get an intuitive grasp on why
+
+this is the central ingredient for achieving classical reasoning with the erotetic system given here. The more logically
+
+experienced reader can probably skip the next few paragraphs and move to the statement of Lemma 1 on the next page.
+
+       Mental models in the erotetic theory of reasoning are in a sense typically underspecified. This was discussed in
+
+detail in Section 3.3: our mental models represent only the exact verifiers for complex propositions. Interestingly,
+
+this property of mental models doesn’t per se give us the (welcome and intended) non-classical inference patterns of
+
+ETR. Rather, it is the way in which Q-update treats these mental models as questions and extremely strong answers
+   19 We simplify matters slightly in this discussion. Strictly speaking, every DNF formula up to certain equivalences (most notably idempotence
+
+and some cases of absorption) is the translation of some mental model. For example, in a propositional language, the formulas p and p ∨ p, while
+equivalent, are distinct objects in the language. In the mental model language we define in this paper however the objects {p} and {p, p} are properly
+identical and therefore indistinguishable. Thus, the formula p ∨ p is not the translation of any mental model. However, there is a formula equivalent
+to it, namely p, that is the translation of a mental model, namely {p}.
+   20 It is important to remark that, while every derivation that falls under Definition 25 will be classically sound, not all classically sound derivations
+
+will be classical derivations according to Definition 25. This is because we wanted to give a definition of classical derivations that guaranteed
+soundness but that was simple enough, for the purposes of expository clarity as well as mathematical elegance. Consequently, alternative definitions
+exist that still guarantee classical soundness and that more exactly characterize the class of such derivations. For our purposes, this is of little
+importance: we want to show that there is a subset of derivations guaranteed to be classically sound and that implement Part II of the erotetic
+principle.
+
+
+
+                                                                            38
+to those questions that gives rise to non-classical reasoning patterns that are valid in ETR.21 Consider as an example
+
+the fallacy of Affirming the Consequent (AC), which as discussed above is derivable in ETR. When the premise {q}
+
+is interpreted in the context of {p t q, ¬p}, it is Q-update that is responsible for the output {p t q}: the molecule q has
+
+a non-empty intersection with the molecule p t q, and an empty intersection with molecule ¬p, so only the former
+
+molecule survives; following this update with molecular reduction on p gives us AC. Imagine now that we somehow
+
+blocked the effects of Q-update. Then the update with {q} in the context of {p t q, ¬p} would amount to the C-update,
+
+returning a simple conjunction of mental models (we disregard the effects of the background set B and the index i for
+
+the purposes of this explanation), namely the model {p t q, ¬p t q}. From this resulting model there is no application
+
+of molecular reduction that could possibly return {p}, so we no longer validate AC. This example generalizes: if we
+
+somehow block the Q-portion of Update, reducing its effects to those of C-update, we get classical reasoning.
+
+    A possible way to get classical reasoning would thus be to define a special Update operation, call it ClassUp, for
+
+classical update, that used only C-update and never Q-update. However, this strategy would amount to introducing
+
+a novel rule of update exclusively dedicated to classical reasoning, which would undermine the strength of claims of
+
+generality and systematicity of the erotetic theory of reasoning: if it is possible to define a new rule of update that
+
+behaves classically, and if that new rule of update is actually strictly simpler than the non-classical one, it ought to be
+
+extremely easy to learn. We thus reject this possibility, and maintain that the rule of mental model update is exactly as
+
+defined earlier in this paper, in terms of Q-update and C-update.
+
+    Happily, there is another strategy: we can block the effects of Q-update without changing the definition of Update,
+
+simply by making sure that every new update is interpreted against a mental model context that has been systematically
+
+extended with respect to the propositional atoms that occur in the new update. The relevant form of extension in
+
+preparation for a new update amounts to asking all atomic yes-no questions on atoms in the new update. Intuitively,
+
+this means that a reasoner is paying full attention to every single possibility compatible with the information given:
+
+this kind of attention comes at a big cost of (potential) exponential blowup of alternatives, but it has as its central
+
+benefit the guarantee of classical results. We illustrate this strategy by showing how it blocks AC.
+
+    Suppose a reasoner has just heard {q} in the context of {p t q, ¬p}. She now chooses to Inquire on q in the same
+
+context, before the update with {q}. The expanded context is then {p t q, ¬p t q, ¬p t ¬q} (for recall that by definition
+
+Inquire on q amounts to updating with {q, ¬q} followed by Filter). What will the effect of updating with {q}, the second
+
+premise, be? Recall that Q-update will eliminate every element of the context that has an empty intersection with {q}.
+   21 ETR captures certain other non-classical properties of naı̈ve reasoning in ways unrelated to Q-update, but these are no obstacle to soundness or
+
+completeness. For example, recall that in ETR the order in which premises are updated will in principle make a difference. This dynamic feature
+of the system was explored in our account of the order effect on modus tollens and disjunctive syllogism inferences: when the categorical premise
+is processed first, the inferences go through more easily. Crucially, this dynamic property only has an effect on the complexity of the derivation.
+Concretely, it is not that in ETR modus tollens cannot be derived if the categorical premise is processed at the end; rather, deriving a modus tollens
+inference with this order of premises is more complex, as it involves an application of Filter. This contrasts with modus tollens with the categorical
+premise processed first, where there is no need for Filter. Since the dynamic properties of the system only have an effect on the complexity of
+derivations, never on whether something is derivable or not, they will not present any difficulties in proving soundness and completeness.
+
+
+
+
+                                                                         39
+But in the new expanded context, each molecule contains either q or ¬q, and therefore the only molecules with empty
+
+intersections with {q} will be those molecules in the context that contain ¬q. These molecules we would have wanted
+
+to eliminate anyway after the update with {q}, since they would include both ¬q and q and thus be contradictions.
+
+The result of updating the expanded context with {q} is thus {p t q, ¬p t q}. Clearly, there is no way of getting {p}
+
+from this model, and thus we have blocked AC. As before, this example generalizes, and the effects of Q-update in
+
+a context that is expanded with respect to the relevant atoms are completely harmless for the purposes of classically
+
+sound reasoning. Accordingly, this is the content of one of our most important metalogical results:
+
+Lemma 1. Let a mental model discourse hΓ, B, ii and a mental model ∆ be given, and let hΓ0 , B0 , ii be the result of
+
+inquiring in hΓ, B, ii on each propositional atom that occurs in ∆. Then hΓ0 , B0 , ii[∆]Up [ ]F = hΓ0 , B0 , ii[∆]C [ ]F .
+
+Proof sketch. Let hΓ0 , B0 , ii[∆]Q = hΓ00 , B0 , ii. By definition of Q-update, Γ00 = Γ0 − E, where E = {γ ∈ Γ0 : (∀δ ∈ ∆) γuδ =
+
+0}, that is E is the set of all molecules of Γ0 that have empty intersections with all molecules of ∆.
+
+    Pick an arbitrary δ ∈ ∆. We consider first the case δ , 0. Pick an arbitrary γ ∈ Γ0 and notice that γ and δ have an
+
+empty intersection just in case for all p v δ, p @ γ. Since δ , 0, we can choose one such p v δ. But because γ ∈ Γ0
+
+and Γ0 is the result of inquiring on each atom that occurs somewhere in ∆, it must be that ¬p v γ. Then γ t δ contains
+
+both p and ¬p, and is therefore a contradiction. Consequently (but keep in mind that we are for now only considering
+
+δ , 0), γ ∈ E just in case γ ∈ Γ0 and {γ} × ∆ contains only contradictions. Clearly, these are γs whose counterparts
+
+would not be present in hΓ0 , B0 , ii[∆]C [ ]F anyway, given the definition of C-update as × (together with manipulations
+
+of B) and the definition of Filter, so nothing valuable is lost in Γ0 − E and the lemma follows.
+
+    In case δ = 0, then necessarily γ u δ = 0 for any γ. If ∆ = {δ}, then Γ00 = ∅ and the claim follows immediately (for
+
+recall that, when Q-update fails, Update amounts to C-update). Otherwise, there will be other, non-0 molecules in
+
+∆, in which case the fact that there is a 0 ∈ ∆ makes no difference: a molecule in ∆ that excludes all molecules in Γ0
+
+effectively shifts the burden of selecting the γs to be excluded to other non-0 molecules in ∆. Reason as above.               
+
+    We also need to make sure that the background set B introduces no complications to soundness. Lemma 2 will
+
+suffice for our purposes.
+
+Lemma 2. For all classical derivations DC with h{0}, ∅, iiDC = hΓ, B, ii, for all {b} ∈ B, b is an atom and Γ CETR {b}.
+
+Proof sketch. By induction on classical derivations. The condition is trivially satisfied for the base case. The only
+
+less-than-obvious inductive step is Update, which, according to Lemma 1, reduces to C-update plus Filter in the case
+
+of classical derivations. Now, hΓ, B, ii[∆]C = hΓ0 , B0 , ii, where Γ0 = Γ × {δ ∈ ∆ : (¬∃β ∈ B) (∀b0 ∈ {δ} × β) Test(b0 )} and
+
+B0 = B∗ (Γ0 , ∆). Take an arbitrary {b} ∈ B0 . According to the definition of B∗ (α, β), there are three possible situations.
+
+1. Γ0 is categorical. Then b is an atom and b v γ, for the γ ∈ Γ0 . Obviously, b can be gotten from Γ0 via MR on b. 2. Γ0
+
+is inquisitive and ∆ is categorical. b is an atom and b v δ, for the δ ∈ ∆. Now, if Γ0 is inconsistent the result follows by
+
+
+                                                                40
+(the procedure analogous to) reductio ad absurdum: bSup , Γ0Up , Dep. Assume Γ0 is consistent. Then Γ0 = Γ × {δ}. This
+
+means we can use MR to get δ from Γ0 , and then MR again to get b from δ. 3. None of the above. Then B0 = B and
+
+the result follows from the induction hypothesis and the fact that Γ CETR ∆ =⇒ Γ × Γ0 CETR ∆.
+
+   We reason in a similar way for the other operations that manipulate the background (MR, F, Inq, Sup).                 
+
+   With these two intermediate results, we can now give a sketch of soundness via the ∗ translation. Because this
+
+proof involves an induction with many long (and rather tedious) steps, we present the proof sketch in a more informal
+
+fashion than other proof sketches, so as to improve readability.
+
+Theorem 3 (Soundness via translation). Σ CETR Γ =⇒ Σ∗ CPL Γ∗ .
+
+Proof sketch. We prove by induction on the length of classical ETR derivations. The base case is trivial, since {0} is
+
+translated as the tautology.
+
+   The inductive step uses the hypothesis that a derivation of length n is classically sound, to show for each operation
+
+that, if that operation occurs at step n + 1, classical validity will be preserved. Inquire and Filter are trivial: Inquire
+
+amounts to excluded middle, and Filter to ϕ ∨ ⊥ ↔ ϕ and double negation elimination for atoms. The effects of
+
+Molecular Reduction amount to weakening of disjuncts, which is classically valid. For ∆Up , we must use Lemma 1
+
+and show that C-update preserves classical validity, as follows.
+
+   C-update is the mental model conjunction of the old Γ with a certain subset of the new ∆, namely the set containing
+
+only those δ ∈ ∆ that do not contradict any of the mental models in the background of established facts B. By Lemma 2,
+
+B contains only (though not necessarily all) models that could be gotten from Γ. This means that, if a δ ∈ ∆ contradicts
+
+some model in B, then all of its counterparts in Γ × {δ} would be contradictions. Therefore, it is safe to exclude from
+
+∆ all such δ, and the background set B is well-behaved with respect to classical soundness. Finally, we observe that
+
+mental model conjunction is analogous to conjunction introduction followed by some finite number of applications of
+
+the law of distributivity, to get to a disjunctive normal form. These last steps are also clearly classically valid.
+
+   Showing the validity of the suppositional operations ∆Sup and Dep requires a few intermediate steps. First, one
+
+must show that any application of ∆Sup will be followed (not necessarily immediately) by an application of Dep. This
+
+falls out of our definition of derivations, which makes sure there are no uncanceled suppositions. Now, Γ in a discourse
+
+with supposition (that is hΓ, B, hB0 , i, S ii) will not necessarily classically follow from the hypotheses in Σ. What we
+
+do have is that Γ in a suppositional discourse classically follows from the supposed mental model S , stored in the
+
+index slot of the suppositional discourse, together with the hypotheses in Σ. In symbols, Σ∗ ∪ {S ∗ } CPL Γ∗ . Given
+
+(the semantic correlate of) the deduction principle in classical logic, we also have Σ∗ CPL S ∗ → Γ∗ . But S ∗ → Γ∗ is
+
+classically equivalent to Γ∗ ∨ (Neg(S ))∗ . This last formula is simply the ∗-translation of the result of the operation
+
+Dep, so Dep preserves classical validity. Given that ∆Sup must always be followed by Dep later in the derivation,
+
+suppositional discourses introduce no complications for soundness.                                                       
+
+
+                                                             41
+6.3.     Completeness
+
+That ETR derivations are complete for classical semantics may not seem particularly surprising. The erotetic theory
+
+of reasoning captures inference patterns that are too strong for the standards of classical logic, so the surprising result
+
+would be if some classical inferences were lost in the process. Nevertheless, we outline in this section the proof of
+
+classical completeness for the classical erotetic theory of reasoning. The proof strategy we use here will be familiar to
+
+readers acquainted with standard completeness proofs for classical propositional logic.
+
+       It might be worth reminding the reader what the proof strategy is. We will show that, if Γ cannot be derived
+
+from some set of models Σ, then we can find a classical propositional model (a valuation on atoms) that makes the
+
+translation of Σ true but the translation of Γ false. The lemmas sketched below do this for us: Lemma 5 tells us that
+
+Σ is consistent with the negation of Γ, and Lemma 6 constructs a valuation v out of (a maximally consistent extension
+
+of) Σ with the negation of Γ. This valuation v makes all elements of Σ true and it makes the negation of Γ true. Thus v
+
+makes Γ false, and is therefore the desired classical propositional model.
+
+       Since we use the traditional proof-technique of maximally consistent sets, we start by recasting consistency for the
+
+classical erotetic theory in the most natural way.
+
+Definition 26 (CETR-consistency). A set of mental models Σ is CETR-consistent just in case Σ 
+                                                                                             CETR ∅. In what
+                                                                                              
+
+follows, we omit the prefix CETR and refer to this property simply as “consistency.”                                         a
+
+       A crucial fact for completeness is that double negation elimination holds, both in the classical version of the erotetic
+
+theory and in the unqualified version.
+
+Theorem 4. Neg(Neg(Γ)) CETR Γ.
+
+       Interestingly, the proof of Theorem 4 is quite complex. Contrary to what one might have thought, it follows by
+
+no means immediately from the definition of Filter and its double negation elimination effects. This is because Filter
+
+eliminates double negations from atoms (technically speaking, “literals”), and therefore some work needs to be done
+
+to show that the operation Neg, which applies to mental models, introduces no surprises. The proof of Theorem 4 is
+
+rendered quite complex by the fact that it not true in general that Neg(Neg(Γ)) = Γ, which in turn is due to the fact
+
+that each application of Neg may involve more than one application of (the mental model correlate of) distribution
+
+of conjunction over disjunction: one that is analogous to DeMorgan’s laws, pushing a high negation into the level of
+
+atoms, and another to produce the mental model analog of a disjunctive normal form. As a consequence, Neg(Neg(Γ))
+
+will often contain redundant material absent from the original Γ, and is therefore often distinct from it.
+
+       The first lemma required for completeness notes that, if a mental model Γ cannot be derived from some set of
+
+models Σ, then Σ can be put together with the negation of Γ, preserving consistency.
+
+Lemma 5. Σ 
+           CETR Γ =⇒ Σ ∪ {Neg(Γ)} is consistent.
+             
+
+
+                                                               42
+Proof sketch. The equivalent claim Σ ∪ {Neg(Γ)} is inconsistent =⇒ Σ CETR Γ follows with a simple suppositional
+
+derivation in ETR, together with Theorem 4.                                                                                     
+
+
+     The required model existence lemma is given below, via the translation ∗. It states that we can always find a clas-
+
+sical model for the translations of CETR-consistent sets of mental models. Recall that classical models are valuation
+
+functions v from propositional atoms into truth values, 0 for false and 1 for true. Classical models are extended to full
+
+valuations J·Kv that are defined for formulas of arbitrary complexity. Full valuations assign truth values to complex
+
+formulas as a function of the valuation v and the (standard) definitions of the propositional connectives. The existence
+
+of maximally consistent sets of mental models, as well as the useful properties of maximally consistent sets, is shown
+
+in the usual way. Because there are no ETR-specific elements in these proofs, we omit them.
+
+Lemma 6 (Model existence). If Σ is consistent, then there is a classical valuation v such that J∆∗ Kv = 1 for each
+
+∆ ∈ Σ.
+
+
+Proof sketch. Find a maximally consistent extension Σ0 of Σ, put v(p) = 1 iff {p} ∈ Σ0 , for atomic (in the classical
+
+propositional sense) p, and extend v to a full valuation J·Kv . Next, show by induction on ∆ that J∆∗ Kv = 1 iff ∆ ∈ Σ0 .
+
+The atomic case follows by definition.
+
+     Suppose ∆ = {α t β}. By the ∗-translation, J{α t β}Kv = 1 iff JαKv = JβKv = 1, so the claim follows by the induction
+
+hypothesis together with maximal consistency of Σ0 . The converse direction uses the fact that {α t β} CETR {α}, {β} (a
+
+simple molecular reduction). If {α t β} ∈ Σ0 then by the properties of maximally consistent sets {α} ∈ Σ0 and {β} ∈ Σ0 .
+
+The result then follows from the induction hypothesis.
+
+     Suppose that ∆ = ∆0 ∪ ∆00 . J(∆0 ∪ ∆00 )∗ Kv = 1 iff J∆0∗ Kv = 1 or J∆00∗ Kv = 1. By induction hypothesis ∆0 ∈ Σ0 or ∆00 ∈ Σ.
+
+By maximal consistency of Σ0 we get ∆0 ∪ ∆00 ∈ Σ0 . Conversely, if ∆0 ∪ ∆00 ∈ Σ0 then by maximal consistency of Σ0 we
+
+get ∆0 ∈ Σ0 or ∆00 ∈ Σ0 . The result then follows from the induction hypothesis.
+
+     Finally, since Σ ⊆ Σ0 , we have J∆∗ Kv = 1 for each ∆ ∈ Σ.                                                                 
+
+
+Theorem 7 (Completeness via translation). Σ∗ CPL Γ∗ =⇒ Σ CETR Γ.
+
+
+Proof sketch. We prove the contrapositive Σ 
+                                            CETR Γ =⇒ Σ CPL Γ . Assume Σ 
+                                                     ∗     ∗
+                                                                         CETR Γ. By Lemma 5 Σ ∪ {Neg(Γ)}
+                                                                          
+
+is consistent. By Lemma 6 there must be a classical valuation such that J∆∗ K = 1 for each ∆ ∈ Σ and J(Neg(Γ))∗ K = 1,
+
+which entails that JΓ∗ K = 0. This is equivalent to Σ∗ CPL Γ∗ .                                                                 
+
+
+7.   Conclusion: Questions make us rational
+
+We have proposed a new theory of reasoning based on the erotetic principle in (1).
+
+
+
+
+                                                                43
+(1)      The erotetic principle
+
+         Part I — Our natural capacity for reasoning proceeds by treating successive premises as questions and maxi-
+
+         mally strong answers to them.
+
+         Part II — Systematically asking a certain type of question as we interpret each new premise allows us to reason
+
+         in a classically valid way.
+
+We showed how the erotetic theory of reasoning derives a large number of naı̈ve reasoning patterns described in the
+
+literature based on a dynamic update procedure that implements the principle in (15a). The theory accomplishes this
+
+while resorting to interpretations independently motivated in the linguistic and philosophical literatures.
+
+      We argued that the erotetic theory of reasoning accounts solves two of the key problems for a theory of reasoning:
+
+The first problem was to account for the various systematic divergences from standards of classical correctness in naive
+
+reasoning that have been observed experimentally. The second problem was to account for how our natural reasoning
+
+capacity can make it possible to learn how to reason correctly by classical standards – how it is possible to acquire the
+
+reasoning foundations for science and philosophy.
+
+      With the formal framework of the erotetic theory, we can explore more seriously the potential for connections
+
+between semantics as studied in linguistics and philosophy and the empirical psychology of reasoning. As noted
+
+above, dynamic approaches to interpretation were independently proposed in psychology (Johnson-Laird and Steven-
+
+son, 1970) on the one hand, and in linguistics (Karttunen, 1976; Heim, 1982) and philosophy (Kamp, 1981) on the
+
+other, but have heretofore been developed in parallel without any significant connection between psychology and lin-
+
+guistics/philosophy. It is an exciting development that the natural analysis of suppositional reasoning on the erotetic
+
+theory yielded an account of the semantics of the indicative conditional that is similar in important ways to an account
+
+recently defended on purely linguistic and philosophical grounds (Starr, forthcoming). A formally rigorous approach
+
+to reasoning with mental models as presented with the erotetic theory makes it possible to find independent motivation
+
+for various operators that can be used for such accounts. For example, the machinery used to analyze the conditional
+
+was independently motivated by the need to make sense of how we can use suppositions to aid reasoning that does not
+
+involve conditional premises. Moreover, within a theory of reasoning, which is not limited to reasoning with verbal
+
+premises (Bauer and Johnson-Laird, 1993), the very notion of a representation of discourse that is independent from
+
+linguistic meaning is independently motivated. Thus, reliance on a theory of reasoning such as ours could help assuage
+
+the classical semanticists’ worry that since semantic analyses relying on operations over discourse representations use
+
+a grammatically unconstrained level of representation, they give up on explanatory power (Koralus, 2012).
+
+      The key proposal of the erotetic theory of reasoning is that the peculiar patterns of naive reasoning are due to the
+
+default system for reasoning treating successive premises as questions and answers. Our natural capacity for reasoning
+
+does not have its peculiar features because it aims at quasi-approximations of classically valid reasoning. Rather, the
+
+system aims at answering questions. What is remarkable is that this endowment provides resources that support the
+
+
+                                                            44
+discovery of a reasoning strategy that in fact allows us to reason with classical validity. Questions, in a particular way
+
+we made precise in this paper, make us rational.
+
+
+References
+
+Anderson, C. A. (1982). Inoculation and counterexplanation: Debiasing techniques in the perseverance of social
+
+  theories. Social Cognition, 1(2):126–139.
+
+Arkes, H. R., Faust, D., Guilmette, T. J., and Hart, K. (1988). Eliminating the hindsight bias. Journal of Applied
+
+  Psychology, 73(2):305–307.
+
+Armstrong, D. M. (2004). Truth and Truthmakers. Cambridge: Cambridge University Press.
+
+Baron, J. (1993). Deduction as an example of thinking. Behavioral and Brain Sciences, 16(02):336–337.
+
+Barrouillet, P., Gauffroy, C., and Lecas, J. (2008). Mental models and the suppositional account of conditionals.
+
+  Psychological Review, 115(3):760–771.
+
+Barrouillet, P., Grosset, N., and Lecas, J. (2000). Conditional reasoning by mental models: chronometric and devel-
+
+  opmental evidence. Cognition, 75(3):237–266.
+
+Barrouillet, P. and Lecas, J. (1998). How can mental models theory account for content effects in conditional reason-
+
+  ing? A developmental perspective. Cognition, 67(3):209–253.
+
+Bauer, M. I. and Johnson-Laird, P. N. (1993). How diagrams can improve reasoning. Psychological Science, 4(6):372–
+
+  378.
+
+Braine, M. D. and O’Brien, D. P. (1991). A theory of if: A lexical entry, reasoning program, and pragmatic principles.
+
+  Psychological Review, 98(2):182–203.
+
+Braine, M. D. S., Reiser, B. J., and Rumain, B. (1984). Some empirical justification for a theory of natural propositional
+
+  logic. In Bower, G. H., editor, The Psychology of Learning and Motivation, chapter 18, pages 317–371. New York:
+
+  Academic Press.
+
+Braine, M. D. S. and Rumain, B. (1983). Logical reasoning. In Flavell, J. H. and Markman, E. M., editors, Handbook
+
+  of Child Psychology: vol 3, Cognitive Development, pages 263–339. New York: Wiley.
+
+Byrne, R. M. J. (2005). The rational imagination: how people create alternatives to reality. Cambridge, MA: MIT
+
+  Press.
+
+Ciardelli, I. A. (2009). Inquisitive semantics and intermediate logics. Master’s thesis, University of Amsterdam.
+
+
+                                                           45
+Evans, J. S. B. (2002). Logic and human reasoning: An assessment of the deduction paradigm. Psychological bulletin,
+
+  128(6):978.
+
+Evans, J. S. B., Newstead, S. E., and Byrne, R. M. (1993). Human reasoning: The psychology of deduction. Psychol-
+
+  ogy Press.
+
+Fine, K. (2012). A difficulty for the possible world analysis of counterfactuals. Synthese.
+
+Fox, J. F. (1987). Truthmaker. Australasian Journal of Philosophy, 65(2):188–207.
+
+Garcı́a-Madruga, J. A., Moreno, S., Carriedo, N., Gutiérrez, F., and Johnson-Laird, P. (2001). Are conjunctive infer-
+
+  ences easier than disjunctive inferences? a comparison of rules and models. The Quarterly Journal of Experimental
+
+  Psychology: Section A, 54(2):613–632.
+
+Gillies, A. S. (2009). On truth-conditions for if (but not quite only if). Philosophical Review, 118(3):325–349.
+
+Girotto, V., Mazzocco, A., and Tasso, A. (1997). The effect of premise order in conditional reasoning: a test of the
+
+  mental model theory. Cognition.
+
+Griggs, R. A. and Cox, J. R. (1982). The elusive thematic-materials effect in wason’s selection task. British Journal
+
+  of Psychology, 73(3):407–420.
+
+Groenendijk, J. (2008). Inquisitive Semantics: Two possibilities for disjunction. ILLC Prepublications PP-2008-26,
+
+  ILLC.
+
+Groenendijk, J. and Roelofsen, F. (2009). Inquisitive semantics and pragmatics. In Presented at the Workshop on
+
+  Language, Communication, and Rational Agency, Stanford, May 2009.
+
+Groenendijk, J. and Roelofsen, F. (2010). Radical inquisitive semantics. In Preliminary version, presented at the
+
+  Colloquium of the Institute for Cognitive Science, University of Osnabrueck.
+
+Haiman, J. (1978). Conditionals are topics. Language, 54(3):564–589.
+
+Hamblin, C. L. (1958). Questions. Australasian Journal of Philosophy, 36(3):159–168.
+
+Harman, G. (1979). If and modus ponens. Theory and Decision, 11(1):41–53.
+
+Harman, G. (1986). Change in view: Principles of reasoning. MIT press Cambridge, MA.
+
+Heim, I. (1982). The semantics of definite and indefinite noun phrases. PhD thesis, University of Massachusetts
+
+  Amherst.
+
+
+
+
+                                                          46
+Hoch, S. J. (1985). Counterfactual reasoning and accuracy in predicting personal events. Journal of Experimental
+
+  Psychology: Learning, Memory, and Cognition, 11(4):719–731.
+
+Hodges, W. (1993). The logical content of theories of deduction. Behavioral and Brain Sciences, 16(02):353–354.
+
+Johnson-Laird, P., Legrenzi, P., and Girotto, V. (2004). How we detect logical inconsistencies. Current Directions in
+
+  Psychological Science, 13(2):41–45.
+
+Johnson-Laird, P. N. (1970). The perception and memory of sentences. New Horizons in Linguistic. Harmondsworth,
+
+  Middlesex England: Penguin Book, pages 261–270.
+
+Johnson-Laird, P. N. (1983). Mental models: Towards a cognitive science of language, inference, and consciousness.
+
+  Harvard University Press.
+
+Johnson-Laird, P. N. (2008). Mental models and deductive reasoning. In Rips, L. and Adler, J., editors, Reasoning:
+
+  studies in human inference and its foundations, pages 206–222. Cambridge: Cambridge University Press.
+
+Johnson-Laird, P. N. and Byrne, R. M. (1991). Deduction. Erlbaum Hillsdale, NJ.
+
+Johnson-Laird, P. N. and Savary, F. (1999). Illusory inferences: A novel class of erroneous deductions. Cognition,
+
+  71(3):191–229.
+
+Johnson-Laird, P. N. and Stevenson, R. (1970). Memory for syntax. Nature, 227(412).
+
+Kamp, H. (1981). A theory of truth and semantic representation. In Groenendijk, J., Janssen, T., and Stokhof, M.,
+
+  editors, Formal methods in the study of language, pages 277–322. Amsterdam: Matematisch Centrum.
+
+Karttunen, L. (1976). Discourse referents. In McCawley, J., editor, Syntax and Semantics: Notes from the Linguistic
+
+  Underground, volume 7, pages 363–386. New York: Academic Press.
+
+Khemlani, S., Orenes, I., and Johnson-Laird, P. N. (2012). Negation: A theory of its meaning, representation, and use.
+
+  Journal of Cognitive Psychology, 24(5):541–559.
+
+Koralus, P. (2012). The open instruction theory of attitude reports and the pragmatics of answers. Philosopher’s
+
+  Imprint, 12(14).
+
+Koriat, A., Lichtenstein, S., and Fischhoff, B. (1980). Reasons for confidence. Journal of Experimental Psychology:
+
+  Human Learning and Memory, 6(2):107–118.
+
+Kratzer, A. and Shimoyama, J. (2002). Indeterminate pronouns: the view from Japanese. In Third Tokyo Conference
+
+  on Psycholinguistics.
+
+
+                                                         47
+Mackie, J. L. (1973). Truth, probability and paradox: Studies in philosophical logic. Oxford University Press.
+
+Mascarenhas, S. (2009). Inquisitive semantics and logic. Msc thesis, University of Amsterdam.
+
+Mascarenhas, S. (2013). An interpretation-based account of illusory inferences from disjunction. NYU, Ms under
+
+  review.
+
+Morris, B. J. and Hasson, U. (2010). Multiple sources of competence underlying the comprehension of inconsistencies:
+
+  A developmental investigation. Journal of Experimental Psychology: Learning, Memory, and Cognition, 36(2):277–
+
+  287.
+
+Oaksford, M. and Chater, N. (2007). Bayesian rationality: The probabilistic approach to human reasoning. Oxford
+
+  University Press.
+
+Oaksford, M. and Stenning, K. (1992). Reasoning with conditionals containing negated constituents. Journal of
+
+  experimental psychology. Learning, memory, and cognition, 18(4):835–854.
+
+Oberauer, K. (2006). Reasoning with conditionals: A test of formal models of four theories. Cognitive Psychology,
+
+  53(3):238–283.
+
+O’Brien, D. and Manfrinati, A. (2010). The mental logic theory of conditional propositions. In Oaksford, M. and
+
+  Chater, N., editors, Cognition and Conditionals, pages 39–54. Oxford: Oxford University Press.
+
+Rips, L. (1994). The Psychology of Proof. Cambridge, MA: MIT Press.
+
+Schroyens, W. J., Schaeken, W., and d’Ydewalle, G. (2001). The processing of negations in conditional reasoning: A
+
+  meta-analytic case study in mental model and/or mental logic theory. Thinking & reasoning, 7(2):121–172.
+
+Stalnaker, R. (1975). Indicative conditionals. Philosophia, 5:269–286.
+
+Starr, W. (forthcoming). What if ? Philosopher’s Imprint.
+
+Stenning, K. and van Lambalgen, M. (2008a). Human Reasoning and Cognitive Science. Cambridge, MA: MIT Press.
+
+Stenning, K. and van Lambalgen, M. (2008b). Interpretation, representation, and deductive reasoning. In Adler,
+
+  J. and Rips, L., editors, Reasoning: studies in human inference and its foundations, pages 223–249. Cambridge:
+
+  Cambridge University Press.
+
+Tenenbaum, J. B., Griffiths, T. L., and Kemp, C. (2006). Theory-based Bayesian models of inductive learning and
+
+  reasoning. Trends in Cognitive Sciences, 10(7):309–318.
+
+
+
+
+                                                         48
+Tversky, A. and Kahneman, D. (1983). Extensional versus intuitive reasoning: the conjunction fallacy in probability
+
+  judgment. Psychological Review, 90:293–315.
+
+van Fraassen, B. C. (1969). Facts and tautological entailments. The Journal of Philosophy, 66(15):477–487.
+
+von Fintel, K. (1999). The presupposition of subjunctive conditionals. In Sauerland, U. and Percus, O., editors, The
+
+  Interpretive Tract. MIT Working Papers in Linguistics, volume 25, pages 29–44. Cambridge, MA: MITWPL.
+
+Walsh, C. and Johnson-Laird, P. N. (2004). Coreference and reasoning. Memory and Cognition, 32:96–106.
+
+Wason, P. C. (1968). Reasoning about a rule. The Quarterly Journal of Experimental Psychology, 20(3):273–281.
+
+
+
+
+                                                        49
+

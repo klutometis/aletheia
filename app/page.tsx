@@ -185,6 +185,7 @@ export default function Home() {
       if (data.actions && data.actions.length > 0) {
         for (const action of data.actions) {
           if (action.type === 'record_answer') {
+            const existingAnswer = userAnswers.get(action.questionId);
             const updatedAnswers = new Map(userAnswers).set(
               action.questionId,
               {
@@ -192,12 +193,42 @@ export default function Home() {
                 stance: action.stance,
                 confidence: action.confidence,
                 timestamp: new Date(),
-                considerations: []
+                considerations: [],
+                mastery: existingAnswer?.mastery || 'exploring',
+                lastProbed: new Date(),
+                counterfactuallyRobust: existingAnswer?.counterfactuallyRobust || false
               }
             );
             setUserAnswers(updatedAnswers);
-          } else if (action.type === 'move_to_question') {
+            // Update current question to the one being answered
             setCurrentQuestionId(action.questionId);
+          } else if (action.type === 'mark_mastered') {
+            const existingAnswer = userAnswers.get(action.questionId);
+            if (existingAnswer) {
+              const updatedAnswers = new Map(userAnswers).set(
+                action.questionId,
+                {
+                  ...existingAnswer,
+                  mastery: 'mastered',
+                  counterfactuallyRobust: true,
+                  lastProbed: new Date()
+                }
+              );
+              setUserAnswers(updatedAnswers);
+            }
+          } else if (action.type === 'mark_irrelevant') {
+            const existingAnswer = userAnswers.get(action.questionId);
+            if (existingAnswer) {
+              const updatedAnswers = new Map(userAnswers).set(
+                action.questionId,
+                {
+                  ...existingAnswer,
+                  mastery: 'irrelevant',
+                  lastProbed: new Date()
+                }
+              );
+              setUserAnswers(updatedAnswers);
+            }
           }
         }
       }
@@ -633,7 +664,7 @@ export default function Home() {
                 currentQuestionId={currentQuestionId}
               />
             </div>
-            <div className="text-xs text-gray-600 mt-2 flex items-center space-x-4">
+            <div className="text-xs text-gray-600 mt-2 flex flex-wrap items-center gap-3">
               <span className="flex items-center">
                 <span className="inline-block w-3 h-3 bg-gray-400 rounded mr-1"></span>
                 Unanswered
@@ -644,7 +675,15 @@ export default function Home() {
               </span>
               <span className="flex items-center">
                 <span className="inline-block w-3 h-3 bg-blue-500 rounded mr-1"></span>
-                Answered
+                Exploring
+              </span>
+              <span className="flex items-center">
+                <span className="inline-block w-3 h-3 bg-green-500 rounded mr-1"></span>
+                Mastered
+              </span>
+              <span className="flex items-center">
+                <span className="inline-block w-3 h-3 bg-gray-500 rounded mr-1"></span>
+                Irrelevant
               </span>
             </div>
           </div>
@@ -682,6 +721,15 @@ export default function Home() {
                         <div className="text-xs text-gray-500 uppercase mb-1">Confidence</div>
                         <div className="text-sm font-semibold text-blue-600">
                           {Math.round(selectedAnswer.confidence * 100)}%
+                        </div>
+                      </div>
+                      
+                      <div>
+                        <div className="text-xs text-gray-500 uppercase mb-1">Status</div>
+                        <div className="text-sm font-semibold">
+                          {selectedAnswer.mastery === 'mastered' && <span className="text-green-600">✓ Mastered</span>}
+                          {selectedAnswer.mastery === 'exploring' && <span className="text-blue-600">⟳ Exploring</span>}
+                          {selectedAnswer.mastery === 'irrelevant' && <span className="text-gray-500">− Irrelevant</span>}
                         </div>
                       </div>
                       

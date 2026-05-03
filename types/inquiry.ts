@@ -15,12 +15,17 @@ export interface ReferenceAnswer {
   source?: string; // Citation
 }
 
+export type MasteryState = 'exploring' | 'mastered' | 'irrelevant';
+
 export interface UserAnswer {
   questionId: QuestionId;
   stance: string; // ~300 char nuanced position
   confidence: number; // 0-1
   timestamp: Date;
   considerations: string[]; // What factors matter
+  mastery: MasteryState; // Current understanding state
+  lastProbed: Date; // Last time this node was engaged with
+  counterfactuallyRobust: boolean; // Has view survived challenges?
 }
 
 export interface Edge {

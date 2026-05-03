@@ -39,6 +39,7 @@ export function InquiryGraph({
           const answer = userAnswers.get(q.id);
           if (answer) {
             node.data('confidence', answer.confidence);
+            node.data('mastery', answer.mastery);
           }
         }
       });
@@ -56,16 +57,20 @@ export function InquiryGraph({
       // Build elements (first time only)
       const elements = [
       // Nodes
-      ...complex.questions.map(q => ({
-        data: { 
-          id: q.id, 
-          label: q.text,
-          importance: q.importance,
-          answered: answeredQuestions.has(q.id),
-          current: q.id === currentQuestionId,
-          selected: selectedNodeId === q.id
-        }
-      })),
+      ...complex.questions.map(q => {
+        const answer = userAnswers.get(q.id);
+        return {
+          data: { 
+            id: q.id, 
+            label: q.text,
+            importance: q.importance,
+            answered: answeredQuestions.has(q.id),
+            current: q.id === currentQuestionId,
+            selected: selectedNodeId === q.id,
+            mastery: answer?.mastery || null
+          }
+        };
+      }),
       
       // Edges
       ...complex.edges.map((e, idx) => ({
@@ -87,13 +92,18 @@ export function InquiryGraph({
         {
           selector: 'node',
           style: {
-            'background-color': (ele: any) => {
-              // Check current FIRST (use node data, not closure variable)
-              if (ele.data('current')) return '#f59e0b'; // Amber for current
-              if (ele.data('selected')) return '#1d4ed8'; // Darker blue for selected
-              if (ele.data('answered')) return '#3b82f6'; // Blue for answered
-              return '#e5e7eb'; // Lighter gray for unanswered
-            },
+          'background-color': (ele: any) => {
+            // Check current FIRST (use node data, not closure variable)
+            if (ele.data('current')) return '#f59e0b'; // Amber for current
+            if (ele.data('selected')) return '#1d4ed8'; // Darker blue for selected
+            
+            // Mastery states for answered questions
+            if (ele.data('mastery') === 'mastered') return '#10b981'; // Green for mastered
+            if (ele.data('mastery') === 'irrelevant') return '#9ca3af'; // Gray for irrelevant
+            if (ele.data('answered')) return '#3b82f6'; // Blue for exploring
+            
+            return '#e5e7eb'; // Lighter gray for unanswered
+          },
             'width': (ele: any) => 50 + ele.data('importance') * 30,
             'height': (ele: any) => 50 + ele.data('importance') * 30,
             'label': 'data(label)',

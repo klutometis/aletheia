@@ -12,10 +12,14 @@ interface Message {
 // Define function declarations
 const recordAnswerFunction: FunctionDeclaration = {
   name: 'record_answer',
-  description: 'Record the user\'s answer for the CURRENT question only. Call this when the user has provided a clear position on the question being discussed.',
+  description: 'Record the user\'s answer for ANY question in the inquiry complex. Call this when the user has provided a clear position on a question.',
   parameters: {
     type: SchemaType.OBJECT,
     properties: {
+      questionId: {
+        type: SchemaType.STRING,
+        description: 'The question ID being answered (e.g., "q1", "q2")'
+      },
       stance: {
         type: SchemaType.STRING,
         description: 'The user\'s position/stance in 1-2 clear sentences'
@@ -25,31 +29,42 @@ const recordAnswerFunction: FunctionDeclaration = {
         description: 'Confidence level from 0 to 1 (0.5 = uncertain, 0.7 = moderate, 0.9 = very confident)'
       }
     },
-    required: ['stance', 'confidence']
+    required: ['questionId', 'stance', 'confidence']
   }
 };
 
-const moveToQuestionFunction: FunctionDeclaration = {
-  name: 'move_to_question',
-  description: 'Move the conversation to a different question. Call this when: (1) user explicitly requests ("go back to...", "let\'s talk about..."), (2) naturally transitioning after exploring current question, or (3) exploring tensions between questions.',
+const markMasteredFunction: FunctionDeclaration = {
+  name: 'mark_mastered',
+  description: 'Mark a question as mastered when the user has a stable, counterfactually robust view. Their position has survived challenges and remained consistent.',
   parameters: {
     type: SchemaType.OBJECT,
     properties: {
       questionId: {
         type: SchemaType.STRING,
-        description: 'The question ID to move to (e.g., "q1", "q2")'
-      },
-      reason: {
-        type: SchemaType.STRING,
-        description: 'Why moving (e.g., "user requested", "natural transition", "exploring tension with q3")'
+        description: 'The question ID to mark as mastered'
       }
     },
-    required: ['questionId', 'reason']
+    required: ['questionId']
+  }
+};
+
+const markIrrelevantFunction: FunctionDeclaration = {
+  name: 'mark_irrelevant',
+  description: 'Mark a question as irrelevant to the user\'s emerging camp/position. This question doesn\'t need deep exploration given their trajectory.',
+  parameters: {
+    type: SchemaType.OBJECT,
+    properties: {
+      questionId: {
+        type: SchemaType.STRING,
+        description: 'The question ID to mark as irrelevant'
+      }
+    },
+    required: ['questionId']
   }
 };
 
 const tools: Tool[] = [{
-  functionDeclarations: [recordAnswerFunction, moveToQuestionFunction]
+  functionDeclarations: [recordAnswerFunction, markMasteredFunction, markIrrelevantFunction]
 }];
 
 // Helper function to retry API calls with exponential backoff
@@ -107,39 +122,127 @@ export async function POST(req: Request) {
       ? answeredQuestions.map((qId: string) => {
           const answer = userAnswers[qId];
           const question = inquiryComplex.questions.find((q: any) => q.id === qId);
-          return `- ${qId}: "${question?.text}"\n  Their position: ${answer.stance} (${Math.round(answer.confidence * 100)}% confident)`;
+          return `- ${qId}: "${question?.text}"\n  Their position: ${answer.stance} (${Math.round(answer.confidence * 100)}% confident)${answer.mastery ? ` [${answer.mastery}]` : ''}`;
         }).join('\n\n')
       : 'none yet';
 
-    // Build system prompt with explicit current question
+    // Count turns on current question (heuristic: count messages / 2)
+    const turnsOnCurrentQuestion = Math.floor(messages.length / 2);
+    const shouldMoveOn = turnsOnCurrentQuestion >= 3;
+
+    // Build system prompt for HOLISTIC navigation
     const systemPrompt = `You are a Socratic philosophy tutor guiding someone through an inquiry complex about "${inquiryComplex.topic}."
 
-CURRENT QUESTION: ${currentQuestionId} - "${currentQuestion?.text}"
+# HOLISTIC NAVIGATION MINDSET
 
-Your role is to:
-1. Focus the conversation on the CURRENT question
-2. Extract positions using the record_answer function
-3. Probe deeper, follow up on interesting points
-4. Use move_to_question when ready to transition
-5. Reference their previous answers when exploring tensions or connections
+You have a view of the ENTIRE graph. Your job is to help them reach "erotetic equilibrium" - a stable, considered position that survives counterfactual challenges.
 
-All questions in the complex:
-${inquiryComplex.questions.map((q: any) => `- ${q.id}: ${q.text}`).join('\n')}
+**Proximal telos (immediate)**: Follow natural conversation flow, be responsive to their energy and interests
+**Distal telos (ultimate)**: Guide them toward questions most likely to "upset the apple cart" - expose tensions, clarify fuzzy thinking, build robust views
 
-PREVIOUS ANSWERS:
-${previousAnswersContext}
+## THE INQUIRY COMPLEX
 
-Guidelines:
-- Focus on current question: ${currentQuestionId}
-- When user provides a position, call record_answer function
-- When naturally transitioning or user requests, call move_to_question function
-- Be conversational and Socratic
-- Point out tensions with other answered questions when relevant
-- BE CONCISE: Get to the point quickly. Skip preambles like "that's interesting" and don't restate what the user just said
-- BE DIRECT: Use natural, conversational language. Avoid formal academic phrases like "This brings up some fascinating points when we consider"
-- TIGHTEN YOUR QUESTIONS: Ask sharp, focused questions without excessive setup
+${inquiryComplex.questions.map((q: any) => `${q.id} [importance: ${q.importance}]: ${q.text}${q.camp ? ` [camp: ${q.camp}]` : ''}`).join('\n')}
 
-IMPORTANT: You can ONLY record answers for the current question (${currentQuestionId}). To record answers for other questions, you must first move_to_question.`;
+## THEIR JOURNEY SO FAR
+
+${previousAnswersContext || '(just starting)'}
+
+Recently exploring: ${currentQuestionId ? `${currentQuestionId} - "${currentQuestion?.text}"` : 'none yet'}
+Turns on this topic: ${turnsOnCurrentQuestion} ${shouldMoveOn ? '⚠️ TOO MANY - MOVE TO A NEW QUESTION NOW!' : ''}
+
+${answeredQuestions.length > 0 ? `
+⚠️ ALREADY ANSWERED (${answeredQuestions.length} questions): ${answeredQuestions.join(', ')}
+DO NOT spend more than 1 follow-up on these. Focus on UNANSWERED questions.
+` : ''}
+
+## YOUR NAVIGATION PHILOSOPHY
+
+1. **Meander purposefully**: Let conversation flow naturally, but keep the topography in mind
+2. **Detect their camp**: Are they aligning with a particular position? Which questions become irrelevant given their trajectory?
+3. **Hunt for tensions**: When their answer creates conflict with previous views, probe it! This is goldmine territory.
+4. **Skip the orthogonal**: If a question is tangential to their emerging view, mark it irrelevant and move on
+5. **Test counterfactuals**: "What if X?" "How would that square with your earlier view on Y?"
+6. **Mark mastery liberally**: Don't wait for perfection. If they've articulated a clear position (even with some uncertainty), that's enough. Record the answer and explore elsewhere.
+
+## CRITICAL: RECORD ANSWERS IMMEDIATELY
+
+**YOU MUST CALL record_answer() AS SOON AS THEY GIVE A POSITION.**
+
+- When user gives ANY substantive answer to a question, IMMEDIATELY call record_answer()
+- Don't wait to probe further before recording - record FIRST, then maybe probe once more
+- If you've asked 2 follow-ups on the same question, STOP. Call record_answer() and move to a different question.
+- **Default behavior: Record the answer, then explore somewhere else on the graph**
+
+## ANTI-PATTERN: ENDLESS PROBING
+
+❌ BAD: Asking 4-5 follow-ups on the same question
+❌ BAD: Waiting for a "complete" or "perfect" answer before recording
+❌ BAD: Staying on one node because it's "interesting"
+
+✓ GOOD: Get position → Record → Move on
+✓ GOOD: Maximum 2-3 exchanges per question, then switch
+✓ GOOD: Trust their answer is "good enough"
+
+**The goal is COVERAGE of the terrain, not DEPTH on every single node.**
+Think: "coloring book" - touch all the important areas, don't paint a masterpiece on each one.
+
+## TOOLS AT YOUR DISPOSAL
+
+- **record_answer(questionId, stance, confidence)**: CALL THIS IMMEDIATELY when they give a position. Don't delay.
+- **mark_mastered(questionId)**: Call this after recording if their view seems coherent
+- **mark_irrelevant(questionId)**: Call this if a question doesn't fit their emerging camp
+
+## WORKFLOW AFTER RECORDING AN ANSWER
+
+1. Call record_answer() with their position
+2. In your response, briefly acknowledge and then PIVOT to a different question
+3. Don't ask more follow-ups on the same question you just recorded
+4. Pick a new question from the graph - look for tensions, dependencies, or high-importance unaddressed nodes
+5. Your response should feel like: "Got it. [brief ack]. Now what about [NEW QUESTION]?"
+
+**Pattern**: Record → Acknowledge → Pivot to new terrain
+
+## EXAMPLES OF GOOD BEHAVIOR
+
+**GOOD** - Recording and moving on:
+User: "Agency should emerge from interaction"
+You: *calls record_answer(q1, "Agency emerges from interaction itself", 0.7)*
+You: "Got it - agency as emergent property. That raises an interesting tension with choice architecture in q4..."
+
+**GOOD** - One probe then move:
+User: "I think autonomy means self-rule"
+You: *calls record_answer(q1, "Autonomy as self-rule", 0.8)*
+You: "Interesting. Does that mean AI guidance is always autonomy-reducing? Let me ask about a different angle: [moves to q7 about transparency]..."
+
+**BAD** - Endless probing:
+User: "Agency should emerge"  
+You: "Can you say more?"
+User: "It's about interaction"
+You: "What do you mean by interaction?"
+User: "The AI and user together"
+You: "But how does that work exactly?"  ← STOP! This is bad behavior. Record and move on!
+
+## STYLE
+
+- BE CONCISE: No preambles. Get to the point.
+- BE DIRECT: Natural language, not academic pontificating
+- BE RESPONSIVE: Match their energy and follow their train of thought
+- BE INSIGHTFUL: Hone in on what matters, skip what doesn't
+- **BE EFFICIENT**: Don't belabor points. Get a position, maybe probe once, then move to something fresh.
+
+## WHEN TO MOVE ON
+
+Move on from a question if ANY of these are true:
+1. They've stated a clear position (even if tentative)
+2. You've probed 2-3 turns on this question
+3. They seem bored or are giving short answers
+4. A more interesting tension or question has emerged
+5. They bring up a different topic
+
+**Default assumption**: If they've answered, that's enough. Record it and explore elsewhere. Don't chase perfection.
+
+Navigate the whole graph fluidly. You are NOT stuck on one question.`;
 
     // Convert messages to Gemini format, excluding the last message and the initial assistant greeting
     // Gemini requires history to start with a user message, so skip the first assistant message
@@ -185,19 +288,24 @@ IMPORTANT: You can ONLY record answers for the current question (${currentQuesti
       // Handle function calls
       const actions = functionCalls.map(fc => {
         if (fc.name === 'record_answer') {
-          const args = fc.args as { stance: string; confidence: number };
+          const args = fc.args as { questionId: string; stance: string; confidence: number };
           return {
             type: 'record_answer',
-            questionId: currentQuestionId,
+            questionId: args.questionId,
             stance: args.stance,
             confidence: args.confidence
           };
-        } else if (fc.name === 'move_to_question') {
-          const args = fc.args as { questionId: string; reason: string };
+        } else if (fc.name === 'mark_mastered') {
+          const args = fc.args as { questionId: string };
           return {
-            type: 'move_to_question',
-            questionId: args.questionId,
-            reason: args.reason
+            type: 'mark_mastered',
+            questionId: args.questionId
+          };
+        } else if (fc.name === 'mark_irrelevant') {
+          const args = fc.args as { questionId: string };
+          return {
+            type: 'mark_irrelevant',
+            questionId: args.questionId
           };
         }
         return null;
