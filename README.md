@@ -69,6 +69,10 @@ Coming soon:
 - **[NOTES.md](NOTES.md)**: Deep theoretical foundations, research program, implementation notes
 - **[PROJECT.md](PROJECT.md)**: Project overview, goals, and vision
 - **[DEPLOY.md](DEPLOY.md)**: Technical setup, deployment, and development instructions
+- **[ARCHIVE.md](ARCHIVE.md)**: The Taylor scan and its OCR — 95 MB kept in
+  Backblaze B2 (`b2://danenberg-archive/irreplaceable/hailab/`) rather than in
+  git, since a copyrighted book should not enter a history that may go public.
+  `tools/fetch_assets.py` restores them, verified against a sha256.
 
 ## Live Demo
 

@@ -1,0 +1,19 @@
+{
+  "_comment": "Large source documents kept outside git. Fetch with tools/fetch_assets.py; verify with --check. Paths are relative to the repo root.",
+  "bucket": "b2://danenberg-archive/irreplaceable/hailab/",
+  "remote": "b2archive",
+  "assets": {
+    "Taylor Sources of the Self.pdf": {
+      "url": "b2://danenberg-archive/irreplaceable/hailab/Taylor Sources of the Self.pdf",
+      "sha256": "dd43c2a378f7bbe214ba90e5419bd999aa3e5b321c121fc1a029cbe82b7c5528",
+      "bytes": 60824068,
+      "note": "Scan of Charles Taylor, Sources of the Self -- the source text behind the moral-sources framework in README.md and app/api/articulate/route.ts. Not regenerable from anything in this repo."
+    },
+    "taylor-ocr.pdf": {
+      "url": "b2://danenberg-archive/irreplaceable/hailab/taylor-ocr.pdf",
+      "sha256": "1c95cc0ead979210ef6183a88d73c2bdd95c4e72c4b7bd3d83e896cdbb6691d9",
+      "bytes": 34940044,
+      "note": "OCR of the scan above, and the input doc/taylor-sources-of-self-summary.md was written from. Derived, but no OCR recipe was recorded, so in practice it is as unreproducible as the scan -- see ARCHIVE.md."
+    }
+  }
+}

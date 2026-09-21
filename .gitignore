@@ -41,3 +41,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# Archived source documents: 95 MB of Taylor scans, in B2 rather than here.
+# A copyrighted book does not belong in a history that may go public, and
+# `tools/fetch_assets.py` restores both against a sha256. See ARCHIVE.md.
+/Taylor Sources of the Self.pdf
+/taylor-ocr.pdf
